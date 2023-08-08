@@ -1,0 +1,272 @@
+\input{preambule}
+\begin{document}
+\input{metadata}
+
+\begin{abstract}
+The report discusses the current state of the pipeline compiling Juvix Core to Vamp-IR using Geb intermediary as implemented in Lisp. Various aspects of the API and mathematical background for the Geb project are outlined. The pipeline is described in a categorical fashion with all compilation steps made explicit via diagrams. Some knowledge of category theory is assumed.
+\end{abstract}
+
+\begin{keywords}
+Geb, Juvix, Vamp-IR
+\end{keywords}
+\maketitle
+\section{Introduction}
+
+The Geb project was originally started as a way of solving the problem of compiling Juvix programs to Vamp-IR code using the categorical approaches of specifying compilation procedures using internal language theorems, therefore moving away from dealing with syntax in favor of appropriate categorical structures. Additionally, phrasing compilation procedures in categorical terms opens up easier methods for formal verification.
+
+The Lisp implementation of Geb currently presents the first completed step of the project, namely the compilation of Juvix Core (seen as an adequate extension of STLC) to VampIR alongside an interactive environment for the user with additional features such as interpreters, type-checkers for programs and a visualizer for Geb.
+
+The general aim of the paper is to give an outlook of the pipeline design accessible to people without delving into Lisp code. Specifically, we aim to:
+
+1) Make precise all the components of the pipeline by describing their intended semantics and paraphrasing the constructions in Agda/Haskell code with explicit typing.
+
+2) Describe all the compilation steps using diagrams for readability and intelligibility.
+
+3) Highlight important features of the current implementation that are worth porting outside of the pipeline itself.
+
+We should mention beforehand that the paper uses terms from category theory and some theorems from categorical logic, but which are present solely for the sake of completeness. A person with adequate background will be able to grasp these in order to fully understand the mathematical background behind certain constructions, making e.g. the formally verifiable properties of certain compilation steps evident. However many details can be skipped in favour of good diagrammatical presentation of the compilation procedure.
+
+All errors are due to Artem Gureev, the primary author of the report. The core ideas and conjectures about Geb are due to Terence Rokop. The Lisp implementation was origially introduced by Jeremy Ornelas (who is currently the maintainer of the repository) and extended by Artem Gureev. Anthony Hart played a major part in the impementation fixing the original pipeline. 
+
+\section{Language/Category Specs}
+
+The problem that we need to solve is how to specify a compilation:
+
+% https://q.uiver.app/#q=WzAsMixbMCwwLCJcXG5vcm1hbHtKdXZpeH0gIl0sWzIsMCwiXFxub3JtYWx7VmFtcC1JUn0iXSxbMCwxXV0=
+\[\begin{tikzcd}
+	{\text{Juvix} } && {\text{Vamp-IR}}
+	\arrow[from=1-1, to=1-3]
+\end{tikzcd}\]
+
+The first step in this is to provide a good compilation from a sublanguage of Juvix, namely Juvix Core. The way we do this is by breaking up the procedure into compilations through languages which in Lisp we call Lambda, Geb, and Seq$\N$:
+
+% https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXG5vcm1hbHtKdXZpeCBDb3JlfSJdLFsyLDAsIlxcdGV4dHtMYW1iZGF9Il0sWzQsMCwiXFx0ZXh0e0dlYn0iXSxbNiwwLCJcXHRleHR7U2VxJFxcTiR9ICJdLFs4LDAsIlxcdGV4dHtWYW1wLUlSfSJdLFsxLDJdLFsyLDNdLFszLDRdLFswLDFdXQ==
+\[\begin{tikzcd}
+	{\text{Juvix Core}} && {\text{Lambda}} && {\text{Geb}} && {\text{Seq$\N$} } && {\text{Vamp-IR}}
+	\arrow[from=1-3, to=1-5]
+	\arrow[from=1-5, to=1-7]
+	\arrow[from=1-7, to=1-9]
+	\arrow[from=1-1, to=1-3]
+\end{tikzcd}\]
+
+Here we are concened only with the steps starting from Lambda. The Juvix team has already made a pipeline succesfully compiling Juvix Core to a suitable representation in Lambda barring the compilation of natural numbers, which is fairly straightforward. Hence the pipeline we will be interested in and the one written in Lisp is:
+
+% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXHRleHR7TGFtYmRhfSJdLFsyLDAsIlxcdGV4dHtHZWJ9Il0sWzQsMCwiXFx0ZXh0e1NlcSRcXE4kfSAiXSxbNiwwLCJcXHRleHR7VmFtcC1JUn0iXSxbMCwxXSxbMSwyXSxbMiwzXV0=
+\[\begin{tikzcd}
+	{\text{Lambda}} && {\text{Geb}} && {\text{Seq$\N$} } && {\text{Vamp-IR}}
+	\arrow[from=1-1, to=1-3]
+	\arrow[from=1-3, to=1-5]
+	\arrow[from=1-5, to=1-7]
+\end{tikzcd}\]
+
+The current section is devoted to the specs of the languages used in the compilation with teh Vamp-IR section devoted not to description of Vamp-IR themselves, but of the library of functions needed for any compiled code to compile on valid inputs. 
+
+\subsection{Geb}
+
+The finite version of Geb implemented here has been formulated while trying to answer two things: 
+
+1) What are the minimal/optimal operations needed to present polynomials which Vamp-IR operates with
+
+2) What are the minimal/optimal bounding operations between functional programming languages
+
+The answer seems to be that we need some sort of addition, multiplication, 0 and 1 as structures to be used. For the usual arthmetic to hold we also need some sort of a ditributivity law. Exponentiation should follow just as we define arithmetic exponentiation from multiplication in usual arithmetic. (Of course multiplication can be defined similarly by addition, but it is not optimal to do so due to exponentiation of terms) Moreover, it seems that having epxlicit exponentiation in a language through which we compile is inefficient as it would need to compile to some separate Vamp-IR function. Finally, we need some notion of a "context" or a "domain" - as is usual in the syntax/semantics duality - in order to be able to produce variables.
+
+Hence this brings us to a first definition of Geb
+
+\begin{definition}
+\text{Geb} is the language spanned by the empty type $\colorbox{gray!50}{\normalfont{\texttt{so0}}}$, unit type $\gebterm$ and sum/product types appropriately named $\gebcoprod$ and $\gebprod$.
+\end{definition}
+
+%NOTE: For readibility makes sence to rename substmorph to some infix notation expressing arrows, otherwise it may be confusing to a lot of people
+
+Here is a definition as one would write it in Agda:
+
+\begin{minted}{agda}
+data substobj : Set where
+  so1 : substobj
+  so0 : substobj
+  coprod : substobj → substobj → substobj
+  prod : substobj → substobj → substobj
+
+data substmorph : substobj → substobj → Set where
+   comp : {x y z : substobj} → (substmorph y z) → (substmorph x y) 
+                                                → (substmorph x z) 
+                                                -- composition
+   id : (x : substobj) → (substmorph x x) -- identity function
+   initial : (x : substobj) → (substmorph so0 x) -- absurd 
+   terminal : (x : substobj) → (substmorph x so1) -- constant function
+   mcase : {x y z : substobj} → (substmorph x z) → (substmorph y z) 
+                                                 → ((coprod x y) ↦ z)
+                                                 -- casing 
+   prod : {x y z : substmorph} → (substmorph z x) → (substmorph z y) 
+                                                  → (substmorph z (prod x y))
+                                                  -- product analysis
+   distribute : {x y z : substobj} → (substmorph (prod x  (coprod y z)) 
+                                                  (coprod (prod x y) (prod x z)))
+                                                  -- distributivity
+   ->left : {x y : substobj} → (substmorph x  (coprod x y))
+                             -- left injection
+   ->right : {x y : substobj} → (substmorph y (coprod x y))
+                              -- right injection
+   <-left : {x y : substobj} → (substmorph (prod x y) x)
+                             -- left projection
+   <-right : {x y : substmorph} → (substmorph (prod x y) y) 
+                             -- right projection
+\end{minted}
+
+Here \gebobj is the collection of the types of our language and \colorbox{gray!50}{\normalfont{\texttt{f : substmorph a b}}} for a term of \colorbox{gray!50}{\normalfont{\texttt{b}}} in constext of \colorbox{gray!50}{\normalfont{\texttt{a}}}. There are of course extra equalities to subject the terms to, making terminal terms unique or composition associative on the nose e.g., yet for the sake of the current project, we do not implement these and if needed, reductions are done by hand. There is also an explicit reducer in development.
+
+Another way to think about Geb is to instead specify the categorical structure instead of the syntactical one, namely:
+\begin{definition}
+\text{Geb} is the category freely spanned by an initial object so0, teminal object so1 and finite (co)products alongside the distributivity axiom.
+\end{definition}
+
+Recall that a category of models of a language $\mathbf{L}$ is a category whose objects are models of $\mathbf{L}$ and morphisms being mappings preserving said language structure (\textit{e.g. category of models of groups is the category of groups and group homs)}. The above definition corresponds to considering the term model of a language, namely the initial category of its corresponding category of models.
+
+However the semantics of this definition are a bit unclear. However note that taking coproducts with $\gebinit$ is equivalent to the identity functor (like adding 0 is the same as the identity function) while taking products with $\gebinit$ to a constant functor at $\gebinit$ (distributive categories have strict initial objects, so similar to how multiplying by 0 gives 0). Similarly, taking products with $\gebterm$ is equivalent to the identity functor (like multiplying by 1 gives back the original term). So - intuitively - the only way to make "new" types in Geb is by taking coproducts of $\gebterm$ with itself over and over. There is actually a category which is specified by being generated filtered colimits over inclusions between such coproducts of the terminal object: FinSet. It is indeed generated by just adding extra 1-element sets to the empty set. So here is the third definition:
+
+\begin{definition}
+Geb is FinSet
+\end{definition}
+
+Let us make this correspondence exact:
+
+\begin{proposition}
+FinSet is an initial weak model of the Geb language. That is, it is equivalent to the initial model of the essentially algebraic theory of category theory with initial, terminal objects, finite (co)products structure and distributivity and the equivalence preserves all relevant categorical structure.  
+\end{proposition}
+
+\begin{proof}
+We can instead deal with $Sk(FinSet) = FinOrd$, the category of finite ordinals as clearly the equivalence preserves all relevant structure. Now suppose $(C, 1_C, 0_C, +_C, \times_C)$ is a distributive category with initial/terminal object. 
+
+Note that $\bigoplus_{n} 1_C \times_C \bigoplus_m 1_C = \bigoplus_{n \times m} 1_C$ by induction on $n$: when $n=0$ since initial object is strict the product is just $0_C$ which is also the null coproduct. For the inductive step we have:
+
+\begin{align*}
+\bigoplus_{1+n} 1_C \times_C \bigoplus_{m} 1_C &\cong (\bigoplus_n 1_C +_C 1_C) \times_C \bigoplus_m 1_C  \\
+&\cong (\bigoplus_n 1_C \times_C \bigoplus_m 1_C)  +_C  \bigoplus_m 1_C ) &\text{distributivity} \\
+&\cong \bigoplus_{n \times m} 1_C + \bigoplus_m 1_C &\text{induction}\\
+&\cong \bigoplus_{(1+n) \times m} 1_C  
+\end{align*}
+
+Recall that FinSet and hene FinOrd is the weakly initial category spanned on one object by finite coproducts. Hence, since $C$ has coproducts and $1_C$, we have the morphism $F \colon Ord \to C$ preserving said structure and terminal object. Note that the product structure is also preserved. Given $n \times m$ prodceed by induction on $n$: 
+
+If $n = 0$ then $F(0 \times m) = F(0) \cong 0_C \cong 0_C \times_C F(m) \cong F(0) \times_C F(m)$
+
+For the inductive step we use the previous observation:
+
+\begin{align*}
+    F((1+n) \times m) &= F((n \times m) + m) \\
+    &\cong (F(n) \times_C F(m)) +_C F(m) &\text{induction and F preserves coproducts} \\
+    &\cong (\bigoplus_n 1_C \times_C \bigoplus_m 1_C) +_C \bigoplus_m 1_C &\text{definition of F}\\
+    &\cong \bigoplus_{n \times m} 1_C + \bigoplus_m 1_C \\
+    &\cong \bigoplus_{(1+n) \times m} 1_C \\
+    &\cong \bigoplus_{1+n} 1_C \times_C \bigoplus_m 1_C \\
+    &\cong F(1+n) \times F(m)
+\end{align*}
+
+Since everything the functor hits is a coproduct of the terminal object up to an isomorphism and $F$ preserves all coporduct structure, it preserves all other morphism structure, including product universal morphisms and distributivity, i.e. it is an actual functor of models.
+
+By the same argument, since everything the functor hits is a coproduct of $1_C$ and $F$ preserves coproduct structure and is a unique functor doing so up to natural iso, this also proves uniqueness up to iso.
+\end{proof}
+
+Hence Definition 3 is fully valid and when one talks of Geb, one can instead think about a nice presentation of FinSet. Hence a term of $\gebobj$ is just a finite set and a term of $\colorbox{gray!50}{\texttt{substmorph a b}}$ is just a function between corresponding finite sets. This equivalence actually provides us with the existence of a lot of extra structure, namely:
+
+\begin{corollary}
+Geb is cartesian closed
+\end{corollary}
+
+That is, for any two objects \colorbox{gray!50}{\texttt{a, b : substobj}} we get an object \colorbox{gray!50}{\texttt{(sohomobj a b) : substobj}} which is an object of Geb representing all terms of \colorbox{gray!50}{\texttt{b}} in context \colorbox{gray!50}{\texttt{a}}, or, in other words, it is the function type from type \colorbox{gray!50}{\texttt{a}} to type \colorbox{gray!50}{\texttt{b}}. It also comes equipped with the usual curry isomorphism and evaluation maps:
+
+\begin{minted}{agda}
+curry : {a b c : substobj} → (substmorph (prod a b) c) 
+                           → (substmorph a (sohomobj b c))
+eval : {a b : substobj} → (substmorph (sohomobj a b) a) → b
+uncurry : {a b c : substobj} → (substmorph a (sohomobj b c)) 
+                             → (substmorph (prod a b) c)
+\end{minted}
+
+The actual implementation of said types is not of importance for the report but we need these functions in order to compile Juvix code to Geb, which is why these are mentioned. 
+
+With the recent changes, we have also upgraded Geb to be able to express compactly natural number integers of fixed width. The way we do it is by the evident trick: consider all n-bit wide numbers. Evidently there are $2^n$ of these, which means that their set is in the bijection with the finite ordinal of cardinaity $2^n$. In other words, we introduce objects $nat-width n$ for every $n > 0$ which are really just isomorphic copies of $2^n$ coproducts of $\gebterm$. So Geb already had teh natural number functionality, it was just highly inefficient before introducing explicit constructors.
+
+Hence we also need to add to Geb constructors:
+
+\begin{minted}{agda}
+data substobj : Set where
+...
+nat-width : Nat → substobj -- nat-width n is the set of n-bit natural numbers
+
+data substmorph : substobj → substobj → Set where
+...
+nat-add : (n : Nat) → substmorph (nat-width n) (nat-width n) --addition
+nat-mult : (n : Nat) → substmorph (nat-width n) (nat-width n) --multiplication
+nat-sub : (n : Nat) → substmorph (nat-width n) (nat-width n) --subtraction
+nat-div : (n : Nat) → substmorph (nat-width n) (nat-width n) --division 
+nat-concat : (n m : Nat) → (substmorph (prod (nat-width n) (nat-width m))
+                                       (nat-width (n+m))) -- concatenation of bits
+nat-inj : (n : Nat) → (substmorph (nat-width n) (nat-width (n + 1)))
+nat-decompose : (n : Nat) → (substmorph (nat-width (n + 1)) 
+                                        (prod (nat-width 1) (nat-width n)))
+                -- decomposes an n+1 bit number into the top bit and the rest of the bits
+one-bit-to-bool : substmorph  (nat-width 1) (coprod so1 so1)
+                -- isomorphism sending bit 0 to the left copy of so1, and 1 to the right copy.
+nat-eq : (n : Nat) → (substmorph (prod (nat-width n) (nat-width n)) 
+                                 (coprod so1 so1))
+                                --equality predicate
+nat-lt : (n : Nat) → (substmorph (prod (nat-width n) (nat-width n))
+                                  (coprod so1 so1))
+                                  --"less-than" predicate
+\end{minted}
+
+WIth this, we have described all the relevant specs of Geb for the current report. However, there are a few things to note:
+
+Firstly, one needs to be careful when using the term "Geb" as it can point to many things. The Geb language as it is currently implemented in the pipeline is just a subcomponent of what the final version of Geb will look like. The intension is that Geb will become a language that will be able to articulate the entirety of the pipeline currently presented in CL. The reason why we call this category Geb here is because this category will be a core component specifying the higher-order Geb category, which itself will correspond to a larger programming langguage. However in this report we always use "Geb" to describe Geb as given in Definitions 1-3.
+
+Secondly, note that while the code written for Geb has the same intended semantics as the Lisp code for Geb, it is indeed different, as the Lisp code is untyped. So composition does not automatically type-check and we frequently have no knowledge of which types are used, e.g. when we are presented with a curried function as these just reduce to some product/coproduct operations. Hence we will, e.g. introduce an explicit function type in Lambda in order to optimize certain outputs. Also note that $\colorbox{gray!50}{id}$ is not an actual function in the Lisp implementation, instead we use just the names of the objects.
+ 
+\subsection{Lambda}
+
+The Lambda language is but an extended version of simply-typed lambda calculus (STLC) with types taken from Geb. The latter part is the reason why we described Geb before talking about Lambda, even if the compilation order is different. However the terms are introduced untyped first and become typed once the context is introduced.
+
+\subsection{Seq$\N$}
+
+\subsection{Vamp-IR}
+
+\section{Compilation Steps}
+
+After providing the specs of intermediary languages we compile through, we are ready to sketch the design of the pipeline itself. Diagramatically, recall that it looks something like this:
+
+% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXHRleHR7TGFtYmRhfSJdLFsyLDAsIlxcdGV4dHtHZWJ9Il0sWzQsMCwiXFx0ZXh0e1NlcSRcXE4kfSAiXSxbNiwwLCJcXHRleHR7VmFtcC1JUn0iXSxbMCwxLCJcXHRleHR7dG8tY2F0fSJdLFsxLDIsIlxcdGV4dHt0by1zZXFufSJdLFsyLDMsIlxcdGV4dHt0by1jaXJjdWl0fSJdXQ==
+\[\begin{tikzcd}
+	{\text{Lambda}} && {\text{Geb}} && {\text{Seq$\N$} } && {\text{Vamp-IR}}
+	\arrow["{\text{to-cat}}", from=1-1, to=1-3]
+	\arrow["{\text{to-seqn}}", from=1-3, to=1-5]
+	\arrow["{\text{to-circuit}}", from=1-5, to=1-7]
+\end{tikzcd}\]
+
+The compilations are appropriately named to-cat, to-seqn, to-circuit after their codomains. Actually to-seqn and to-circuit are also generics, so that their names stand for various compilations depending on what code we feed that. For example, to-seqn is originally a compilation from Geb to Seq$\N$, yet if we feed it Lambda code, it will actually compile (with certain specific settings) that code to Seqn$\N$ by first applying to-cat and then the original to-seqn. Simialrly for to-circuit. Hence the full-on diagram is:
+
+
+% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXHRleHR7TGFtYmRhfSJdLFsyLDAsIlxcdGV4dHtHZWJ9Il0sWzQsMCwiXFx0ZXh0e1NlcSRcXE4kfSAiXSxbNiwwLCJcXHRleHR7VmFtcC1JUn0iXSxbMCwxLCJcXHRleHR7dG8tY2F0fSJdLFsxLDIsIlxcdGV4dHt0by1zZXFufSJdLFsyLDMsIlxcdGV4dHt0by1jaXJjdWl0fSJdLFswLDIsIlxcdGV4dHt0by1zZXFufSIsMSx7ImN1cnZlIjoyfV0sWzAsMywiXFx0ZXh0e3RvLWNpcmN1aXR9IiwyLHsiY3VydmUiOjV9XSxbMSwzLCJcXHRleHR7dG8tY2ljcnVpdH0iLDAseyJjdXJ2ZSI6LTV9XV0=
+\[\begin{tikzcd}
+	{\text{Lambda}} && {\text{Geb}} && {\text{Seq$\N$} } && {\text{Vamp-IR}}
+	\arrow["{\text{to-cat}}", from=1-1, to=1-3]
+	\arrow["{\text{to-seqn}}", from=1-3, to=1-5]
+	\arrow["{\text{to-circuit}}", from=1-5, to=1-7]
+	\arrow["{\text{to-seqn}}"{description}, curve={height=12pt}, from=1-1, to=1-5]
+	\arrow["{\text{to-circuit}}"', curve={height=30pt}, from=1-1, to=1-7]
+	\arrow["{\text{to-cicruit}}", curve={height=-30pt}, from=1-3, to=1-7]
+\end{tikzcd}\]
+
+\subsection{Lambda $\to$ Geb}
+\subsection{Geb $\to$ Seq$\N$}
+\subsection{Seq$\N$ $\to$ Vamp-IR}
+
+\section{Additional Features}
+\subsection{Interpreters}
+\subsection{Type-checking}
+\subsection{Visualizer}
+
+\nocite{*}
+\bibliography{ref.bib}
+
+\end{document}
