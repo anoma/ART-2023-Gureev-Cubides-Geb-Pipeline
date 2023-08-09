@@ -23,7 +23,7 @@ Geb, Juvix, Vamp-IR
 \maketitle
 \section{Introduction}
 
-The Geb project was originally started as a way of solving the problem of compiling Juvix programs to Vamp-IR code using the categorical approaches of specifying compilation procedures using internal language theorems, therefore moving away from dealing with syntax in favor of appropriate categorical structures. Additionally, phrasing compilation procedures in categorical terms opens up easier methods for formal verification.
+The Geb project was originally started as a way of solving the problem of compiling Juvix programs to Vamp-IR code using the categorical approaches of specifying compilation procedures using internal language theorems, therefore moving away from dealing with syntax in favour of appropriate categorical structures. Additionally, phrasing compilation procedures in categorical terms opens up easier methods for formal verification.
 
 The Lisp implementation of Geb currently presents the first completed step of the project, namely the compilation of Juvix Core (seen as an adequate extension of STLC) to VampIR alongside an interactive environment for the user with additional features such as interpreters, type-checkers for programs and a visualizer for Geb.
 
@@ -268,7 +268,11 @@ lamb-eq : lambda → lambda → lambda -- equality of natural numbers
 lamb-lt : lambda → lambda → lambda -- "less-than" predicate on natural numbers
 \end{minted}
 
-Of course a lot of the terms produced this way will be ill-typed. E.g. indices in an empty context are ill-defined. So, as mentioned before, we have functionality of typing 
+Of course a lot of the terms produced this way will be ill-typed. E.g. indices in an empty context are ill-defined. So, as mentioned before, we have functionality of typing the terms of \tcbox{\texttt{lambda}}, namely the function \tcbox{ann-term} as in the Lisp implementation each term has a slot for types which we fill in recursively. Two things that need to be noted: 
+
+\begin{enumerate}
+    \item All the arithmetic operati
+\end{enumerate}
 
 \subsection{Seq$\N$}
 
