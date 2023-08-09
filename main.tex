@@ -203,12 +203,12 @@ However, the semantics of this definition are a bit unclear. Note that taking co
 
 Let us make this correspondence exact:
 
-\begin{proposition}
+\begin{theorem}
 \FinSet{} is an initial weak model of the \Geb{} language. That is, it is equivalent to the initial model of the essentially algebraic theory of category theory with initial, terminal objects, finite (co)products structure and distributivity and the equivalence preserves all relevant categorical structure.  
-\end{proposition}
+\end{theorem}
 
 \begin{proof}
-We can instead deal with $Sk(\mathsf{FinSet}) = \mathsf{FinOrd}$, the category of finite ordinals as clearly the equivalence preserves all relevant structure. Now suppose $(C, 1_C, 0_C, +_C, \times_C)$ is a distributive category with initial/terminal object. 
+We can instead deal with $Sk(\FinSet{}) = \FinOrd{}$, the category of finite ordinals as clearly the equivalence preserves all relevant structure. Now suppose $(C, 1_C, 0_C, +_C, \times_C)$ is a distributive category with initial/terminal object. 
 
 Note that $\bigoplus_{n} 1_C \times_C \bigoplus_m 1_C = \bigoplus_{n \times m} 1_C$ by induction on $n$: when $n=0$ since initial object is strict the product is just $0_C$ which is also the null coproduct. For the inductive step we have:
 
