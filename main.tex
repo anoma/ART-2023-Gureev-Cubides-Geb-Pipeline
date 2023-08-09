@@ -248,12 +248,14 @@ induction on $n$:
 Since everything the functor hits is a coproduct of the terminal object up to an isomorphism and $F$ preserves all coporduct structure, it preserves all other morphism structure, including product universal morphisms and distributivity, i.e. it is an actual functor of models.
 
 By the same argument, since everything the functor hits is a coproduct of $1_C$ and $F$ preserves coproduct structure and is a unique functor doing so up to natural iso, this also proves uniqueness up to iso.
+
+
 \end{proof}
 
-Hence Definition 3 is fully valid and when one talks of Geb, one can instead think about a nice presentation of FinSet. Hence a term of $\gebobj$ is just a finite set and a term of \tcbox{\texttt{substmorph a b}} is just a function between corresponding finite sets. This equivalence actually provides us with the existence of a lot of extra structure, namely:
+Hence Definition 3 is fully valid and when one talks of Geb, one can instead think about a nice presentation of FinSet. Hence a term of $\gebobj$ is just a finite set and a term of \tcbox{\texttt{substmorph a b}} is just a function between corresponding finite sets. As expected, this equivalence actually provides us with the existence of a lot of extra structure.
 
 \begin{corollary}
-Geb is cartesian closed
+Geb is cartesian closed.
 \end{corollary}
 
 That is, for any two objects \tcbox{\texttt{a, b : substobj}} we get an object \tcbox{\texttt{(sohomobj a b) : substobj}} which is an object of Geb representing all terms of \tcbox{\texttt{b}} in context \tcbox{\texttt{a}}, or, in other words, it is the function type from type \tcbox{\texttt{a}} to type \tcbox{\texttt{b}}. It also comes equipped with the usual curry isomorphism and evaluation maps:
