@@ -270,8 +270,9 @@ uncurry : {a b c : substobj} → (substmorph a (sohomobj b c))
 
 The actual implementation of said types is not of importance for the report but we need these functions in order to compile Juvix code to Geb, which is why these are mentioned. 
 
-With the recent changes, we have also upgraded Geb to be able to express compactly natural number integers of fixed width. The way we do it is by the evident trick: consider all n-bit wide numbers. Evidently there are $2^n$ of these, which means that their set is in bijection with the finite ordinal of cardinaity $2^n$. In other words, we introduce objects $nat-width n$ for every $n > 0$ which are really just isomorphic copies of $2^n$ coproducts of $\gebterm$. So Geb already had teh natural number functionality, it was just highly inefficient before introducing explicit constructors.
+With the recent changes, we have also upgraded Geb to be able to express compactly natural number integers of fixed width. The way we do it is by the evident trick: consider all n-bit wide numbers. Evidently there are $2^n$ of these, which means that their set is in bijection with the finite ordinal of cardinality $2^n$. In other words, we introduce objects $nat-width n$ for every $n > 0$ which are really just isomorphic copies of $2^n$ coproducts of $\gebterm$. So Geb already had the natural number functionality, it was just highly inefficient before introducing explicit constructors.
 
+% Jona: continue here
 Hence we also need to add to Geb constructors:
 
 \begin{minted}{agda}
