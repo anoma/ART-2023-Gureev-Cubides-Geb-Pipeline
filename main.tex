@@ -23,22 +23,26 @@ Geb, Juvix, Vamp-IR
 \maketitle
 \section{Introduction}
 
-The Geb project was initiated to compile generic functional programs into
+The Geb project was initiated to compile functional programs into
 high-level representation of arithmetic circuits via categorical methods.
 This categorical approach specifies compilation procedures via internal language
 theorems, thereby shifting focus from syntax to suitable categorical
 structures. Additionally, phrasing compilation procedures in categorical
 terms opens up easier methods for formal verification.
 
-The core of this approach rests on the observation that effective
+The core of the approach taken here rests on the observation that effective
 compilation procedures, which preserve type structure (e.g., compilations
 preserving lambda structure in languages derived from STLC), can be linked to
 functors that maintain corresponding structures between categories
-representing those programming languages.  A canonical example is that of Lambek-Scott, dealing with the fact that the languages possessing STLC structure form a category which is equivalent to the category of cartesian closed categories.
+representing those programming languages.  One canonical example is that of Lambek-Scott, dealing with the fact that the languages possessing STLC structure form a category which is equivalent to the category of cartesian closed categories.
 
 Therefore, instead of operating with syntax, we can represent our languages as distinct categories and construct functors between them. This approach simplifies their formalization due to the direct mathematical meaning of the constructions. Furthermore, functor properties inherently provide several beneficial features, including automatic type-checking for morphism composition.
 
-The Lisp implementation of Geb currently presents the first completed step of the project, namely the compilation of Juvix Core (seen as an adequate extension of STLC) to VampIR alongside an interactive environment for the user with additional features such as interpreters, type-checkers for programs and a visualizer for Geb.
+The approach outlined in this document is supported by a reference implementation in Lisp. This Lisp-based Geb implementation signifies the project's initial completed stage: the compilation of functional programs written in Juvix Core language (regarded as an appropriate STLC extension) to VampIR, an in-house language for arithmetic circuits.
+As part of the implementation, we also provide an interactive user environment equipped with extra features such as interpreters, program type-checkers, and a Geb visualizer available at the following address:
+\begin{center}
+    \url{https://github.com/anoma/geb}.
+\end{center}
 
 The general aim of the paper is to give an outlook of the pipeline design accessible to people without delving into Lisp code. Specifically, we aim to:
 
@@ -93,7 +97,7 @@ The first step in this is to provide a good compilation from a sublanguage of Ju
 	\arrow[from=1-1, to=1-3]
 \end{tikzcd}\]
 
-Here we are concened only with the steps starting from Lambda. The Juvix team has already made a pipeline succesfully compiling Juvix Core to a suitable representation in Lambda barring the compilation of natural numbers, which is fairly straightforward. Hence the pipeline we will be interested in and the one written in Lisp is:
+Here we are concerned only with the steps starting from \LambdaIR{}. The Juvix compiler already supports compiling Juvix Core to a suitable representation in Lambda barring the compilation of natural numbers, which is fairly straightforward. Hence the pipeline we will be interested in and the one written in Lisp is:
 
 % https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXHRleHR7TGFtYmRhfSJdLFsyLDAsIlxcdGV4dHtHZWJ9Il0sWzQsMCwiXFx0ZXh0e1NlcSRcXE4kfSAiXSxbNiwwLCJcXHRleHR7VmFtcC1JUn0iXSxbMCwxXSxbMSwyXSxbMiwzXV0=
 \[\begin{tikzcd}
@@ -104,6 +108,28 @@ Here we are concened only with the steps starting from Lambda. The Juvix team ha
 \end{tikzcd}\]
 
 The current section is devoted to the specs of the languages used in the compilation with teh Vamp-IR section devoted not to description of Vamp-IR themselves, but of the library of functions needed for any compiled code to compile on valid inputs. 
+
+Let us provide a summary of the language characteristics of each language in the compiler stack, as initially presented in \cite{lukascz-vampir}.
+
+\vspace*{2mm}
+\begin{minipage}[b]{\hsize}\centering
+
+\begin{tabular}{lllll}
+\hline
+\textbf{Feature} & \textbf{Juvix} & \textbf{JuvixCore} & \textbf{\Geb{}} & \textbf{\VampIR{}} \\ \hline
+General recursion (functions)   &  Yes   &  Yes   &  No  &   No  \\
+First-class functions   &  Yes   &  Yes   &  Yes  &   No\footnote{\VampIR{} higher-order and anonymous functions are not fully ``first-class'' because they cannot non-trivially interact with the field elements - they are essentially compilation-time-only.}  \\
+Inductive data types  &  Yes   &  Yes   &  No  &   No  \\
+Finite data structures  &  Yes   &  Yes   &  Yes\footnote{Encodable via products and coproducts.} & No\footnote{Pairs and lists in \VampIR{} cannot non-trivially interact with the field elements. In general, finite \JuvixCore{} data structures cannot be translated to them.}  \\
+Prenex polymorphism  &  Yes   &  Yes   &  No  &  No\footnote{Polymorphic functions are supported, but not polymorphic data types which can interact non-trivially with field elements. Hence, monomorphisation is still necessary to translate from JuvixCore.} \\
+Higher-rank polymorphism  &  Some   &  Yes   &  No  &   No  \\
+Primitive integer type  &  Yes   &  Yes   &  No  &   Yes\footnote{\VampIR{} ``integers'' are the field elements, not integers strictly speaking.} \\
+Runtime error reporting  &  Yes   &  Yes   &  No  &   No \\
+\hline
+\end{tabular}
+% \caption{Language features}
+\end{minipage}
+
 
 \subsection{Geb}
 
@@ -331,9 +357,9 @@ Of course a lot of the terms produced this way will be ill-typed. E.g. indices i
 \end{enumerate}
 
 \subsection{Seq$\N$}
-\SeqN is a category whose intended semantics are as follows:
+\SeqN{} is a category whose intended semantics are as follows:
 
-The objects of \SeqN are finite sequences of natural numbers $(x_1,...,x_n)$. A morphism $f : (x_1,...,x_n) \to (y_1,...,y_m)$ is a Vamp-IR function that takes in $n$ with the i'th entry being of bit-size $x_i$ and outputs an $m$-tuple with i'th entry being of bit-size $y_i$. Hence it makes sense to call it a category of Vamp-IR programs. 
+The objects of \SeqN{} are finite sequences of natural numbers $(x_1,...,x_n)$. A morphism $f : (x_1,...,x_n) \to (y_1,...,y_m)$ is a Vamp-IR function that takes in $n$ with the i'th entry being of bit-size $x_i$ and outputs an $m$-tuple with i'th entry being of bit-size $y_i$. Hence it makes sense to call it a category of Vamp-IR programs. 
 
 However, we do not yet have a precise specification of Vamp-IR as it is still in active development, what we are aiming for is simply to specify some subcategory of the one described above which will be sufficient for interpreting faithfully all the Geb programs we have.
 
@@ -653,9 +679,9 @@ and similarly with other arithmeic operations.
 and similarlyty with less-than
 \end{enumerate}
 
-With this, we are done. One may notice that we actually skipped the \lamberr term, yet that is because what we described is the compilation of a term without errors. We have a predicate checking whether there is or is not an error term in a given term which decided how to compile it further. 
+With this, we are done. One may notice that we actually skipped the \lamerr term, yet that is because what we described is the compilation of a term without errors. We have a predicate checking whether there is or is not an error term in a given term which decided how to compile it further. 
 
-The compilation for terms with \lamberr is similar to the procedure described above, but wrapping everything recursively into a \tcbox{Maybe} monad.
+The compilation for terms with \lamerr is similar to the procedure described above, but wrapping everything recursively into a \tcbox{Maybe} monad.
 
 \subsection{Geb $\to$ Seq$\N$}
 \subsection{Seq$\N$ $\to$ Vamp-IR}

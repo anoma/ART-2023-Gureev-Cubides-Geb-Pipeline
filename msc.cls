@@ -1163,7 +1163,7 @@ Heliax Internal Reports}%Mathematical Structures in Computer}%
 \OAtext{This is an Open Access article, distributed under the terms of the Creative Commons Attribution licence\newline \hbox{(\iffinals\OAlink\else\href{\OAlink}{\OAlink}\fi),} which permits unrestricted re-use, distribution, and reproduction in any medium, provided the
 original work is properly cited.}
 
-\cpr{Last update: \today}%
+\cpr{Copyright © Heliax AG - Last update: \today}%
 
 \def\corresp#1{\affilfont\@par#1}
 
