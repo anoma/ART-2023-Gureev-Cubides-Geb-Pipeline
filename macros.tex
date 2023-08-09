@@ -1,11 +1,5 @@
 % MACROS
 \newcommand{\N}{\mathbb{N}}
-\newcommand{\gebinit}{\colorbox{gray!50}{\normalfont{\texttt{so0}}}}
-\newcommand{\gebterm}{\colorbox{gray!50}{\normalfont{\texttt{so1}}}}
-\newcommand{\gebcoprod}{\colorbox{gray!50}{\normalfont{\texttt{coprod}}}}
-\newcommand{\gebprod}{\colorbox{gray!50}{\normalfont{\texttt{prod}}}}
-\newcommand{\gebobj}{\colorbox{gray!50}{\normalfont{\texttt{substobj}}}}
-\newcommand{\gebmorph}{\colorbox{gray!50}{\normalfont{\texttt{substmorph}}}}
 \usepackage{parskip}
 \usepackage{minted}
 \usepackage[most]{tcolorbox}
@@ -15,3 +9,10 @@
         colframe=white,colback=LightLavender,  
         highlight math style={enhanced}
         }
+
+\newcommand{\gebinit}{\tcbox{{\normalfont{\texttt{so0}}}}
+\newcommand{\gebterm}{\tcbox{{\normalfont{\texttt{so1}}}}
+\newcommand{\gebcoprod}{\tcbox{{\normalfont{\texttt{coprod}}}}
+\newcommand{\gebprod}{\tcbox{{\normalfont{\texttt{prod}}}}
+\newcommand{\gebobj}{\tcbox{{\normalfont{\texttt{substobj}}}}
+\newcommand{\gebmorph}{\tcbox{{\normalfont{\texttt{substmorph}}}}
