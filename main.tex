@@ -166,13 +166,13 @@ Since everything the functor hits is a coproduct of the terminal object up to an
 By the same argument, since everything the functor hits is a coproduct of $1_C$ and $F$ preserves coproduct structure and is a unique functor doing so up to natural iso, this also proves uniqueness up to iso.
 \end{proof}
 
-Hence Definition 3 is fully valid and when one talks of Geb, one can instead think about a nice presentation of FinSet. Hence a term of $\gebobj$ is just a finite set and a term of $\colorbox{gray!50}{\texttt{substmorph a b}}$ is just a function between corresponding finite sets. This equivalence actually provides us with the existence of a lot of extra structure, namely:
+Hence Definition 3 is fully valid and when one talks of Geb, one can instead think about a nice presentation of FinSet. Hence a term of $\gebobj$ is just a finite set and a term of \tcbox{\texttt{substmorph a b}} is just a function between corresponding finite sets. This equivalence actually provides us with the existence of a lot of extra structure, namely:
 
 \begin{corollary}
 Geb is cartesian closed
 \end{corollary}
 
-That is, for any two objects \colorbox{gray!50}{\texttt{a, b : substobj}} we get an object \colorbox{gray!50}{\texttt{(sohomobj a b) : substobj}} which is an object of Geb representing all terms of \colorbox{gray!50}{\texttt{b}} in context \colorbox{gray!50}{\texttt{a}}, or, in other words, it is the function type from type \colorbox{gray!50}{\texttt{a}} to type \colorbox{gray!50}{\texttt{b}}. It also comes equipped with the usual curry isomorphism and evaluation maps:
+That is, for any two objects \tcbox{\texttt{a, b : substobj}} we get an object \tcbox{\texttt{(sohomobj a b) : substobj}} which is an object of Geb representing all terms of \tcbox{\texttt{b}} in context \tcbox{\texttt{a}}, or, in other words, it is the function type from type \tcbox{\texttt{a}} to type \tcbox{\texttt{b}}. It also comes equipped with the usual curry isomorphism and evaluation maps:
 
 \begin{minted}{agda}
 curry : {a b c : substobj} → (substmorph (prod a b) c) 
@@ -219,11 +219,11 @@ WIth this, we have described all the relevant specs of Geb for the current repor
 
 Firstly, one needs to be careful when using the term "Geb" as it can point to many things. The Geb language as it is currently implemented in the pipeline is just a subcomponent of what the final version of Geb will look like. The intension is that Geb will become a language that will be able to articulate the entirety of the pipeline currently presented in CL. The reason why we call this category Geb here is because this category will be a core component specifying the higher-order Geb category, which itself will correspond to a larger programming langguage. However in this report we always use "Geb" to describe Geb as given in Definitions 1-3.
 
-Secondly, note that while the code written for Geb has the same intended semantics as the Lisp code for Geb, it is indeed different, as the Lisp code is untyped. So composition does not automatically type-check and we frequently have no knowledge of which types are used, e.g. when we are presented with a curried function as these just reduce to some product/coproduct operations. Hence we will, e.g. introduce an explicit function type in Lambda in order to optimize certain outputs. Also note that $\colorbox{gray!50}{id}$ is not an actual function in the Lisp implementation, instead we use just the names of the objects.
+Secondly, note that while the code written for Geb has the same intended semantics as the Lisp code for Geb, it is indeed different, as the Lisp code is untyped. So composition does not automatically type-check and we frequently have no knowledge of which types are used, e.g. when we are presented with a curried function as these just reduce to some product/coproduct operations. Hence we will, e.g. introduce an explicit function type in Lambda in order to optimize certain outputs. Also note that $\tcbox{id}$ is not an actual function in the Lisp implementation, instead we use just the names of the objects.
  
 \subsection{Lambda}
 
-The Lambda language is but an extended version of simply-typed lambda calculus (STLC) with types taken from Geb. The latter part is the reason why we described Geb before talking about Lambda, even if the compilation order is different. However the terms are introduced untyped first and become typed once the context is introduced.
+The Lambda language is but an extended version of simply-typed lambda calculus (STLC) with types taken from Geb. The latter part is the reason why we described Geb before talking about Lambda, even if the compilation order is different. However the terms are introduced untyped first and become typed once the context is introduced via a specific functions such as \tcbox{ann-term}
 
 \subsection{Seq$\N$}
 
