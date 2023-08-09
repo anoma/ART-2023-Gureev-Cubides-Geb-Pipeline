@@ -25,6 +25,11 @@ Geb, Juvix, Vamp-IR
 
 The Geb project was originally started as a way of solving the problem of compiling Juvix programs to Vamp-IR code using the categorical approaches of specifying compilation procedures using internal language theorems, therefore moving away from dealing with syntax in favour of appropriate categorical structures. Additionally, phrasing compilation procedures in categorical terms opens up easier methods for formal verification.
 
+The internal language approach is based on the observation that "good" compilation procedures preserving type structure (such as compilations of languages containing STLC preserving lambda structure) can instead be associated to functors preserving correlating structures between categories representing said programmings languages. A canonical example is that of Lambek-Scott, dealing with the fact that the languages posessing STLC structure form a category which is equivalent to the category of cartesian closed categories.
+
+Hence we can instead of working with syntax, represent our languages as some nice categories and just work by constructing functors between them. The fact that the constructions have direct methemtical meaning makes them easier to formalize while functor properties already grant a lot of properties for free such as type-checking for composition of morphisms.
+
+
 The Lisp implementation of Geb currently presents the first completed step of the project, namely the compilation of Juvix Core (seen as an adequate extension of STLC) to VampIR alongside an interactive environment for the user with additional features such as interpreters, type-checkers for programs and a visualizer for Geb.
 
 The general aim of the paper is to give an outlook of the pipeline design accessible to people without delving into Lisp code. Specifically, we aim to:
@@ -39,19 +44,37 @@ intelligibility.
 worth porting outside the pipeline itself.
 \end{enumerate}
 
-We should mention beforehand that the paper uses terms from category theory and some theorems from categorical logic, but which are present solely for the sake of completeness. A person with adequate background will be able to grasp these in order to fully understand the mathematical background behind certain constructions, making e.g. the formally verifiable properties of certain compilation steps evident. However many details can be skipped in favour of good diagrammatical presentation of the compilation procedure.
+We should mention beforehand that the paper uses terms from category theory and some theorems from categorical logic, but which are present solely for the sake of completeness. A person with adequate background will be able to grasp these in order to fully understand the mathematical background behind certain constructions, making e.g. the formally verifiable properties of certain compilation steps evident. However, many details can be skipped in favour of good presentation of the compilation procedure using diagrams.
 
 \section{Language/Category Specs}
 
-The problem that we need to solve is how to specify a compilation:
-
-% https://q.uiver.app/#q=WzAsMixbMCwwLCJcXG5vcm1hbHtKdXZpeH0gIl0sWzIsMCwiXFxub3JtYWx7VmFtcC1JUn0iXSxbMCwxXV0=
+The central challenge is to effectively specify the compilation of
+programs, written in a high-level functional programming language, into an
+intermediate arithmetic circuit language. In the context of Heliax, this
+corresponds to the translation from \Juvix{} to the \VampIR{} language, with a
+specific focus on the compilation of \JuvixCore{} to \VampIR{}.
+% https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXEp1dml4e30iXSxbMywxLCJcXFZhbXBJUnt9Il0sWzMsMCwiXFxKdXZpeENvcmV7fSJdLFswLDEsIiIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFswLDJdLFsyLDFdXQ==
 \[\begin{tikzcd}
-	{\text{Juvix} } && {\text{Vamp-IR}}
-	\arrow[from=1-1, to=1-3]
+	{\Juvix{}} &&& {\JuvixCore{}} \\
+	&&& {\VampIR{}}
+	\arrow[dashed, from=1-1, to=2-4]
+	\arrow[from=1-1, to=1-4]
+	\arrow[from=1-4, to=2-4]
 \end{tikzcd}\]
 
-The first step in this is to provide a good compilation from a sublanguage of Juvix, namely Juvix Core. The way we do this is by breaking up the procedure into compilations through languages which in Lisp we call Lambda, Geb, and Seq$\N$:
+\begin{itemize}
+  \item \JuvixCore{}: A typed lambda-calculus incorporating inductive
+  types and primitive integers, which defines the strict execution
+  semantics of Juvix.
+  \item \VampIR{}: An intermediate language for arithmetic circuit
+  specification, akin to LLVM IR. It features useful constructors such as
+  tuples, arrays, mapping and folds, currying, and circuit synthesis to
+  Plonkup and Halo2.
+\end{itemize}
+
+
+
+The first step in this is to provide a good compilation from a sublanguage of Juvix, namely Juvix Core. The way we do this is by breaking up the procedure into compilations through languages we name \LambdaIR{}, \Geb{}, and \SeqN{}.
 
 % https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXG5vcm1hbHtKdXZpeCBDb3JlfSJdLFsyLDAsIlxcdGV4dHtMYW1iZGF9Il0sWzQsMCwiXFx0ZXh0e0dlYn0iXSxbNiwwLCJcXHRleHR7U2VxJFxcTiR9ICJdLFs4LDAsIlxcdGV4dHtWYW1wLUlSfSJdLFsxLDJdLFsyLDNdLFszLDRdLFswLDFdXQ==
 \[\begin{tikzcd}
@@ -104,27 +127,29 @@ data substobj : Set where
 data substmorph : substobj → substobj → Set where
    comp : {x y z : substobj} → (substmorph y z) → (substmorph x y) 
                                                 → (substmorph x z) 
-                                                -- composition
-   id : (x : substobj) → (substmorph x x) -- identity function
-   initial : (x : substobj) → (substmorph so0 x) -- absurd 
+    -- composition
+   id : (x : substobj) → (substmorph x x) 
+   -- identity function
+   initial : (x : substobj) → (substmorph so0 x) 
+   -- absurd 
    terminal : (x : substobj) → (substmorph x so1) -- constant function
    mcase : {x y z : substobj} → (substmorph x z) → (substmorph y z) 
                                                  → ((coprod x y) ↦ z)
-                                                 -- casing 
+   -- casing 
    prod : {x y z : substmorph} → (substmorph z x) → (substmorph z y) 
                                                   → (substmorph z (prod x y))
-                                                  -- product analysis
+    -- product analysis
    distribute : {x y z : substobj} → (substmorph (prod x  (coprod y z)) 
                                                   (coprod (prod x y) (prod x z)))
-                                                  -- distributivity
+    -- distributivity
    ->left : {x y : substobj} → (substmorph x  (coprod x y))
-                             -- left injection
+    -- left injection
    ->right : {x y : substobj} → (substmorph y (coprod x y))
-                              -- right injection
+    -- right injection
    <-left : {x y : substobj} → (substmorph (prod x y) x)
-                             -- left projection
+    -- left projection
    <-right : {x y : substmorph} → (substmorph (prod x y) y) 
-                             -- right projection
+    -- right projection
 \end{minted}
 
 Here \gebobj is the collection of the types of our language and \tcbox{\texttt{f : substmorph a b}} for a term of \tcbox{\texttt{b}} in constext of \tcbox{\texttt{a}}. There are of course extra equalities to subject the terms to, making terminal terms unique or composition associative on the nose e.g., yet for the sake of the current project, we do not implement these and if needed, reductions are done by hand. There is also an explicit reducer in development.
@@ -210,24 +235,29 @@ nat-width : Nat → substobj -- nat-width n is the set of n-bit natural numbers
 
 data substmorph : substobj → substobj → Set where
 ...
-nat-add : (n : Nat) → substmorph (nat-width n) (nat-width n) --addition
-nat-mult : (n : Nat) → substmorph (nat-width n) (nat-width n) --multiplication
-nat-sub : (n : Nat) → substmorph (nat-width n) (nat-width n) --subtraction
-nat-div : (n : Nat) → substmorph (nat-width n) (nat-width n) --division 
+nat-add : (n : Nat) → substmorph (nat-width n) (nat-width n) 
+--addition
+nat-mult : (n : Nat) → substmorph (nat-width n) (nat-width n)
+--multiplication
+nat-sub : (n : Nat) → substmorph (nat-width n) (nat-width n)
+--subtraction
+nat-div : (n : Nat) → substmorph (nat-width n) (nat-width n) 
+--division 
 nat-concat : (n m : Nat) → (substmorph (prod (nat-width n) (nat-width m))
-                                       (nat-width (n+m))) -- concatenation of bits
+                                       (nat-width (n+m))) 
+-- concatenation of bits
 nat-inj : (n : Nat) → (substmorph (nat-width n) (nat-width (n + 1)))
 nat-decompose : (n : Nat) → (substmorph (nat-width (n + 1)) 
                                         (prod (nat-width 1) (nat-width n)))
-                -- decomposes an n+1 bit number into the top bit and the rest of the bits
+-- decomposes an n+1 bit number into the top bit and the rest of the bits
 one-bit-to-bool : substmorph  (nat-width 1) (coprod so1 so1)
-                -- isomorphism sending bit 0 to the left copy of so1, and 1 to the right copy.
+-- isomorphism sending bit 0 to the left copy of so1, and 1 to the right copy.
 nat-eq : (n : Nat) → (substmorph (prod (nat-width n) (nat-width n)) 
                                  (coprod so1 so1))
-                                --equality predicate
+--equality predicate
 nat-lt : (n : Nat) → (substmorph (prod (nat-width n) (nat-width n))
                                   (coprod so1 so1))
-                                  --"less-than" predicate
+--"less-than" predicate
 \end{minted}
 
 WIth this, we have described all the relevant specs of Geb for the current report. However, there are a few things to note:
@@ -247,36 +277,202 @@ Here is the definition as one would type it in Agda:
 
 \begin{minted}{agda}
 data lambda : Set where
-absurd : substobj → lambda   -- beta reduction for empty type
+absurd : substobj → lambda   
+-- beta reduction for empty type
 unit : lambda     -- unique element of unit type so1
-left : substobj → lambda → lambda  -- left inclusion into coproduct
-right : substobj → lambda → lambda -- right inclusion into comporoduct
-case-on : lambda → lambda → lambda → lambda -- beta elimination for coproducts
-pair : lambda → lambda → lambda -- term introduction for products
-fst : lambda → lambda   -- left projection
-snd : lambda → lambda   -- right projection
-lamb : (List substobj) → lambda → lambda -- function type term introduction
-app : lambda → (List lambda) → lambda -- function type elimination 
-index : Nat → lambda  -- variable via de Bruijn indices
-err : substobj → lambda -- error term of arbitrary type
-plus : lambda → lambda → lambda -- arithmetic operations
+left : substobj → lambda → lambda  
+-- left inclusion into coproduct
+right : substobj → lambda → lambda 
+-- right inclusion into comporoduct
+case-on : lambda → lambda → lambda → lambda 
+-- beta elimination for coproducts
+pair : lambda → lambda → lambda 
+-- term introduction for products
+fst : lambda → lambda   
+-- left projection
+snd : lambda → lambda   
+-- right projection
+lamb : (List substobj) → lambda → lambda 
+-- function type term introduction
+-- takes in a list of types for iterated function type use
+app : lambda → (List lambda) → lambda 
+-- function type elimination
+--takes in a list of terms for iterated elimination
+index : Nat → lambda  
+-- variable via de Bruijn indices
+err : substobj → lambda 
+-- error term of arbitrary type
+plus : lambda → lambda → lambda 
+-- arithmetic operations
 times : lambda → lambda → lambda
 minus : lambda → lambda → lambda
 divide : lambda → lambda → lambda
-bit-choice : (List bool) → lambda -- natural number choice
-lamb-eq : lambda → lambda → lambda -- equality of natural numbers
-lamb-lt : lambda → lambda → lambda -- "less-than" predicate on natural numbers
+bit-choice : (List bool) → lambda 
+-- natural number choice
+lamb-eq : lambda → lambda → lambda 
+-- equality of natural numbers
+lamb-lt : lambda → lambda → lambda 
+-- "less-than" predicate on natural numbers
 \end{minted}
 
-Of course a lot of the terms produced this way will be ill-typed. E.g. indices in an empty context are ill-defined. So, as mentioned before, we have functionality of typing the terms of \tcbox{\texttt{lambda}}, namely the function \tcbox{ann-term} as in the Lisp implementation each term has a slot for types which we fill in recursively. Two things that need to be noted: 
+Of course a lot of the terms produced this way will be ill-typed. E.g. indices in an empty context are ill-defined. So, as mentioned before, we have functionality of typing the terms of \tcbox{\texttt{lambda}}, namely the function \tcbox{ann-term} as in the Lisp implementation each term has a slot for types which we fill in recursively. We also have a \tcbox{well-defp} predicate checking whether a given Lambda term is well-defined as per usual typing rules, e.g. checkimg that  There are two things that need to be noted: 
 
 \begin{enumerate}
-    \item All the arithmetic operation terms
+    \item All the arithmetic operation terms are deemed well-typed iff the provided terms are of same bit-width
+    \item The natural number predicates are all bool-valued, i.e. their type is \tcbox{\texttt{coprod so1 so1}}
 \end{enumerate}
 
 \subsection{Seq$\N$}
+\SeqN is a category whose intended semantics are as follows:
+
+The objects of \SeqN are finite sequences of natural numbers $(x_1,...,x_n)$. A morphism $f : (x_1,...,x_n) \to (y_1,...,y_m)$ is a Vamp-IR function that takes in $n$ with the i'th entry being of bit-size $x_i$ and outputs an $m$-tuple with i'th entry being of bit-size $y_i$. Hence it makes sense to call it a category of Vamp-IR programs. 
+
+However, we do not yet have a precise specification of Vamp-IR as it is still in active development, what we are aiming for is simply to specify some subcategory of the one described above which will be sufficient for interpreting faithfully all the Geb programs we have.
+
+Instead of a nice definition, hence, we have an explicit definition of \SeqN in terms of a free category spanned by the following objects/morphisms:
+
+\begin{minted}{agda}
+SeqNObj = List Nat
+
+data SeqNMorph : SeqNObj → SeqNObj → Set where
+composition : {a b c: SeqNObj} → SeqNMorph b c →  SeqNMorph a b → SeqNMorph a c
+--composition
+id : {a : SeqNMorph} → SeqNMorph a a
+--identity
+fork-seq : {a : SeqNObj} SeqNMorph a (append a a)
+--morphism coppying the entry twice
+parallel-seq : {a b c d : SeqNObj} →  SeqNObj a b →  SeqNObj c d 
+                                  → SeqNObj (append a c) (append b d)
+-- given two functions, parallizes them                                
+drop-nil : (a  SeqNObj) →  SeqNMorph a (0 :: [])
+-- given an object, just drops everything to a nil entry
+remove-right : (a : SeqNObj) → SeqNMorph (append a (0 :: [])) a
+-- removes a right-positioned zero entry
+remove-left : (a : SeqNObj) → SeqNMorph (append (0 :: []) a) a
+-- removes a left-positioned zero entry
+drop-width : (a b : SeqNObj) → SeqNMorph a b
+-- on entry, removes extra bits as needed
+inj-length-left : (a b : SeqNObj) → SeqNMorph a (append a b)
+-- injects an entry producing nothing on the right side
+inj-length-left : (a b : SeqNObj) → SeqNMorph b (append a b)
+-- injects an entry producing nothing on the left side
+inj-size : (a b : Nat) → SubstMorph (a :: []) (b :: [])
+-- same as inject size for single entries
+branch-seq : {a b : SeqNObj} → SeqNMorph a b →  SeqnMorph a b → SeqnMorph (1 :: a) b
+zero-bit : SeqNMorph (0 :: []) (1 :: [])
+-- produces 0
+one-bit : SeqNMorph (0 :: []) (1 :: [])
+-- produces 1
+shift-front : ((x_1 :: ... :: x_n) : SeqNObj) →  (k : Nat) 
+             →  SeqNMorph (x_1 :: ... :: x_n) (x_k :: x_1 ... x_k-1 :: x_k+1 :: ...)
+-- shifts the k-th entry in front
+seqn-add : (n : Nat) → SeqNMorph (n :: n :: 0) (n :: 0)
+-- basic arithmetic operations
+seqn-subtract : (n : Nat) → SeqNMorph (n :: n :: 0) (n :: 0)
+seqn-multiply : (n : Nat) → SeqNMorph (n :: n :: 0) (n :: 0)
+seqn-divide : (n : Nat) → SeqNMorph (n :: n :: 0) (n :: 0)
+seqn-nat :: (n m : Nat) → SeqNMorph (0 :: []) (n :: [])
+-- produces an n-wide natural number m
+seqn-concat : (n m : Nat) → SeqNMorph (n :: m :: []) ((n + m) :: [])
+-- concatenates two n and m wide bits
+seqn-decompose : (n : Nat) → SeqNMorph (n :: []) (1 :: (n - 1) :: [])
+-- takes the top bit off of the input and palces it in separate slot
+seqn-eq : (n : Nat) → SeqNMorph (n :: n :: []) (1 :: 0 :: [])
+-- equality predicate
+seqn-lt : (n : Nat) → SeqNMorph (n :: n :: []) (1 :: 0 :: [])
+-- less than predicate
+\end{minted}
+
+One may note that there was pseudocode used for \tcbox{seqn-shift} morphism in order to facilitate readibility and that the predicates takes values in $(1, 0)$ rather than in just $(1)$ as would be expected. The latter fact is due to way we interpret coproduct from Geb in \SeqN. We will be discussing this in detail in the next section.
 
 \subsection{Vamp-IR}
+
+Vamp-IR is the intermediary language for arithmetic circuits. As the final point of the compilation, it does not need to be fully specified by the pipeline (even we do have the spec in the code covering some principal aspects). The only thing we practically need is a collection of functions we will be using in the compilation procedure which we provide below:
+
+\begin{minted}{rust}
+
+def bool x = { x*(x-1) = 0 ; x};
+
+def base_range 0 = {
+  []
+};
+
+def next_range range a = {
+  def a0 = bool (fresh (a % 2));
+  def a1 = fresh (a \ 2);
+  a0 : (range a1)
+};
+
+def range_n n = {
+  iter n next_range base_range
+};
+
+def hd (h:t) = {
+  h
+};
+
+def tl (h:t) = {
+  t
+};
+
+def n_th lst n = {
+  hd (iter n tl lst)
+};
+
+def negative n a = {
+  nth (range_n (n + 1) (a + (2 ^ n))) n
+};
+
+def plus_range n x1 x2 = {
+  range_n n (x1 + x2);
+  x1 + x2
+};
+
+def mult_range n x1 x2 = {
+  mult_range n (x1 * x2);
+  x1 * x2
+};
+
+def minus_range n x1 x2 = {
+  negative n (x1 - x2) = 1;
+  x1 - x2
+};
+
+def iszero a = {
+  def ai = fresh (1 | a);
+  def b = 1 - (ai * a);
+  a * b = 0;
+  1 - b
+};
+
+def combine-aux x y = {
+  x + (2 * y)
+};
+
+def combine xs = {
+  fold xs combine_aux 0
+};
+
+def take_base lst = {
+  []
+};
+
+def take_ind take (h:t) = {
+  h:(take t)
+};
+
+def take n = {
+  iter n take_ind take_base
+};
+
+def drop_ith_rec take (h:t) = {
+  h:(take t)
+};
+
+def drop_ith n = {
+  iter n drop_ith_rec (fun (h:1) {1})
+};
+\end{minted}
 
 \section{Compilation Steps}
 
@@ -290,7 +486,7 @@ After providing the specs of intermediary languages we compile through, we are r
 	\arrow["{\text{to-circuit}}", from=1-5, to=1-7]
 \end{tikzcd}\]
 
-The compilations are appropriately named to-cat, to-seqn, to-circuit after their codomains. Actually to-seqn and to-circuit are also generics, so that their names stand for various compilations depending on what code we feed that. For example, to-seqn is originally a compilation from Geb to Seq$\N$, yet if we feed it Lambda code, it will actually compile (with certain specific settings) that code to Seqn$\N$ by first applying to-cat and then the original to-seqn. Simialrly for to-circuit. Hence the full-on diagram is:
+The compilations are appropriately named \tcbox{to-cat}, \tcbox{to-seqn}, \tcbox{to-circuit} after their codomains. Actually \tcbox{to-seqn} \, and \tcbox{to-circuit} are also generics, so that their names stand for various compilations depending on what code we feed that. For example, \tcbox{to-seqn}is originally a compilation from Geb to Seq$\N$, yet if we feed it Lambda code, it will actually compile (with certain specific settings) that code to Seqn$\N$ by first applying \tcbox{to-cat} and then the original to-seqn. Simialrly for \tcbox{to-circuit}. Hence the full-on diagram is:
 
 
 % https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXHRleHR7TGFtYmRhfSJdLFsyLDAsIlxcdGV4dHtHZWJ9Il0sWzQsMCwiXFx0ZXh0e1NlcSRcXE4kfSAiXSxbNiwwLCJcXHRleHR7VmFtcC1JUn0iXSxbMCwxLCJcXHRleHR7dG8tY2F0fSJdLFsxLDIsIlxcdGV4dHt0by1zZXFufSJdLFsyLDMsIlxcdGV4dHt0by1jaXJjdWl0fSJdLFswLDIsIlxcdGV4dHt0by1zZXFufSIsMSx7ImN1cnZlIjoyfV0sWzAsMywiXFx0ZXh0e3RvLWNpcmN1aXR9IiwyLHsiY3VydmUiOjV9XSxbMSwzLCJcXHRleHR7dG8tY2ljcnVpdH0iLDAseyJjdXJ2ZSI6LTV9XV0=
@@ -304,7 +500,34 @@ The compilations are appropriately named to-cat, to-seqn, to-circuit after their
 	\arrow["{\text{to-cicruit}}", curve={height=-30pt}, from=1-3, to=1-7]
 \end{tikzcd}\]
 
+The use of the pipeline interactively is best done through the \tcbox{lambda} package. One can see how the interpretation of the identity function goes through.
+
+\begin{minted}{lisp}
+CL-USER> (in-package geb.lambda.trans)
+#<PACKAGE "GEB.LAMBDA.TRANS">
+TRANS> (to-cat nil (lamb (list (coprod so1 so1)) (index 0)))
+(<-left (+ s-1 s-1) s-1)
+TRANS> (to-seqn (lamb (list (coprod so1 so1)) (index 0)))
+(COMPOSITION (REMOVE-RIGHT (1 0)) (PARALLEL-SEQ (ID (1 0)) (DROP-NIL (0))))
+TRANS> (to-circuit (lamb (list (coprod so1 so1)) (index 0)) :identity_fun)
+(def identity_fun x1 x2 x3 = {
+   range_n 0 x3;
+   range_n 0 x2;
+   range_n 1 x1;
+   (x1)
+ };)
+
+\end{minted}
+
+Here the \tcbox{nil} stands for the empty context we feed the compiler when we move from Lambda to Geb. All other compilations are assumed to occur in the empty context. Also \tcbox{to-circuit} demands a name for the function to compile. Now, let us get to the actual implementation of the compilation.
+
 \subsection{Lambda $\to$ Geb}
+The core part of the compilation from Lambda to Geb is actually a canonical one that can be seen as instead the initial morphism from the term model of the Lambda language to Geb in the category of models of STLC. Here we are simply showcasing the compilation of a specific part of that category, namely what one in semantics of type theories would call "terms", namely sections to canonical projection maps.
+
+The description of the compilation will be made less formal to facilitate understanding.
+
+ We define the compilation to-cat $\colon$ (List \gebobj) $\times$ Lambda $\to$ Geb as a function taking in a lambda term and a context with 
+
 \subsection{Geb $\to$ Seq$\N$}
 \subsection{Seq$\N$ $\to$ Vamp-IR}
 
@@ -316,7 +539,7 @@ The compilations are appropriately named to-cat, to-seqn, to-circuit after their
 \section*{Acknowledgements}
 The authors bear sole responsibility for any errors present within this
 document. The fundamental theories and conjectures related to Geb are
-attributed to Terence Rokop. The Lisp implementation reference was
+attributed to Terence Rokop who is also the author of the Idris implementation of Geb. The Lisp implementation reference was
 initially introduced by Jeremy Ornelas, the current repository maintainer,
 and later expanded upon by the first author. Anthony Hart contributed to
 the implementation by correcting and adding an alternative pipeline as
