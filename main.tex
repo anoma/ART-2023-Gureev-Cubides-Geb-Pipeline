@@ -526,7 +526,19 @@ The core part of the compilation from Lambda to Geb is actually a canonical one 
 
 The description of the compilation will be made less formal to facilitate understanding.
 
- We define the compilation to-cat $\colon$ (List \gebobj) $\times$ Lambda $\to$ Geb as a function taking in a lambda term and a context with 
+ We define the compilation to-cat $\colon$ (List \gebobj) $\times$ Lambda $\to$ Geb as a function taking in a lambda term and a context and spitting out a Geb morphism with typing $$\textnormal{to-cat} (A_1,...,A_n) (term : B) : A_1 \times ...\times A_n \times so1 \to B $$
+
+ We proceed by induction:
+
+\begin{enumerate}
+    \item We compile \tcbox{(absurd B (term : so0))} in context \tcbox{$A_1,...,A_n$} to
+    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBzbzEiXSxbMiwwLCIwIl0sWzQsMCwiQiJdLFswLDEsIlxcZm9vdG5vdGVzaXple1xcdGV4dG5vcm1hbHt0by1jYXR9IChBXzEsLi4uLEFfbil9Il0sWzEsMiwiaW5pdCJdXQ==
+\[\begin{tikzcd}
+	{A_1\times...\times A_n \times so1} && 0 && B
+	\arrow["{\footnotesize{\textnormal{to-cat} (A_1,...,A_n)}}", from=1-1, to=1-3]
+	\arrow["init", from=1-3, to=1-5]
+\end{tikzcd}\]
+\end{enumerate}
 
 \subsection{Geb $\to$ Seq$\N$}
 \subsection{Seq$\N$ $\to$ Vamp-IR}
