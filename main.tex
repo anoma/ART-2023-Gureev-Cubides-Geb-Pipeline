@@ -252,21 +252,23 @@ unit : lambda     -- unique element of unit type so1
 left : substobj → lambda → lambda  -- left inclusion into coproduct
 right : substobj → lambda → lambda -- right inclusion into comporoduct
 case-on : lambda → lambda → lambda → lambda -- beta elimination for coproducts
-pair : lambda → lambda → lambda -- term intro
-fst : lambda → lambda
-snd : lambda → lambda
-lamb : (List substobj) → lambda → lambda
-app : lambda → (List lambda) → lambda
-index : Nat → lambda
-err : substobj → lambda
-plus : lambda → lambda → lambda
+pair : lambda → lambda → lambda -- term introduction for products
+fst : lambda → lambda   -- left projection
+snd : lambda → lambda   -- right projection
+lamb : (List substobj) → lambda → lambda -- function type term introduction
+app : lambda → (List lambda) → lambda -- function type elimination 
+index : Nat → lambda  -- variable via de Bruijn indices
+err : substobj → lambda -- error term of arbitrary type
+plus : lambda → lambda → lambda -- arithmetic operations
 times : lambda → lambda → lambda
 minus : lambda → lambda → lambda
 divide : lambda → lambda → lambda
-bit-choice : (List bool) → lambda
-lamb-eq : lambda → lambda → lambda
-lamb-lt : lambda → lambda → lambda
+bit-choice : (List bool) → lambda -- natural number choice
+lamb-eq : lambda → lambda → lambda -- equality of natural numbers
+lamb-lt : lambda → lambda → lambda -- "less-than" predicate on natural numbers
 \end{minted}
+
+Of course a lot of the terms produced this way will be ill-typed. E.g. indices in an empty context are ill-defined. So, as mentioned before, we have functionality of typing 
 
 \subsection{Seq$\N$}
 
