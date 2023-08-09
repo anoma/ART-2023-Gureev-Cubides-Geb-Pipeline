@@ -251,8 +251,8 @@ absurd : substobj → lambda   -- beta reduction for empty type
 unit : lambda     -- unique element of unit type so1
 left : substobj → lambda → lambda  -- left inclusion into coproduct
 right : substobj → lambda → lambda -- right inclusion into comporoduct
-case-on : lambda → lambda → lambda → lambda -- takes a term of a cproduct, then terms 
-pair : lambda → lambda → lambda
+case-on : lambda → lambda → lambda → lambda -- beta elimination for coproducts
+pair : lambda → lambda → lambda -- term 
 fst : lambda → lambda
 snd : lambda → lambda
 lamb : (List substobj) → lambda → lambda
