@@ -44,7 +44,7 @@ As part of the implementation, we also provide an interactive user environment e
     \url{https://github.com/anoma/geb}.
 \end{center}
 
-The general aim of the paper is to give an outlook of the pipeline design accessible to people without delving into Lisp code. Specifically, we aim to:
+The general aim of the paper is to give an outlook of the pipeline design accessible to people without delving into any specific implementation. Primarily, we aim to:
 
 \begin{enumerate}
 \item Make all components of the pipeline precise by describing their
@@ -309,9 +309,13 @@ nat-lt : (n : Nat) → (substmorph (prod (nat-width n) (nat-width n))
 
 WIth this, we have described all the relevant specs of Geb for the current report. However, there are a few things to note:
 
-Firstly, one needs to be careful when using the term "Geb" as it can point to many things. The Geb language as it is currently implemented in the pipeline is just a subcomponent of what the final version of Geb will look like. The intention is that Geb will become a language that will be able to articulate the entirety of the pipeline currently presented in CL. The reason why we call this category Geb here is because this category will be a core component specifying the higher-order Geb category, which itself will correspond to a larger programming language. However in this report we always use "Geb" to describe Geb as given in Definitions 1-3.
+\begin{remark}
+Be careful when using the term "Geb" as it can point to many things. The \Geb{} language as it is currently implemented in the pipeline is just a subcomponent of what the final version of Geb will look like. The intention is that Geb will become a language that will be able to articulate the entirety of the pipeline currently presented in CL. The reason why we call this category Geb here is because this category will be a core component specifying the higher-order Geb category, which itself will correspond to a larger programming language. However in this report we always use "Geb" to describe Geb as given in Definitions 1-3.
+\end{remark}
 
-Secondly, note that while the code written for Geb has the same intended semantics as the Lisp code for Geb, it is indeed different, as the Lisp code is untyped. So composition does not automatically type-check and we frequently have no knowledge of which types are used, e.g. when we are presented with a curried function as these just reduce to some product/coproduct operations. Hence we will, e.g. introduce an explicit function type in Lambda in order to optimize certain outputs. Also note that $\tcbox{id}$ is not an actual function in the Lisp implementation, instead we use just the names of the objects.
+\begin{remark}
+Note that while the code written for Geb has the same intended semantics as the Lisp code for Geb, it is indeed different, as the Lisp code is untyped. So composition does not automatically type-check and we frequently have no knowledge of which types are used, e.g. when we are presented with a curried function as these just reduce to some product/coproduct operations. Hence we will, e.g. introduce an explicit function type in Lambda in order to optimize certain outputs. Also note that $\tcbox{id}$ is not an actual function in the Lisp implementation, instead we use just the names of the objects.
+\end{remark}
  
 \subsection{Lambda}
 
@@ -324,42 +328,42 @@ Here is the definition as one would type it in Agda:
 
 \begin{minted}{agda}
 data lambda : Set where
-absurd : substobj → lambda   
--- beta reduction for empty type
-unit : lambda     -- unique element of unit type so1
-left : substobj → lambda → lambda  
--- left inclusion into coproduct
-right : substobj → lambda → lambda 
--- right inclusion into comporoduct
-case-on : lambda → lambda → lambda → lambda 
--- beta elimination for coproducts
-pair : lambda → lambda → lambda 
--- term introduction for products
-fst : lambda → lambda   
--- left projection
-snd : lambda → lambda   
--- right projection
-lamb : (List substobj) → lambda → lambda 
--- function type term introduction
--- takes in a list of types for iterated function type use
-app : lambda → (List lambda) → lambda 
--- function type elimination
---takes in a list of terms for iterated elimination
-index : Nat → lambda  
--- variable via de Bruijn indices
-err : substobj → lambda 
--- error term of arbitrary type
-plus : lambda → lambda → lambda 
--- arithmetic operations
-times : lambda → lambda → lambda
-minus : lambda → lambda → lambda
-divide : lambda → lambda → lambda
-bit-choice : (List bool) → lambda 
--- natural number choice
-lamb-eq : lambda → lambda → lambda 
--- equality of natural numbers
-lamb-lt : lambda → lambda → lambda 
--- "less-than" predicate on natural numbers
+    absurd : substobj → lambda   
+    -- beta reduction for empty type
+    unit : lambda     -- unique element of unit type so1
+    left : substobj → lambda → lambda  
+    -- left inclusion into coproduct
+    right : substobj → lambda → lambda 
+    -- right inclusion into comporoduct
+    case-on : lambda → lambda → lambda → lambda 
+    -- beta elimination for coproducts
+    pair : lambda → lambda → lambda 
+    -- term introduction for products
+    fst : lambda → lambda   
+    -- left projection
+    snd : lambda → lambda   
+    -- right projection
+    lamb : (List substobj) → lambda → lambda 
+    -- function type term introduction
+    -- takes in a list of types for iterated function type use
+    app : lambda → (List lambda) → lambda 
+    -- function type elimination
+    --takes in a list of terms for iterated elimination
+    index : Nat → lambda  
+    -- variable via de Bruijn indices
+    err : substobj → lambda 
+    -- error term of arbitrary type
+    plus : lambda → lambda → lambda 
+    -- arithmetic operations
+    times : lambda → lambda → lambda
+    minus : lambda → lambda → lambda
+    divide : lambda → lambda → lambda
+    bit-choice : (List bool) → lambda 
+    -- natural number choice
+    lamb-eq : lambda → lambda → lambda 
+    -- equality of natural numbers
+    lamb-lt : lambda → lambda → lambda 
+    -- "less-than" predicate on natural numbers
 \end{minted}
 
 Of course a lot of the terms produced this way will be ill-typed. E.g. indices in an empty context are ill-defined. So, as mentioned before, we have functionality of typing the terms of \tcbox{\texttt{lambda}}, namely the function \tcbox{ann-term} as in the Lisp implementation each term has a slot for types which we fill in recursively. We also have a \tcbox{well-defp} predicate checking whether a given Lambda term is well-defined as per usual typing rules, e.g. checkimg that  There are two things that need to be noted: 
