@@ -26,8 +26,6 @@ The general aim of the paper is to give an outlook of the pipeline design access
 
 We should mention beforehand that the paper uses terms from category theory and some theorems from categorical logic, but which are present solely for the sake of completeness. A person with adequate background will be able to grasp these in order to fully understand the mathematical background behind certain constructions, making e.g. the formally verifiable properties of certain compilation steps evident. However many details can be skipped in favour of good diagrammatical presentation of the compilation procedure.
 
-All errors are due to Artem Gureev, the primary author of the report. The core ideas and conjectures about Geb are due to Terence Rokop. The Lisp implementation was origially introduced by Jeremy Ornelas (who is currently the maintainer of the repository) and extended by Artem Gureev. Anthony Hart played a major part in the impementation fixing the original pipeline. 
-
 \section{Language/Category Specs}
 
 The problem that we need to solve is how to specify a compilation:
@@ -266,6 +264,16 @@ The compilations are appropriately named to-cat, to-seqn, to-circuit after their
 \subsection{Type-checking}
 \subsection{Visualizer}
 
+\section*{Acknowledgements}
+The authors bear sole responsibility for any errors present within this
+document. The fundamental theories and conjectures related to Geb are
+attributed to Terence Rokop. The Lisp implementation reference was
+initially introduced by Jeremy Ornelas, the current repository maintainer,
+and later expanded upon by the first author. Anthony Hart contributed to
+the implementation by correcting and adding an alternative pipeline as
+presented in this document. Finally, the Lambda language showcased herein,
+along with enhancements to typechecking, resulted from a collaboration with
+the Juvix team.
 \nocite{*}
 \bibliography{ref.bib}
 
