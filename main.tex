@@ -27,7 +27,7 @@ The Geb project was originally started as a way of solving the problem of compil
 
 The internal language approach is based on the observation that "good" compilation procedures preserving type structure (such as compilations of languages containing STLC preserving lambda structure) can instead be associated to functors preserving correlating structures between categories representing said programmings languages. A canonical example is that of Lambek-Scott, dealing with the fact that the languages posessing STLC structure form a category which is equivalent to the category of cartesian closed categories.
 
-Hence we can instead of working with syntax, represent our languages as some nice categories and just work by constructing functors between them. The fact that the constructions have a direct mathematical meaning makes them easier to formalize while functor properties already grant a lot of properties for free such as type-checking for composition of morphisms.
+Instead of operating with syntax, we can represent our languages as distinct categories and construct functors between them. This approach simplifies their formalization due to the direct mathematical meaning of the constructions. Furthermore, functor properties inherently provide several beneficial features, including automatic type-checking for morphism composition.
 
 
 The Lisp implementation of Geb currently presents the first completed step of the project, namely the compilation of Juvix Core (seen as an adequate extension of STLC) to VampIR alongside an interactive environment for the user with additional features such as interpreters, type-checkers for programs and a visualizer for Geb.
@@ -617,6 +617,15 @@ The description of the compilation will be made less formal to facilitate unders
 	\arrow["{\pi_n}", from=1-1, to=1-3]
 \end{tikzcd}\]
 \item We compile \tcbox{(plus (ltm : nat-width n) (rtm : nat-width n)) : nat-width n} to
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCJBXzEgXFx0aW1lcyAuLi4gXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIihcXHRleHR7bmF0LXdpZHRoIG59KVxcdGltZXMgXFx0ZXh0eyhuYXQtd2lkdGggbil9Il0sWzIsMSwiXFx0ZXh0eyhuZXQtd2lkdGggbil9Il0sWzAsMSwiXFxzY3JpcHRzaXplIFxcbGFuZ2xlIFxcdGV4dHt0by1jYXR9KFxcR2FtbWEpKGx0bSkgLCBcXHRleHR7dG8tY2F0fSAoXFxHYW1tYSkocnRtKSBcXHJhbmdsZSJdLFsxLDIsIlxcdGV4dHtuYXQtYWRkfSJdXQ==
+\[\begin{tikzcd}[sep=large]
+	&& {(\text{nat-width n})\times \text{(nat-width n)}} \\
+	{A_1 \times ... \times A_n \times \text{so1}} && {\text{(net-width n)}}
+	\arrow["{\scriptsize \langle \text{to-cat}(\Gamma)(ltm) , \text{to-cat} (\Gamma)(rtm) \rangle}", from=2-1, to=1-3]
+	\arrow["{\text{nat-add}}", from=1-3, to=2-3]
+\end{tikzcd}\]
+and similarly with other arithmeic operations. 
+\item We compile \tcbox{(bit-choice bitv : nat-width n} where bitv is of length n and has a representation
 \end{enumerate}
 
 \subsection{Geb $\to$ Seq$\N$}
