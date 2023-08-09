@@ -27,7 +27,7 @@ The Geb project was originally started as a way of solving the problem of compil
 
 The internal language approach is based on the observation that "good" compilation procedures preserving type structure (such as compilations of languages containing STLC preserving lambda structure) can instead be associated to functors preserving correlating structures between categories representing said programmings languages. A canonical example is that of Lambek-Scott, dealing with the fact that the languages posessing STLC structure form a category which is equivalent to the category of cartesian closed categories.
 
-Hence we can instead of working with syntax, represent our languages as some nice categories and just work by constructing functors between them. The fact that the constructions have direct methemtical meaning makes them easier to formalize while functor properties already grant a lot of properties for free such as type-checking for composition of morphisms.
+Hence we can instead of working with syntax, represent our languages as some nice categories and just work by constructing functors between them. The fact that the constructions have a direct mathematical meaning makes them easier to formalize while functor properties already grant a lot of properties for free such as type-checking for composition of morphisms.
 
 
 The Lisp implementation of Geb currently presents the first completed step of the project, namely the compilation of Juvix Core (seen as an adequate extension of STLC) to VampIR alongside an interactive environment for the user with additional features such as interpreters, type-checkers for programs and a visualizer for Geb.
@@ -519,25 +519,104 @@ TRANS> (to-circuit (lamb (list (coprod so1 so1)) (index 0)) :identity_fun)
 
 \end{minted}
 
-Here the \tcbox{nil} stands for the empty context we feed the compiler when we move from Lambda to Geb. All other compilations are assumed to occur in the empty context. Also \tcbox{to-circuit} demands a name for the function to compile. Now, let us get to the actual implementation of the compilation.
+Here the \tcbox{nil} stands for the empty context we feed the compiler when we move from Lambda to Geb. All other compilations are assumed to occur in the empty context. Also \tcbox{to-circuit} demands a name for the function to compile. 
+
+In the proceeding discussion all possible info is replaced by categorical counterparts for readibility. So \gebprod will be denoted by $\times$, \gebcoprod by $+$, elements of \gebmorph by actual arrows etc everywhere where deemed possible without losing information. Similarly \tcbox{sohomobj} will now be denoted by explicit arrows. 
 
 \subsection{Lambda $\to$ Geb}
 The core part of the compilation from Lambda to Geb is actually a canonical one that can be seen as instead the initial morphism from the term model of the Lambda language to Geb in the category of models of STLC. Here we are simply showcasing the compilation of a specific part of that category, namely what one in semantics of type theories would call "terms", namely sections to canonical projection maps.
 
-The description of the compilation will be made less formal to facilitate understanding.
+The description of the compilation will be made less formal to facilitate understanding and lambda and function application terms will be assumed to be 1-argument only.
 
- We define the compilation to-cat $\colon$ (List \gebobj) $\times$ Lambda $\to$ Geb as a function taking in a lambda term and a context and spitting out a Geb morphism with typing $$\textnormal{to-cat} (A_1,...,A_n) (term : B) : A_1 \times ...\times A_n \times so1 \to B $$
+ We define the compilation to-cat $\colon$ (List \gebobj) $\times$ Lambda $\to$ Geb as a function taking in a lambda term and a context and spitting out a Geb morphism with typing $$\textnormal{to-cat} (A_1,...,A_n) (term : B) : A_1 \times ...\times A_n \times \textnormal{so1} \to B $$
 
- We proceed by induction:
+ We proceed by induction assuming that we are always given context $A_1,...,A_n := \Gamma$ :
 
 \begin{enumerate}
-    \item We compile \tcbox{(absurd B (term : so0))} in context \tcbox{$A_1,...,A_n$} to
-    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBzbzEiXSxbMiwwLCIwIl0sWzQsMCwiQiJdLFswLDEsIlxcZm9vdG5vdGVzaXple1xcdGV4dG5vcm1hbHt0by1jYXR9IChBXzEsLi4uLEFfbil9Il0sWzEsMiwiaW5pdCJdXQ==
+    \item We compile \tcbox{(absurd B (term : so0))} to
+  % https://q.uiver.app/#q=WzAsMyxbMCwwLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIlxcdGV4dHtzbzB9Il0sWzQsMCwiQiJdLFswLDEsIlxcc2NyaXB0c2l6ZXtcXHRleHRub3JtYWx7dG8tY2F0fSAoXFxHYW1tYSkodGVybSl9Il0sWzEsMiwiIV9CIl1d
 \[\begin{tikzcd}
-	{A_1\times...\times A_n \times so1} && 0 && B
-	\arrow["{\footnotesize{\textnormal{to-cat} (A_1,...,A_n)}}", from=1-1, to=1-3]
-	\arrow["init", from=1-3, to=1-5]
+	{A_1\times...\times A_n \times \text{so1}} && {\text{so0}} && B
+	\arrow["{\scriptsize{\textnormal{to-cat} (\Gamma)(term)}}", from=1-1, to=1-3]
+	\arrow["{!_B}", from=1-3, to=1-5]
 \end{tikzcd}\]
+\item We compile \tcbox{(unit : so1)} to
+% https://q.uiver.app/#q=WzAsMixbMCwwLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsInNvMSJdLFswLDEsIiFfe0FfMVxcdGltZXMuLi5BX25cXHRpbWVzIFxcdGV4dHtzbzF9fSJdXQ==
+\[\begin{tikzcd}
+	{A_1\times...\times A_n \times \text{so1}} && so1
+	\arrow["{!_{A_1\times...A_n\times \text{so1}}}", from=1-1, to=1-3]
+\end{tikzcd}\]
+\item We compile \tcbox{(left A (term : B) : A + B)} to
+% https://q.uiver.app/#q=WzAsMyxbMCwwLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIkIiXSxbNCwwLCJCK0EiXSxbMCwxLCJcXHNjcmlwdHNpemV7XFx0ZXh0e3RvLWNhdH0gKFxcR2FtbWEpKHRlcm0pfSJdLFsxLDIsIlxcdGV4dHstPmxlZnR9IiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoiaG9vayIsInNpZGUiOiJ0b3AifX19XV0=
+\[\begin{tikzcd}
+	{A_1\times...\times A_n \times \text{so1}} && B && {B+A}
+	\arrow["{\scriptsize{\text{to-cat} (\Gamma)(term)}}", from=1-1, to=1-3]
+	\arrow["{\text{->left}}", hook, from=1-3, to=1-5]
+\end{tikzcd}\]
+\item We compile \tcbox{(right A (term : B)) : A + B} to
+% https://q.uiver.app/#q=WzAsMyxbMCwwLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIkIiXSxbNCwwLCJBK0IiXSxbMCwxLCJcXHNjcmlwdHNpemV7XFx0ZXh0e3RvLWNhdH0gKFxcR2FtbWEpKHRlcm0pfSJdLFsxLDIsIlxcdGV4dHstPnJpZ2h0fSIsMCx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Imhvb2siLCJzaWRlIjoidG9wIn19fV1d
+\[\begin{tikzcd}
+	{A_1\times...\times A_n \times \text{so1}} && B && {A+B}
+	\arrow["{\scriptsize{\text{to-cat} (\Gamma)(term)}}", from=1-1, to=1-3]
+	\arrow["{\text{->right}}", hook, from=1-3, to=1-5]
+\end{tikzcd}\]
+\item We compile \tcbox{(case-on (on : A + B) (ltm : C) (rtm : C) : C} to
+% https://q.uiver.app/#q=WzAsNCxbMCwyLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFswLDAsIihBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSkgXFx0aW1lcyAoQSArQikiXSxbMSwwLCIoQV8xXFx0aW1lcy4uLlxcdGltZXMgQV9uIFxcdGltZXMgXFx0ZXh0e3NvMX0gXFx0aW1lcyBBKSArIChBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSBcXHRpbWVzIEIpIl0sWzEsMiwiQyJdLFswLDEsIlxcc2NyaXB0c2l6ZXtcXHRleHR7dG8tY2F0fSAoXFxHYW1tYSkodGVybSl9Il0sWzEsMiwiXFx0ZXh0e2Rpc3RyaWJ1dGV9Il0sWzIsMywiXFxzY3JpcHRzaXplW1xcdGV4dHt0by1jYXR9KFxcR2FtbWEpKGx0bSkpLCBcXHRleHR7dG8tY2F0fShcXEdhbW1hKShydG0pXSJdXQ==
+\[\begin{tikzcd}
+	{(A_1\times...\times A_n \times \text{so1}) \times (A +B)} & {(A_1\times...\times A_n \times \text{so1} \times A) + (A_1\times...\times A_n \times \text{so1} \times B)} \\
+	\\
+	{A_1\times...\times A_n \times \text{so1}} & C
+	\arrow["{\scriptsize{\text{to-cat} (\Gamma)(term)}}", from=3-1, to=1-1]
+	\arrow["{\text{distribute}}", from=1-1, to=1-2]
+	\arrow["{\scriptsize[\text{to-cat}(\Gamma)(ltm)), \text{to-cat}(\Gamma)(rtm)]}", from=1-2, to=3-2]
+\end{tikzcd}\]
+\item We compile \tcbox{(pair (ltm : A) (rtm : B)) : A $\times$ B} to
+% https://q.uiver.app/#q=WzAsMixbMCwwLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFs0LDAsIkEgXFx0aW1lcyBCIl0sWzAsMSwiXFxzY3JpcHRzaXplXFxsYW5nIFxcdGV4dHt0by1jYXR9KFxcR2FtbWEpKGx0bSksIFxcdGV4dHt0by1jYXR9KFxcR2FtbWEpKHJ0bSkgXFxyYW5nIl1d
+\[\begin{tikzcd}[column sep=large]
+	{A_1\times...\times A_n \times \text{so1}} &&&& {A \times B}
+	\arrow["{\scriptsize\langle \text{to-cat}(\Gamma)(ltm), \text{to-cat}(\Gamma)(rtm) \rangle}", from=1-1, to=1-5]
+\end{tikzcd}\]
+ \item We compile \tcbox{(fst (term : A $\times$ B)) : A} to
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIkEgXFx0aW1lcyBCIl0sWzIsMSwiQSJdLFswLDEsIlxcc2NyaXB0c2l6ZSBcXHRleHR7dG8tY2F0fSAoXFxHYW1tYSkodGVybSkiXSxbMSwyLCJcXHBpXzEiXV0=
+\[\begin{tikzcd}[column sep=large]
+	&& {A \times B} \\
+	{A_1\times...\times A_n \times \text{so1}} && A
+	\arrow["{\scriptsize \text{to-cat} (\Gamma)(term)}", from=2-1, to=1-3]
+	\arrow["{\pi_1}", from=1-3, to=2-3]
+\end{tikzcd}\]
+\item We compile \tcbox{(snd (term : A $\times$ B)) : B} to
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCJBXzFcXHRpbWVzLi4uXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIkEgXFx0aW1lcyBCIl0sWzIsMSwiQiJdLFswLDEsIlxcc2NyaXB0c2l6ZSBcXHRleHR7dG8tY2F0fSAoXFxHYW1tYSkodGVybSkiXSxbMSwyLCJcXHBpXzIiXV0=
+\[\begin{tikzcd}[column sep=large]
+	&& {A \times B} \\
+	{A_1\times...\times A_n \times \text{so1}} && B
+	\arrow["{\scriptsize \text{to-cat} (\Gamma)(term)}", from=2-1, to=1-3]
+	\arrow["{\pi_2}", from=1-3, to=2-3]
+\end{tikzcd}\]
+\item We compile \tcbox{(lamb (tdom : A) (term : B)) : A $\to$ B} to the curried morphism below
+% https://q.uiver.app/#q=WzAsNCxbMCwwLCJBIFxcdGltZXMgQV8xXFx0aW1lcy4uLlxcdGltZXMgQV9uIFxcdGltZXMgXFx0ZXh0e3NvMX0iXSxbMiwwLCJCIl0sWzAsMiwiQV8xIFxcdGltZXMgLi4uIFxcdGltZXMgQV9uIFxcdGltZXMgXFx0ZXh0e3NvMX0iXSxbMiwyLCIoQSBcXHRvIEIpIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChBLFxcR2FtbWEpKHRlcm0pIl0sWzIsMywiXFxzY3JpcHRzaXplIFxcdGV4dHtjdXJyeX0oXFx0ZXh0e3RvLWNhdH0gKEEsXFxHYW1tYSkodGVybSkpIl0sWzQsNSwiXFx0ZXh0e2N1cnJ5fSIsMSx7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjoyMH0sImxldmVsIjoxLCJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn0sImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9fX1dXQ==
+\[\begin{tikzcd}[sep=large]
+	{A \times A_1\times...\times A_n \times \text{so1}} && B \\
+	\\
+	{A_1 \times ... \times A_n \times \text{so1}} && {(A \to B)}
+	\arrow[""{name=0, anchor=center, inner sep=0}, "{\scriptsize \text{to-cat} (A,\Gamma)(term)}", from=1-1, to=1-3]
+	\arrow[""{name=1, anchor=center, inner sep=0}, "{\scriptsize \text{curry}(\text{to-cat} (A,\Gamma)(term))}", from=3-1, to=3-3]
+	\arrow["{\text{curry}}"{description}, shorten <=9pt, shorten >=9pt, dotted, maps to, from=0, to=1]
+\end{tikzcd}\]
+\item We compile \tcbox{(app (fun : A $\to$ B) (term : A) :B} to
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCJBXzEgXFx0aW1lcyAuLi4gXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIihBIFxcdG8gQikgXFx0aW1lcyBBIl0sWzIsMSwiQiJdLFswLDEsIlxcc2NyaXB0c2l6ZVxcbGFuZ2xlIFxcdGV4dHt0by1jYXR9KFxcR2FtbWEpKFxcdGV4dHtmdW59KSwgXFx0ZXh0e3RvLWNhdH0oXFxHYW1tYSkodGVybSlcXHJhbmdsZSJdLFsxLDIsIlxcdGV4dHtldmFsfSJdXQ==
+\[\begin{tikzcd}[sep=large]
+	&& {(A \to B) \times A} \\
+	{A_1 \times ... \times A_n \times \text{so1}} && B
+	\arrow["{\scriptsize\langle \text{to-cat}(\Gamma)(\text{fun}), \text{to-cat}(\Gamma)(term)\rangle}", from=2-1, to=1-3]
+	\arrow["{\text{eval}}", from=1-3, to=2-3]
+\end{tikzcd}\]
+\item We compile \tcbox{(index i) : $A_i$} to
+% https://q.uiver.app/#q=WzAsMixbMCwwLCJBXzEgXFx0aW1lcyAuLi4gXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIkFfaSJdLFswLDEsIlxccGlfbiJdXQ==
+\[\begin{tikzcd}[sep=large]
+	{A_1 \times ... \times A_n \times \text{so1}} && {A_i}
+	\arrow["{\pi_n}", from=1-1, to=1-3]
+\end{tikzcd}\]
+\item We compile \tcbox{(plus (ltm : nat-width n) (rtm : nat-width n)) : nat-width n} to
 \end{enumerate}
 
 \subsection{Geb $\to$ Seq$\N$}

@@ -1129,6 +1129,7 @@
 \def\firstpage#1{#1}
 \def\lastpage#1{#1}
 
+\def\releasetext{released:}
 \def\doitext{doi:}
 \def\voltext{\ifcopoddhead{Vol.}\else{vol.}\fi}
 \def\isstext{No.}
@@ -1143,6 +1144,7 @@
 \def\volno#1{\gdef\@volno{#1}}\volno{}%
 \def\issno#1{\gdef\@issueno{#1}}\issno{}%
 \def\doival#1{\gdef\@doi{\doilink{#1}}}\doival{}%
+\def\releaseval#1{\gdef\@release{#1}}\releaseval{}%
 \def\thehead#1{\gdef\@thehead{#1}}\thehead{}%
 \def\edno#1{\gdef\@edno{#1}}\edno{}%
 
@@ -1161,7 +1163,7 @@ Heliax Internal Reports}%Mathematical Structures in Computer}%
 \OAtext{This is an Open Access article, distributed under the terms of the Creative Commons Attribution licence\newline \hbox{(\iffinals\OAlink\else\href{\OAlink}{\OAlink}\fi),} which permits unrestricted re-use, distribution, and reproduction in any medium, provided the
 original work is properly cited.}
 
-\cpr{}%
+\cpr{Last update: \today}%
 
 \def\corresp#1{\affilfont\@par#1}
 
@@ -1174,10 +1176,12 @@ original work is properly cited.}
         \hbox to \textwidth{\psplainfootfont\@cpr\hfill}}}%
        \def\@evenhead{\hbox to 322.5pt{\vbox{\vspace*{6.5pt}%
             {\psplainfont\global\copoddheadtrue{\itshape\@journaltitle} (\@jnlDoiYr),\if@issue\ \textbf{\@volno},\ pp.\else\fi\ \first@page--\last@page}\vskip2pt%\ \textbf{\@volumeno}
-            {\psplainfont\doitext\@doi}}}\vbox to 13.5pt{\includegraphics[scale=0.45]{heliax-logo.png}}}
-       \def\@oddhead{\hbox to 345pt{\vbox{\vspace*{6.5pt}%
+            {\psplainfont\doitext\@doi}\vskip2pt%
+            {\psplainfont\releasetext\@release}}}\vbox to 13.5pt{\includegraphics[scale=0.2]{heliax-logo.pdf}}}
+       \def\@oddhead{\hbox to 348pt{\vbox{\vspace*{6.5pt}%
             {\psplainfont\global\copoddheadtrue{\itshape\@journaltitle} (\@jnlDoiYr),\if@issue\ \textbf{\@volno},\ pp.\else\fi\ \first@page--\last@page}\vskip2pt%\ \textbf{\@volumeno}
-            {\psplainfont\doitext\@doi}}}\vbox to 13.5pt{\includegraphics[scale=0.45]{heliax-logo.png}}}}%
+            {\psplainfont\doitext\@doi}\vskip2pt%
+            {\psplainfont\releasetext\@release}}}\vbox to 13.5pt{\includegraphics[scale=0.2]{heliax-logo.pdf}}}}%
 
 \let\save@clearpage\clearpage
 \let\save@outputpage\@outputpage
