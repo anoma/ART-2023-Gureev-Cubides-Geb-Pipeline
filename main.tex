@@ -23,7 +23,12 @@ Geb, Juvix, Vamp-IR
 \maketitle
 \section{Introduction}
 
-The Geb project was originally started as a way of solving the problem of compiling Juvix programs to Vamp-IR code using the categorical approaches of specifying compilation procedures using internal language theorems, therefore moving away from dealing with syntax in favour of appropriate categorical structures. Additionally, phrasing compilation procedures in categorical terms opens up easier methods for formal verification.
+The Geb project was initiated to compile generic functional programs into
+high-level representation of arithmetic circuits via categorical methods.
+This categorical approach specifies compilation procedures via internal language
+theorems, thereby shifting focus from syntax to suitable categorical
+structures. Additionally, phrasing compilation procedures in categorical
+terms opens up easier methods for formal verification.
 
 The internal language approach is based on the observation that "good" compilation procedures preserving type structure (such as compilations of languages containing STLC preserving lambda structure) can instead be associated to functors preserving correlating structures between categories representing said programmings languages. A canonical example is that of Lambek-Scott, dealing with the fact that the languages posessing STLC structure form a category which is equivalent to the category of cartesian closed categories.
 
@@ -626,6 +631,15 @@ The description of the compilation will be made less formal to facilitate unders
 \end{tikzcd}\]
 and similarly with other arithmeic operations. 
 \item We compile \tcbox{(bit-choice bitv : nat-width n} where bitv is of length n and has a representation as natural number m:
+
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCJBXzEgXFx0aW1lcyAuLi4gXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIlxcdGV4dHtzbzF9Il0sWzIsMSwiXFx0ZXh0eyhuZXQtd2lkdGggbil9Il0sWzAsMSwiIV97XFx0ZXh0e3NvMX19Il0sWzEsMiwiXFx0ZXh0e25hdC1jb25zdH0gbiBtIl1d
+\[\begin{tikzcd}[sep=large]
+	&& {\text{so1}} \\
+	{A_1 \times ... \times A_n \times \text{so1}} && {\text{(net-width n)}}
+	\arrow["{!_{\text{so1}}}", from=2-1, to=1-3]
+	\arrow["{\text{nat-const} n m}", from=1-3, to=2-3]
+\end{tikzcd}\]
+\item We compile the term \tcbox{lamb-eq lt}
 \end{enumerate}
 
 \subsection{Geb $\to$ Seq$\N$}
