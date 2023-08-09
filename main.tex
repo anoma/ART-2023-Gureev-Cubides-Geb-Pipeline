@@ -3,8 +3,19 @@
 \input{metadata}
 
 \begin{abstract}
-The report discusses the current state of the pipeline compiling Juvix Core to Vamp-IR using Geb intermediary as implemented in Lisp. Various aspects of the API and mathematical background for the Geb project are outlined. The pipeline is described in a categorical fashion with all compilation steps made explicit via diagrams. Some knowledge of category theory is assumed.
+  At Heliax, we are developing a compiler stack to facilitate the creation
+  of decentralized applications using a high-level functional programming
+  language. This stack comprises a series of compilers that begin with
+  Juvix and culminate in arithmetic circuits, represented via Vamp-IR, an
+  intermediate language for such circuits. This report highlights the Geb
+  project, a component of this pipeline, detailing the process of compiling
+  Juvix Core into Vamp-IR through the Geb compiler. To aid its adoption and
+  implementation, we provide a categorical overview of the Geb project's
+  mathematical foundations and insights into its current Lisp-based
+  implementation. The objective of this report is to guide future
+  implementations and improvements of the Geb project.
 \end{abstract}
+
 
 \begin{keywords}
 Geb, Juvix, Vamp-IR
