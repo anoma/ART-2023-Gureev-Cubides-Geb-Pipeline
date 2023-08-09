@@ -107,7 +107,7 @@ Here we are concerned only with the steps starting from \LambdaIR{}. The Juvix c
 	\arrow[from=1-5, to=1-7]
 \end{tikzcd}\]
 
-The current section is devoted to the specs of the languages used in the compilation with teh Vamp-IR section devoted not to description of Vamp-IR themselves, but of the library of functions needed for any compiled code to compile on valid inputs. 
+The current section is devoted to the specs of the languages used in the compilation with the Vamp-IR section devoted not to description of Vamp-IR themselves, but of the library of functions needed for any compiled code to compile on valid inputs. 
 
 Let us provide a summary of the language characteristics of each language in the compiler stack, as initially presented in \cite{lukascz-vampir}.
 
@@ -139,7 +139,7 @@ The finite version of Geb implemented here has been formulated while trying to a
 
 2) What are the minimal/optimal bounding operations between functional programming languages
 
-The answer seems to be that we need some sort of addition, multiplication, 0 and 1 as structures to be used. For the usual arthmetic to hold we also need some sort of a ditributivity law. Exponentiation should follow just as we define arithmetic exponentiation from multiplication in usual arithmetic. (Of course multiplication can be defined similarly by addition, but it is not optimal to do so due to exponentiation of terms) Moreover, it seems that having epxlicit exponentiation in a language through which we compile is inefficient as it would need to compile to some separate Vamp-IR function. Finally, we need some notion of a "context" or a "domain" - as is usual in the syntax/semantics duality - in order to be able to produce variables.
+The answer seems to be that we need some sort of addition, multiplication, 0 and 1 as structures to be used. For the usual arithmetic to hold we also need some sort of a distributivity law. Exponentiation should follow just as we define arithmetic exponentiation from multiplication in usual arithmetic. (Of course multiplication can be defined similarly by addition, but it is not optimal to do so due to exponentiation of terms) Moreover, it seems that having explicit exponentiation in a language through which we compile is inefficient as it would need to compile to some separate Vamp-IR function. Finally, we need some notion of a "context" or a "domain" - as is usual in the syntax/semantics duality - in order to be able to produce variables.
 
 Hence this brings us to a first definition of Geb
 
@@ -186,25 +186,25 @@ data substmorph : substobj → substobj → Set where
     -- right projection
 \end{minted}
 
-Here \gebobj is the collection of the types of our language and \tcbox{\texttt{f : substmorph a b}} for a term of \tcbox{\texttt{b}} in constext of \tcbox{\texttt{a}}. There are of course extra equalities to subject the terms to, making terminal terms unique or composition associative on the nose e.g., yet for the sake of the current project, we do not implement these and if needed, reductions are done by hand. There is also an explicit reducer in development.
+Here \gebobj is the collection of the types of our language and \tcbox{\texttt{f : substmorph a b}} for a term of \tcbox{\texttt{b}} in context of \tcbox{\texttt{a}}. There are of course extra equalities to subject the terms to, making terminal terms unique or composition associative on the nose e.g., yet for the sake of the current project, we do not implement these and if needed, reductions are done by hand. There is also an explicit reducer in development.
 
 Another way to think about Geb is to instead specify the categorical structure instead of the syntactical one, namely:
 \begin{definition}
-\text{Geb} is the category freely spanned by an initial object so0, teminal object so1 and finite (co)products alongside the distributivity axiom.
+\text{Geb} is the category freely spanned by an initial object so0, terminal object so1 and finite (co)products alongside the distributivity axiom.
 \end{definition}
 
-Recall that a category of models of a language $\mathbf{L}$ is a category whose objects are models of $\mathbf{L}$ and morphisms being mappings preserving said language structure (\textit{e.g. category of models of groups is the category of groups and group homs)}. The above definition corresponds to considering the term model of a language, namely the initial category of its corresponding category of models.
+Recall that a category of models of a language $\mathbf{L}$ is a category whose objects are models of $\mathbf{L}$ and morphisms being mappings preserving said language structure (\textit{e.g. category of models of groups is the category of groups and group morphisms)}. The above definition corresponds to considering the term model of a language, namely the initial category of its corresponding category of models.
 
-However the semantics of this definition are a bit unclear. However note that taking coproducts with $\gebinit$ is equivalent to the identity functor (like adding 0 is the same as the identity function) while taking products with $\gebinit$ to a constant functor at $\gebinit$ (distributive categories have strict initial objects, so similar to how multiplying by 0 gives 0). Similarly, taking products with $\gebterm$ is equivalent to the identity functor (like multiplying by 1 gives back the original term). So - intuitively - the only way to make "new" types in Geb is by taking coproducts of $\gebterm$ with itself over and over. There is actually a category which is specified by being generated filtered colimits over inclusions between such coproducts of the terminal object: FinSet. It is indeed generated by just adding extra 1-element sets to the empty set. So here is the third definition:
+However, the semantics of this definition are a bit unclear. Note that taking coproducts with $\gebinit$ is equivalent to the identity functor (like adding 0 is the same as the identity function) while taking products with $\gebinit$ to a constant functor at $\gebinit$ (distributive categories have strict initial objects, so similar to how multiplying by 0 gives 0). Similarly, taking products with $\gebterm$ is equivalent to the identity functor (like multiplying by 1 gives back the original term). So - intuitively - the only way to make "new" types in Geb is by taking coproducts of $\gebterm$ with itself over and over. There is actually a category which is specified by being generated filtered colimits over inclusions between such coproducts of the terminal object: FinSet. It is indeed generated by just adding extra 1-element sets to the empty set. So here is the third definition:
 
 \begin{definition}
-Geb is FinSet
+\Geb{} is \FinSet{}.
 \end{definition}
 
 Let us make this correspondence exact:
 
 \begin{proposition}
-FinSet is an initial weak model of the Geb language. That is, it is equivalent to the initial model of the essentially algebraic theory of category theory with initial, terminal objects, finite (co)products structure and distributivity and the equivalence preserves all relevant categorical structure.  
+\FinSet{} is an initial weak model of the \Geb{} language. That is, it is equivalent to the initial model of the essentially algebraic theory of category theory with initial, terminal objects, finite (co)products structure and distributivity and the equivalence preserves all relevant categorical structure.  
 \end{proposition}
 
 \begin{proof}
