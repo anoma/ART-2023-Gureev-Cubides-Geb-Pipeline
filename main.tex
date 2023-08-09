@@ -72,7 +72,7 @@ The answer seems to be that we need some sort of addition, multiplication, 0 and
 Hence this brings us to a first definition of Geb
 
 \begin{definition}
-Geb is the language spanned by the empty type \tcbox{\normalfont{\texttt{so0}}}, unit type \gebterm and sum/product types appropriately named \gebcoprod and \gebprod.
+Geb is the language spanned by the empty type \tcbox{\normalfont{\texttt{so0}}}, unit type \gebterm \, and sum/product types appropriately named \gebcoprod \,  and \gebprod.
 \end{definition}
 
 %NOTE: For readibility makes sence to rename substmorph to some infix notation expressing arrows, otherwise it may be confusing to a lot of people
@@ -112,7 +112,7 @@ data substmorph : substobj → substobj → Set where
                              -- right projection
 \end{minted}
 
-Here \gebobj is the collection of the types of our language and \colorbox{gray!50}{\normalfont{\texttt{f : substmorph a b}}} for a term of \colorbox{gray!50}{\normalfont{\texttt{b}}} in constext of \colorbox{gray!50}{\normalfont{\texttt{a}}}. There are of course extra equalities to subject the terms to, making terminal terms unique or composition associative on the nose e.g., yet for the sake of the current project, we do not implement these and if needed, reductions are done by hand. There is also an explicit reducer in development.
+Here \gebobj is the collection of the types of our language and \tcbox{\texttt{f : substmorph a b}} for a term of \tcbox{\texttt{b}} in constext of \tcbox{\texttt{a}}. There are of course extra equalities to subject the terms to, making terminal terms unique or composition associative on the nose e.g., yet for the sake of the current project, we do not implement these and if needed, reductions are done by hand. There is also an explicit reducer in development.
 
 Another way to think about Geb is to instead specify the categorical structure instead of the syntactical one, namely:
 \begin{definition}
