@@ -3,17 +3,17 @@
 \input{metadata}
 
 \begin{abstract}
-  At Heliax, we are developing a compiler stack to facilitate the creation
-  of decentralized applications using a high-level functional programming
-  language. This stack comprises a series of compilers that begin with
-  Juvix and culminate in arithmetic circuits, represented via Vamp-IR, an
-  intermediate language for such circuits. This report highlights the Geb
-  project, a component of this pipeline, detailing the process of compiling
-  Juvix Core into Vamp-IR through the Geb compiler. To aid its adoption and
-  implementation, we provide a categorical overview of the Geb project's
-  mathematical foundations and insights into its current Lisp-based
-  implementation. The objective of this report is to guide future
-  implementations and improvements of the Geb project.
+At Heliax, we are developing a compiler stack to facilitate the creation
+of decentralized applications using a high-level functional programming
+language. This stack comprises a series of compilers that begin with
+Juvix and culminate in arithmetic circuits, represented via Vamp-IR, an
+intermediate language for such circuits. This report highlights the Geb
+project, a component of this pipeline, detailing the process of compiling
+Juvix Core into Vamp-IR through the Geb compiler. To aid its adoption and
+implementation, we provide a categorical overview of the mathematical
+foundations of the Geb project and insights into its current Lisp-based
+implementation. The objective of this report is to guide future
+implementations and improvements of the Geb project.
 \end{abstract}
 
 
@@ -29,11 +29,15 @@ The Lisp implementation of Geb currently presents the first completed step of th
 
 The general aim of the paper is to give an outlook of the pipeline design accessible to people without delving into Lisp code. Specifically, we aim to:
 
-1) Make precise all the components of the pipeline by describing their intended semantics and paraphrasing the constructions in Agda/Haskell code with explicit typing.
-
-2) Describe all the compilation steps using diagrams for readability and intelligibility.
-
-3) Highlight important features of the current implementation that are worth porting outside of the pipeline itself.
+\begin{enumerate}
+\item Make all components of the pipeline precise by describing their
+intended semantics and paraphrasing the constructions in Agda/Haskell code
+with explicit typing.
+\item Describe all the compilation steps using diagrams for readability and
+intelligibility.
+\item  Highlight important features of the current implementation that are
+worth porting outside the pipeline itself.
+\end{enumerate}
 
 We should mention beforehand that the paper uses terms from category theory and some theorems from categorical logic, but which are present solely for the sake of completeness. A person with adequate background will be able to grasp these in order to fully understand the mathematical background behind certain constructions, making e.g. the formally verifiable properties of certain compilation steps evident. However many details can be skipped in favour of good diagrammatical presentation of the compilation procedure.
 
@@ -195,7 +199,7 @@ uncurry : {a b c : substobj} → (substmorph a (sohomobj b c))
 
 The actual implementation of said types is not of importance for the report but we need these functions in order to compile Juvix code to Geb, which is why these are mentioned. 
 
-With the recent changes, we have also upgraded Geb to be able to express compactly natural number integers of fixed width. The way we do it is by the evident trick: consider all n-bit wide numbers. Evidently there are $2^n$ of these, which means that their set is in the bijection with the finite ordinal of cardinaity $2^n$. In other words, we introduce objects $nat-width n$ for every $n > 0$ which are really just isomorphic copies of $2^n$ coproducts of $\gebterm$. So Geb already had teh natural number functionality, it was just highly inefficient before introducing explicit constructors.
+With the recent changes, we have also upgraded Geb to be able to express compactly natural number integers of fixed width. The way we do it is by the evident trick: consider all n-bit wide numbers. Evidently there are $2^n$ of these, which means that their set is in bijection with the finite ordinal of cardinaity $2^n$. In other words, we introduce objects $nat-width n$ for every $n > 0$ which are really just isomorphic copies of $2^n$ coproducts of $\gebterm$. So Geb already had teh natural number functionality, it was just highly inefficient before introducing explicit constructors.
 
 Hence we also need to add to Geb constructors:
 
@@ -236,14 +240,32 @@ Secondly, note that while the code written for Geb has the same intended semanti
 
 The Lambda language is but an extended version of simply-typed lambda calculus (STLC) with types taken from Geb. The latter part is the reason why we described Geb before talking about Lambda, even if the compilation order is different. However the terms are introduced untyped first and become typed once the context is introduced via a specific functions such as \tcbox{ann-term}.
 \begin{definition}
-    Lambda is STLC extended by the error terms \lamerr of arbitrary type as well as fix bit-width natural number arithmetic.
+    Lambda is STLC with types from \gebobj extended by the error terms \lamerr of arbitrary type as well as fix bit-width natural number arithmetic.
 \end{definition}
 
 Here is the definition as one would type it in Agda:
 
 \begin{minted}{agda}
 data lambda : Set where
-
+absurd : substobj → lambda   -- beta reduction for empty type
+unit : lambda     -- unique element of unit type so1
+left : substobj → lambda → lambda  -- left inclusion into coproduct
+right : substobj → lambda → lambda -- right inclusion into comporoduct
+case-on : lambda → lambda → lambda → lambda -- takes a term of a cpro
+pair : lambda → lambda → lambda
+fst : lambda → lambda
+snd : lambda → lambda
+lamb : (List substobj) → lambda → lambda
+app : lambda → (List lambda) → lambda
+index : Nat → lambda
+err : substobj → lambda
+plus : lambda → lambda → lambda
+times : lambda → lambda → lambda
+minus : lambda → lambda → lambda
+divide : lambda → lambda → lambda
+bit-choice : (List bool) → lambda
+lamb-eq : lambda → lambda → lambda
+lamb-lt : lambda → lambda → lambda
 \end{minted}
 
 \subsection{Seq$\N$}
