@@ -648,29 +648,33 @@ as a function taking in a lambda term and a list of \Geb{} objects serving as a 
 
 We proceed by induction on \tcbox{t}, assuming that we are always given context $A_1,...,A_n := \gamma$ and defining $A_1 \times ... \times A_n \times 1 := \Gamma$\footnote{That is, any context is interpreted in \Geb{} as an iterated product with \gebterm on the right.}.
 
-% \caption{Compilation to-cat from \LambdaIR{} to \Geb{}.}
-% \label{table:compilation-lambda-to-geb:1}
 
-\begin{center}
-\begin{longtable}{cc}
-
-% A & \Geb{} \\
-% \small\tcbox{(absurd B (term : so0))} 
-% &% https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzIsMCwiMCJdLFs0LDEsIkIiXSxbMCwxLCJcXHNjcmlwdHNpemV7XFx0ZXh0bm9ybWFse3RvLWNhdH0gKFxcZ2FtbWEpKFxcdGV4dHt0ZXJtfSl9Il0sWzEsMiwiISJdLFswLDIsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDJdXQ==
-% \begin{tikzcd}
-% 	&& 0 \\
-% 	\Gamma &&&& B
-% 	\arrow["{\scriptsize{\textnormal{to-cat} (\gamma)(\text{term})}}", from=2-1, to=1-3]
-% 	\arrow["{!}", from=1-3, to=2-5]
-% 	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=2-1, to=2-5]
-% \end{tikzcd}\\
+\begin{table}[!htb]
+\label{table:compilation-to-cat-part-1}
+\caption{Compilation to-cat from \LambdaIR{} to \Geb{}.}
+\setlength{\tabcolsep}{3mm} % separator between columns
+\def\arraystretch{1.25} % vertical stretch factor
+\centering
+\begin{tabular}{lc}
+\toprule
+\LambdaIR{}  & \Geb{}  \\
+\midrule
+\small\tcbox{(absurd B (term : so0))} &%https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzIsMCwiMCJdLFs0LDEsIkIiXSxbMCwxLCJcXHNjcmlwdHNpemV7XFx0ZXh0bm9ybWFse3RvLWNhdH0gKFxcZ2FtbWEpKFxcdGV4dHt0ZXJtfSl9Il0sWzEsMiwiISJdLFswLDIsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDJdXQ==
+\begin{tikzcd}
+	&& 0 \\
+	\Gamma &&&& B
+	\arrow["{\scriptsize{\textnormal{to-cat} (\gamma)(\text{term})}}", from=2-1, to=1-3]
+	\arrow["{!}", from=1-3, to=2-5]
+	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=2-1, to=2-5]
+\end{tikzcd}
 \small\tcbox{(unit : so1)} &
 % https://q.uiver.app/#q=WzAsMixbMCwwLCJcXEdhbW1hIl0sWzIsMCwiMSJdLFswLDEsIiEiXSxbMCwxLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dH0pIiwyLHsiY3VydmUiOjN9XV0=
 \begin{tikzcd}
 	\Gamma && 1
 	\arrow["{!}", from=1-1, to=1-3]
 	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', curve={height=18pt}, from=1-1, to=1-3]
-\end{tikzcd} \\ 
+\end{tikzcd} \\
+\midrule
 \small\tcbox{(left A (term : B) : B + A)} 
 &% https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzIsMCwiQiJdLFs0LDEsIkIrQSJdLFswLDEsIlxcc2NyaXB0c2l6ZXtcXHRleHR7dG8tY2F0fSAoXFxnYW1tYSkoXFx0ZXh0e3Rlcm19KX0iXSxbMSwyLCJcXGlvdGFfMSIsMCx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Imhvb2siLCJzaWRlIjoidG9wIn19fV0sWzAsMiwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkoXFx0ZXh0IHt0fSkiLDJdXQ==
 \begin{tikzcd}
@@ -688,7 +692,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow["{\scriptsize{\text{to-cat} (\gamma)(\text{term})}}", from=2-1, to=1-3]
 	\arrow["{\iota_2}", hook, from=1-3, to=2-5]
 	\arrow["{\text{to-cat}(\gamma)(\text t)}"', from=2-1, to=2-5]
-\end{tikzcd}
+\end{tikzcd} 
 \\
  \tcbox[tikznode]{%
  \small (case (on : A + B) \\ \;\;\; \small (ltm : C) \\ \small \;\;\;\;\;\;\;\;\;(rtm : C)) : C 
@@ -841,8 +845,9 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=2, to=0]
 	\arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=3, to=1]
 \end{tikzcd}
-\end{longtable}
-\end{center}
+\end{tabular}
+\end{table}
+
 
 % \begin{itemize}
 
