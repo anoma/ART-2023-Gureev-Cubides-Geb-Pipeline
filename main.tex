@@ -184,7 +184,7 @@ substmorph a b = a G-> b
 In the implementation, we use the name \tcbox{substmorph} for the type above but for readability we use \tcbox{G->} here.
 \end{remark}
 
-Here \gebobj is the collection of the types of our language and \tcbox{f : substmorph a b} stands for a term of \tcbox{b} in the context of \tcbox{a} \footnote{There are of course extra equalities to subject the terms to, e.g. making terminal terms unique or composition associative on the nose, yet for the sake of the current project, we do not implement these, and if needed, reductions are done by hand. There is also an explicit reducer in development.}.
+Here \gebobj is the collection of the types of our language and \tcbox{f : substmorph a b} stands for a term of \tcbox{b} in the context of \tcbox{a}. \footnote{There are of course extra equalities to subject the terms to, e.g. making terminal terms unique or composition associative on the nose, yet for the sake of the current project, we do not implement these, and if needed, reductions are done by hand. There is also an explicit reducer in development.}
 
 Another way of thinking about \Geb{} is to specify the categorical structure instead of the syntactical one.
 
@@ -258,7 +258,7 @@ The only thing left to prove is the uniqueness property of $F$.
 However, by the same argument, since everything the functor hits is a coproduct of $1_C$ and $F$ preserves coproduct structure and is a unique functor doing so up to natural iso, this also proves uniqueness up to iso\qedhere
 \end{proof}
 
-Hence, Definition \ref{def:geb3} is fully valid and when one talks of \Geb{}, one can instead think about a nice presentation of \FinSet{}. Hence a term of $\gebobj$ is just a finite set and a term of \tcbox{\texttt{a G-> b}} is just a function between corresponding finite sets. As expected, this equivalence actually provides us with the existence of a lot of extra structure.
+Hence \cref{def:geb3} is fully valid and when one talks of \Geb{}, one can instead think about a nice presentation of \FinSet{}. Hence a term of $\gebobj$ is just a finite set and a term of \tcbox{\texttt{a G-> b}} is just a function between corresponding finite sets. As expected, this equivalence actually provides us with the existence of a lot of extra structure.
 
 \begin{corollary}\label{cor:CCC}
 Geb is cartesian closed.
@@ -321,12 +321,12 @@ Be careful when using the term "Geb" as it can point to many things. The \Geb{} 
 \end{remark}
 
 \begin{comment}
-\begin{remark}
+
 Note that while the code written for Geb has the same intended semantics as its Lisp implementation, it is indeed different. The Lisp code is untyped. Also note that $\tcbox{id}$ is not an actual function in the Lisp implementation, instead we use just the names of the objects.
 \end{remark}
 \end{comment}
  
-\subsection{\large\LambdaIR{}}
+\subsection{Lambda}
 
 The \LambdaIR{} language is an extended version of STLC with types taken from \Geb{} \footnote{The latter part is the reason why we described \Geb{} before talking about \LambdaIR{}, even if the compilation order is different.}. However, the terms are introduced untyped first and become typed once the context is introduced via specific functions such as \tcbox{ann-term}.
 
@@ -340,8 +340,7 @@ Here is the definition as one would type it in Agda:
 data lambda : Set where
     absurd : substobj → lambda   
     -- beta reduction for empty type
-    unit : lambda    
-    -- unique element of unit type so1
+    unit : lambda     -- unique element of unit type so1
     left : substobj → lambda → lambda  
     -- left inclusion into coproduct
     right : substobj → lambda → lambda 
@@ -409,8 +408,8 @@ data _S->_ : seqnobj → seqnobj → Set where
     --identity
     fork-seq : (x : seqnobj)  → (x S-> (append x x))
     --morphism copying the entry twice
-    parallel-seq : (x S-> y) → (z S-> w) →
-                   ((append x z) S-> (append y w))
+    parallel-seq : (x S-> y) → (z S-> w) 
+                                    → ((append x z) S-> (append y w))
     -- given two functions, parallizes them                                
     drop-nil : (x : seqnobj) → (x S-> (0 :: []))
     -- given an object, just drops everything to a nil entry
@@ -432,8 +431,8 @@ data _S->_ : seqnobj → seqnobj → Set where
     one-bit : (0 :: []) S-> (1 :: [])
     -- produces 1
     shift-front : ((x_1 :: ... :: x_n) : seqnobj) →  (k : Nat) 
-                → ((x_1 :: ... :: x_n) 
-                  S-> (x_k :: x_1 ... x_k-1 :: x_k+1 :: ...))
+                →  ((x_1 :: ... :: x_n) 
+                    S-> (x_k :: x_1 ... x_k-1 :: x_k+1 :: ...))
     -- shifts the k-th entry in front
     seqn-add : (n : Nat) → ((n :: n :: 0) S-> (n :: 0))
     -- basic arithmetic operations
@@ -453,136 +452,92 @@ data _S->_ : seqnobj → seqnobj → Set where
 \end{minted}
 
 \begin{remark}
-    Note the pseudocode used in \tcbox{seqn-shift} definition. Also, note the unusual codomain of \tcbox{seqn-eq} and \tcbox{seqn-lt}. In this category $(1, 0) \cong (1)$. For a more detailed discussion, see \cref{section:gtos}.
+    Note the pseudocode used in \tcbox{seqn-shift} definition. Also, note the unusual codomain of \tcbox{seqn-eq} and \tcbox{seqn-lt}. In this category $(1, 0) \cong (1)$. For a more detailed discussion, consult \cref{section:gtos}.
 \end{remark}
 
-\tcbox{parallel-seq} is actually the product of the corresponding morphisms, and therefore we use the notation \tcbox{parallel-seq f g} = $f \times g$.
+\tcbox{parallel-seq} is actually the product of the corresponding morphisms, and therefore we use the notation \tcbox{parallel-seq f g} = $f \times g$
 
 \subsection{Vamp-IR}
 
 \VampIR{} is an intermediary language for arithmetic circuits. As the final point of the compilation, it does not need to be fully specified by the pipeline \footnote{Even if we do have the specification in the code covering some principal aspects \newline \url{https://github.com/anoma/geb/blob/main/src/vampir/spec.lisp}.}. The only thing we practically need is a collection of functions we will be using in the compilation procedure which we provide\footnote{The functions are written in \VampIR{} syntax v0.1.3.}.
 
-\begin{itemize}
-\item Check that x is a boolean, then print it
 \begin{minted}[style=borland]{python}
+
 def bool x = { x*(x-1) = 0 ; x};
-\end{minted}
+// Check that x is a boolean, then print it
 
-\item 
-\begin{minted}[style=borland]{python}
 def base_range 0 = { []};
-\end{minted}
 
-\item 
-\begin{minted}[style=borland]{python}
 def next_range range a = {
   def a0 = bool (fresh (a % 2));
   def a1 = fresh (a \ 2);
   a0 : (range a1)
 };
-\end{minted}
 
-\item Take natural number $n$ and integer $m$, check that $m$ is $n$-bit then print
-$n$-bit representation of $m$.
-\begin{minted}[style=borland]{python}
 def range_n n = { iter n next_range base_range };
-\end{minted}
+// Take natural number n and integer m, check that m is n-bit
+// then print n-bit representation of m
 
-\item Head of the list
-\begin{minted}[style=borland]{python}
 def hd (h:t) = { h };
-\end{minted}
+// Head of the list
 
-\item Tail of the list
-\begin{minted}[style=borland]{python}
 def tl (h:t) = { t };
-\end{minted}
+// Tail of the list
 
-\item n-th element of the list
-\begin{minted}[style=borland]{python}
 def n_th lst n = { hd (iter n tl lst) };
-\end{minted}
+// n-th element of the list
 
-\item Gives 0 if a is negative and 1 otherwise
-given an expected bit-size
-\begin{minted}[style=borland]{python}
 def negative n a = {
     nth (range_n (n + 1) (a + (2 ^ n))) n
 };
-\end{minted}
+// Gives 0 if a is negative and 1 otherwise
+// given an expected bit-size
 
-\item Checks that the sum of two n-bit numbers is an n-bit number
-then prints the sum
-\begin{minted}[style=borland]{python}
 def plus_range n x1 x2 = {
   range_n n (x1 + x2);
   x1 + x2
 };
-\end{minted}
+// Checks that the sum of two n-bit numbers is an n-bit number
+// then prints the sum
 
-\item Checks that the multiplication of two n-bit numbers is n-bit
-then prints the sum.
-\begin{minted}[style=borland]{python}
 def mult_range n x1 x2 = {
   mult_range n (x1 * x2);
   x1 * x2
 };
-\end{minted}
+// Checks that the multiplication of two n-bit numbers is n-bit
+// then prints the sum
 
-\item Checks that the subtraction of two n-bit natural numbers is non-negative
-then prints the subtraction
-\begin{minted}[style=borland]{python}
 def minus_range n x1 x2 = {
   negative n (x1 - x2) = 1;
   x1 - x2
 };
-\end{minted}
+// Checks that the subtraction of two n-bit natural numbers is non-negative
+// then prints the subtraction
 
-\item Checks that "a" is nonzero
-\begin{minted}[style=borland]{python}
 def iszero a = {
   def ai = fresh (1 | a);
   def b = 1 - (ai * a);
   a * b = 0;
   1 - b
 };
-\end{minted}
+// Checks that a is nonzero
 
-\item 
-\begin{minted}[style=borland]{python}
 def combine-aux x y = { x + (2 * y) };
-\end{minted}
 
-\item Combines a bit-representation of a number into decimal form
-\begin{minted}[style=borland]{python}
 def combine xs = { fold xs combine_aux 0 };
-\end{minted}
+// Combines a bit-representation of a number into decimal form
 
-\item 
-\begin{minted}[style=borland]{python}
 def take_base lst = { [] };
-\end{minted}
 
-\item 
-\begin{minted}[style=borland]{python}
 def take_ind take (h:t) = { h:(take t) };
-\end{minted}
 
-\item 
-\begin{minted}[style=borland]{python}
 def take n = { iter n take_ind take_base };
-\end{minted}
 
-\item 
-\begin{minted}[style=borland]{python}
 def drop_ith_rec take (h:t) = { h:(take t) };
-\end{minted}
 
-\item  Drop n-th element of a list.
-\begin{minted}[style=borland]{python}
 def drop_ith n = { iter n drop_ith_rec (fun (h:1) {1}) };
+// Drop n-th element of a list
 \end{minted}
-\end{itemize}
 
 \section{Compilation Steps}
 
@@ -611,10 +566,11 @@ The compilations are appropriately named \tcbox{to-cat}, \tcbox{to-seqn}, and \t
 \end{tikzcd}\]
 
 \begin{remark}
-    The interactive use of the pipeline is best done through the \tcbox{lambda} package. Below we showcase the compilation of the identity function.
+    The interactive use of the pipeline is best done through the \tcbox{lambda} package. Below, we showcase the compilation of the identity function.
 
 \begin{minted}{lisp}
 CL-USER> (in-package geb.lambda.trans)
+\#<PACKAGE "GEB.LAMBDA.TRANS">
 TRANS> (to-cat nil (lamb (list (coprod so1 so1)) (index 0)))
 (<-left (+ s-1 s-1) s-1)
 TRANS> (to-seqn (lamb (list (coprod so1 so1)) (index 0)))
@@ -625,13 +581,13 @@ TRANS> (to-circuit (lamb (list (coprod so1 so1)) (index 0)) :identity_fun)
    range_n 0 x2; 
    range_n 1 x1; 
    (x1) };)
+
 \end{minted}
 
 Here, \tcbox{nil} stands for the empty context we feed the compiler when we move from \LambdaIR{} to \Geb{}. All other compilations are assumed to occur in the empty context. To compile to \VampIR{} we also need to specify the name of our function as above.
 \end{remark}
-
 \begin{remark}
-In the prceeding discussion, all possible info is replaced by categorical counterparts for readability. \gebprod will be denoted by $\times$, \gebcoprod by $+$, elements of \gebmorph by actual arrows etc. wherever possible without losing information. Similarly, \tcbox{sohomobj} will now be denoted by explicit arrows. 
+In the proceeding discussion, all possible info is replaced by categorical counterparts for readability. \gebprod will be denoted by $\times$, \gebcoprod by $+$, elements of \gebmorph by actual arrows etc. wherever possible without losing information. Similarly, \tcbox{sohomobj} will now be denoted by explicit arrows. 
 \end{remark}
 
 \subsection{\large{\LambdaIR{} $\to$ \Geb{}}}
@@ -641,39 +597,40 @@ The description of the compilation will be made less formal to facilitate unders
 
 We define the compilation to-cat $\colon$ \LambdaIR $\to$ \Geb{} with precise typing being
 \begin{minted}{agda}
-  to-cat : List substobj → lambda  →  substmorph 
+  to-cat : (List substobj) → lambda  →  substmorph 
 \end{minted}
 as a function taking in a lambda term and a list of \Geb{} objects serving as a context and spitting out a \Geb{} morphism with typing 
- $$\textnormal{to-cat} (A_1,...,A_n) (\text{t} : B) : A_1 \times ...\times A_n \times 1 \to B $$
+ $$\textnormal{to-cat} (A_1,...,A_n) (\text{term} : B) : A_1 \times ...\times A_n \times 1 \to B $$
 
-We proceed by induction on \tcbox{t}, assuming that we are always given context $A_1,...,A_n := \gamma$ and defining $A_1 \times ... \times A_n \times 1 := \Gamma$\footnote{That is, any context is interpreted in \Geb{} as an iterated product with \gebterm on the right.}.
-
-
-\begin{table}[!htb]
-\label{table:compilation-to-cat-part-1}
-\caption{Compilation to-cat from \LambdaIR{} to \Geb{}.}
-\setlength{\tabcolsep}{3mm} % separator between columns
+We proceed by induction on \tcbox{term}, assuming that we are always given context $A_1,...,A_n := \gamma$ and defining $A_1 \times ... \times An \times 1 := \Gamma$\footnote{That is, any context is interpreted in \Geb{} as an iterated product with \gebterm on the right}.
+% \mint{html}|..|
+\begin{table}[H]
+\caption{ Compilation to-cat from \LambdaIR{} to \Geb{}.  }
+\label{de:Wahrheitstabelle_Bsp01}
+\setlength{\tabcolsep}{5mm} % separator between columns
 \def\arraystretch{1.25} % vertical stretch factor
 \centering
-\begin{tabular}{lc}
+\begin{tabular}{cc}
 \toprule
-\LambdaIR{}  & \Geb{}  \\
+\LambdaIR{} & \Geb{} \\
 \midrule
-\small\tcbox{(absurd B (term : so0))} &%https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzIsMCwiMCJdLFs0LDEsIkIiXSxbMCwxLCJcXHNjcmlwdHNpemV7XFx0ZXh0bm9ybWFse3RvLWNhdH0gKFxcZ2FtbWEpKFxcdGV4dHt0ZXJtfSl9Il0sWzEsMiwiISJdLFswLDIsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDJdXQ==
+\small\tcbox{(absurd B (term : so0))}       &
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzIsMCwiMCJdLFs0LDEsIkIiXSxbMCwxLCJcXHNjcmlwdHNpemV7XFx0ZXh0bm9ybWFse3RvLWNhdH0gKFxcZ2FtbWEpKFxcdGV4dHt0ZXJtfSl9Il0sWzEsMiwiISJdLFswLDIsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDJdXQ==
 \begin{tikzcd}
 	&& 0 \\
 	\Gamma &&&& B
 	\arrow["{\scriptsize{\textnormal{to-cat} (\gamma)(\text{term})}}", from=2-1, to=1-3]
 	\arrow["{!}", from=1-3, to=2-5]
 	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=2-1, to=2-5]
-\end{tikzcd}
+\end{tikzcd}\\
+\midrule
 \small\tcbox{(unit : so1)} &
 % https://q.uiver.app/#q=WzAsMixbMCwwLCJcXEdhbW1hIl0sWzIsMCwiMSJdLFswLDEsIiEiXSxbMCwxLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dH0pIiwyLHsiY3VydmUiOjN9XV0=
 \begin{tikzcd}
 	\Gamma && 1
 	\arrow["{!}", from=1-1, to=1-3]
 	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', curve={height=18pt}, from=1-1, to=1-3]
-\end{tikzcd} \\
+\end{tikzcd} \\ 
 \midrule
 \small\tcbox{(left A (term : B) : B + A)} 
 &% https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzIsMCwiQiJdLFs0LDEsIkIrQSJdLFswLDEsIlxcc2NyaXB0c2l6ZXtcXHRleHR7dG8tY2F0fSAoXFxnYW1tYSkoXFx0ZXh0e3Rlcm19KX0iXSxbMSwyLCJcXGlvdGFfMSIsMCx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Imhvb2siLCJzaWRlIjoidG9wIn19fV0sWzAsMiwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkoXFx0ZXh0IHt0fSkiLDJdXQ==
@@ -684,6 +641,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow["{\iota_1}", hook, from=1-3, to=2-5]
 	\arrow["{\text{to-cat}(\gamma)(\text {t})}"', from=2-1, to=2-5]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(right A (term : B)) : A + B} &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzIsMCwiQiJdLFs0LDEsIkEgKyBCIl0sWzAsMSwiXFxzY3JpcHRzaXple1xcdGV4dHt0by1jYXR9IChcXGdhbW1hKShcXHRleHR7dGVybX0pfSJdLFsxLDIsIlxcaW90YV8yIiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoiaG9vayIsInNpZGUiOiJ0b3AifX19XSxbMCwyLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHQgdCkiLDJdXQ==
 \begin{tikzcd}
@@ -692,8 +650,9 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow["{\scriptsize{\text{to-cat} (\gamma)(\text{term})}}", from=2-1, to=1-3]
 	\arrow["{\iota_2}", hook, from=1-3, to=2-5]
 	\arrow["{\text{to-cat}(\gamma)(\text t)}"', from=2-1, to=2-5]
-\end{tikzcd} 
+\end{tikzcd}
 \\
+\midrule
  \tcbox[tikznode]{%
  \small (case (on : A + B) \\ \;\;\; \small (ltm : C) \\ \small \;\;\;\;\;\;\;\;\;(rtm : C)) : C 
 } &
@@ -717,6 +676,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=6-1, to=6-5]
 \end{tikzcd}
 \\
+\midrule
 \small\tcbox{(pair (ltm : A) (rtm : B)) : A $\times$ B} &
 % https://q.uiver.app/#q=WzAsNCxbMCwzLCJBIl0sWzMsMiwiXFxHYW1tYSJdLFs2LDMsIkIiXSxbMywwLCJBIFxcdGltZXMgQiJdLFsxLDIsIkciLDAseyJjdXJ2ZSI6LTJ9XSxbMSwyLCJcXHNjcmlwdHNpemVcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7cnRtfSkiLDIseyJsYWJlbF9wb3NpdGlvbiI6NjAsImN1cnZlIjoyfV0sWzEsMCwiRiIsMix7ImN1cnZlIjoyfV0sWzEsMCwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHtsdG19KSIsMCx7ImxhYmVsX3Bvc2l0aW9uIjo2MCwiY3VydmUiOi0yfV0sWzMsMCwiXFxwaV8xIiwyLHsiY3VydmUiOjV9XSxbMywyLCJcXHBpXzIiLDAseyJjdXJ2ZSI6LTV9XSxbMSwzLCJcXHNtYWxsIFxcbGFuZ2xlIEYgLCBHIFxccmFuZ2xlIiwwLHsiY3VydmUiOi0yfV0sWzEsMywiXFxzbWFsbCBcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dH0pIiwyLHsiY3VydmUiOjJ9XSxbNiw3LCIiLDIseyJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6MjB9LCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzUsNCwiIiwxLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxMSwxMCwiIiwyLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dXQ==
 \begin{tikzcd}
@@ -736,6 +696,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow[shorten <=3pt, shorten >=3pt, Rightarrow, no head, from=1, to=0]
 	\arrow[shorten <=5pt, shorten >=5pt, Rightarrow, no head, from=5, to=4]
 \end{tikzcd} \\
+\midrule 
 \small\tcbox{(fst (term : A $\times$ B)) : A}
 & 
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiQSBcXHRpbWVzIEIiXSxbMiwxLCJBIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChcXGdhbW1hKShcXHRleHR7dGVybX0pIl0sWzEsMiwiXFxwaV8xIl0sWzAsMiwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkoXFx0ZXh0e3R9KSIsMl1d
@@ -746,6 +707,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow["{\pi_1}", from=1-2, to=2-3]
 	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=2-1, to=2-3]
 \end{tikzcd} \\
+\midrule 
 \small\tcbox{(snd (term : A $\times$ B)) : B} &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiQSBcXHRpbWVzIEIiXSxbMiwxLCJCIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChcXGdhbW1hKShcXHRleHR7dGVybX0pIl0sWzEsMiwiXFxwaV8yIl0sWzAsMiwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkodCkiLDJdXQ==
 \begin{tikzcd}
@@ -755,6 +717,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow["{\pi_2}", from=1-2, to=2-3]
 	\arrow["{\text{to-cat}(\gamma)(t)}"', from=2-1, to=2-3]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(lamb (tdom : A) (term : B)) : A $\to$ B} &
 % https://q.uiver.app/#q=WzAsNSxbMiwwLCJBIFxcdGltZXMgXFxHYW1tYSJdLFs0LDEsIkIiXSxbMCwxLCJcXEdhbW1hIFxcdGltZXMgQSJdLFswLDIsIlxcR2FtbWEiXSxbNCwyLCIoQSBcXHRvIEIpIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChBLFxcR2FtbWEpKHRlcm0pIl0sWzIsMCwiXFxjb25nIl0sWzIsMSwiRiIsMl0sWzMsNCwiXFx0ZXh0e2N1cnJ5fShGKSJdLFszLDQsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDIseyJjdXJ2ZSI6M31dXQ==
 \begin{tikzcd}
@@ -767,6 +730,21 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow["{\text{curry}(F)}", from=3-1, to=3-5]
 	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', curve={height=18pt}, from=3-1, to=3-5]
 \end{tikzcd} \\
+\bottomrule
+  \end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\caption{ The following table continues the information presented in Table 1. It provides the additional cases. }
+\label{de:Wahrheitstabelle_Bsp01}
+\setlength{\tabcolsep}{5mm} % separator between columns
+\def\arraystretch{1.25} % vertical stretch factor
+\centering
+\begin{tabular}{cc}
+\toprule
+\LambdaIR{} & \Geb{} \\
+\midrule 
 \small\tcbox{(app (fun : A $\to$ B) (term : A)) : B} &
 % https://q.uiver.app/#q=WzAsNixbMiwwLCJcXEdhbW1hIl0sWzAsMiwiKEEgXFx0byBCKSJdLFs0LDIsIkEiXSxbMCw0LCJcXEdhbW1hIl0sWzIsMywiKEEgXFx0byBCKSBcXHRpbWVzIEEiXSxbNCw0LCJCIl0sWzAsMSwiXFx0ZXh0e3RvLWNhdH0gKFxcZ2FtbWEpKFxcdGV4dHtmdW59KSIsMix7ImxhYmVsX3Bvc2l0aW9uIjo3MCwiY3VydmUiOjJ9XSxbMCwyLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dGVybX0pIiwwLHsibGFiZWxfcG9zaXRpb24iOjcwLCJjdXJ2ZSI6LTJ9XSxbMCwxLCJGIiwwLHsiY3VydmUiOi0yfV0sWzAsMiwiRyIsMix7ImN1cnZlIjoyfV0sWzMsNCwiXFxsYW5nbGUgRiwgRyBcXHJhbmdsZSJdLFs0LDUsIlxcdGV4dHtldmFsfSJdLFszLDUsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDJdLFs2LDgsIiIsMix7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjoyMH0sInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbNyw5LCIiLDAseyJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6MjB9LCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV1d
 \begin{tikzcd}[column sep=1em]
@@ -785,6 +763,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=0, to=2]
 	\arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=1, to=3]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(index i) : $A_i$} &
 % https://q.uiver.app/#q=WzAsMixbMCwwLCJBXzEgXFx0aW1lcyAuLi4gXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIkFfaSJdLFswLDEsIlxccGlfbiJdLFswLDEsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKHQpIiwyLHsib2Zmc2V0IjoyLCJjdXJ2ZSI6M31dXQ==
 \begin{tikzcd}
@@ -792,6 +771,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow["{\pi_n}", from=1-1, to=1-3]
 	\arrow["{\text{to-cat}(\gamma)(t)}"', shift right=2, curve={height=18pt}, from=1-1, to=1-3]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(bit-choice bitv) : nat-width n} &
 % https://q.uiver.app/#q=WzAsNCxbMCwyLCJcXEdhbW1hIl0sWzEsMSwiMSJdLFsyLDIsIlxcdGV4dHsobmF0LXdpZHRoIG4pfSJdLFsxLDAsIlxcdGV4dHttID0gYml0diBpbiBkZWNpbWFsIG5vdGF0aW9ufSJdLFswLDEsIiEiXSxbMSwyLCJcXHRleHR7bmF0LWNvbnN0IG4gbX0iXSxbMCwyLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dH0pIiwyXV0=
 \begin{tikzcd}[column sep=1em]
@@ -802,6 +782,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow["{\text{nat-const n m}}", from=2-2, to=3-3]
 	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=3-1, to=3-3]
 \end{tikzcd}\\
+\midrule
 \small\tcbox[tikznode]{%
   (plus (ltm : natwidth-n) \\\;\;\;\;\;\;\;\;\;\; (rtm : nat-width n)) \\
   \;\;\;\;\;: nat-width n
@@ -823,6 +804,7 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=2, to=1]
 \end{tikzcd}
 \\
+\midrule
 \small \tcbox[tikznode]{%
 (lamb-eq 
 \hspace{4mm}(ltm : nat-width n) \\
@@ -844,10 +826,10 @@ We proceed by induction on \tcbox{t}, assuming that we are always given context 
 	\arrow[""{name=3, anchor=center, inner sep=0}, "{\text{to-cat}(\gamma)(\text{rtm})}", curve={height=-12pt}, from=1-2, to=2-3]
 	\arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=2, to=0]
 	\arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=3, to=1]
-\end{tikzcd}
-\end{tabular}
+\end{tikzcd}\\
+\bottomrule
+  \end{tabular}
 \end{table}
-
 
 % \begin{itemize}
 
