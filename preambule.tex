@@ -1,8 +1,7 @@
-% mscguide.tex
-% v1.0, released 11 Nov 2019
-% Copyright 2019 Cambridge University Press
+\usepackage{minted}
+% \usepackage{tabularx}
+\usepackage{longtable}
 
-\documentclass{msc}
 \usepackage[english]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -80,11 +79,13 @@
 \usetikzlibrary{scopes}
 \usetikzlibrary{decorations.pathmorphing}
 \graphicspath{{./images/}}
-\input{macros}
-\usepackage{cleveref}
 
-\Crefname{definition}{Definition}{Definitions}
-\Crefname{lemma}{Lemma}{Lemmas}
+\input{macros}
+
+\usepackage[capitalise]{cleveref}
+
+% \Crefname{definition}{Definition}{Definitions}
+% \Crefname{lemma}{Lemma}{Lemmas}
 
 \bibliographystyle{ACM-Reference-Format}
 % \renewcommand{\baselinestretch}{2}

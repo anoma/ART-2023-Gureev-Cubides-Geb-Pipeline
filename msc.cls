@@ -1,5 +1,7 @@
+% This is a modified version of v1.0 CUP MSC LaTeX document class
+
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{CUP-MSC-LaTeX-V1}[2018/08/09 v1.0 CUP MSC LaTeX document class]
+\ProvidesClass{CUP-MSC-LaTeX-V1}[2023/08/14]
 %
 \newif\ifOA\global\OAfalse%
 \newif\iflsans\global\lsansfalse
@@ -707,6 +709,7 @@
 \usepackage{soul}
 \usepackage{calc}
 \usepackage{color}
+\usepackage{xcolor}
 
 \renewcommand{\rmdefault}{ptm}%
 \renewcommand{\sfdefault}{phv}%
@@ -715,6 +718,8 @@
 \definecolor{absshadecolor}{cmyk}{0,0,0,.12}
 \thm@bodyfont{}
 \thm@headfont{\itshape}
+\definecolor{anoma}{HTML}{AE3133}
+
 
 \usepackage{framed}
 
@@ -1129,8 +1134,7 @@
 \def\firstpage#1{#1}
 \def\lastpage#1{#1}
 
-\def\releasetext{released:}
-\def\doitext{doi:}
+\def\doitext{DOI:}
 \def\voltext{\ifcopoddhead{Vol.}\else{vol.}\fi}
 \def\isstext{No.}
 \def\journal#1{\gdef\journalname{#1}}
@@ -1140,11 +1144,12 @@
 \def\jnlPage#1#2{\gdef\first@page{\thepage}\gdef\last@page{#2}}
 
 
-\def\doilink#1{\ifonline\href{https://doi.org/#1}{\textcolor{blue}{#1}}\else#1\fi}
+\def\doilink#1{\ifonline\href{https://doi.org/#1}{\textcolor{anoma}{#1}}\else#1\fi}
 \def\volno#1{\gdef\@volno{#1}}\volno{}%
 \def\issno#1{\gdef\@issueno{#1}}\issno{}%
 \def\doival#1{\gdef\@doi{\doilink{#1}}}\doival{}%
 \def\releaseval#1{\gdef\@release{#1}}\releaseval{}%
+\def\updatedval#1{\gdef\@updated{#1}}\updatedval{}%
 \def\thehead#1{\gdef\@thehead{#1}}\thehead{}%
 \def\edno#1{\gdef\@edno{#1}}\edno{}%
 
@@ -1153,7 +1158,7 @@
 
 
 \def\journaltitle#1{\gdef\@journaltitle{#1}}\journaltitle{
-Heliax Internal Reports}%Mathematical Structures in Computer}%
+Anoma Research Topics}
 \def\cpr#1{\gdef\@cpr{#1}}
 
 \def\OAlink{http://creativecommons.org/licenses/by/4.0/}
@@ -1163,7 +1168,7 @@ Heliax Internal Reports}%Mathematical Structures in Computer}%
 \OAtext{This is an Open Access article, distributed under the terms of the Creative Commons Attribution licence\newline \hbox{(\iffinals\OAlink\else\href{\OAlink}{\OAlink}\fi),} which permits unrestricted re-use, distribution, and reproduction in any medium, provided the
 original work is properly cited.}
 
-\cpr{Copyright © Heliax AG - Last update: \today}%
+\cpr{Copyright © Heliax AG}%
 
 \def\corresp#1{\affilfont\@par#1}
 
@@ -1175,13 +1180,11 @@ original work is properly cited.}
        \def\@oddfoot{\vbox to 2.7pt{\vspace*{-27.5pt}%
         \hbox to \textwidth{\psplainfootfont\@cpr\hfill}}}%
        \def\@evenhead{\hbox to 322.5pt{\vbox{\vspace*{6.5pt}%
-            {\psplainfont\global\copoddheadtrue{\itshape\@journaltitle} (\@jnlDoiYr),\if@issue\ \textbf{\@volno},\ pp.\else\fi\ \first@page--\last@page}\vskip2pt%\ \textbf{\@volumeno}
-            {\psplainfont\doitext\@doi}\vskip2pt%
-            {\psplainfont\releasetext\@release}}}\vbox to 13.5pt{\includegraphics[scale=0.2]{heliax-logo.pdf}}}
-       \def\@oddhead{\hbox to 348pt{\vbox{\vspace*{6.5pt}%
-            {\psplainfont\global\copoddheadtrue{\itshape\@journaltitle} (\@jnlDoiYr),\if@issue\ \textbf{\@volno},\ pp.\else\fi\ \first@page--\last@page}\vskip2pt%\ \textbf{\@volumeno}
-            {\psplainfont\doitext\@doi}\vskip2pt%
-            {\psplainfont\releasetext\@release}}}\vbox to 13.5pt{\includegraphics[scale=0.2]{heliax-logo.pdf}}}}%
+            {\psplainfont\global\copoddheadtrue{\itshape\@journaltitle} (\@jnlDoiYr)}\vskip2pt%\ \textbf{\@volumeno}
+            {\psplainfont\doitext\@doi}}}\vbox to 13.5pt{\includegraphics[scale=0.09]{anoma-logo.pdf}}}
+       \def\@oddhead{\hbox to 318pt{\vbox{\vspace*{6.5pt}%
+            {\psplainfont\global\copoddheadtrue{\itshape\@journaltitle} (\@jnlDoiYr)}\vskip2pt%\ \textbf{\@volumeno}
+            {\psplainfont\doitext\@doi}}}\vbox to 13.5pt{\includegraphics[scale=0.09]{anoma-logo.pdf}}}}%
 
 \let\save@clearpage\clearpage
 \let\save@outputpage\@outputpage
@@ -3805,11 +3808,11 @@ original work is properly cited.}
 draft=false,
 dvips,
 colorlinks=true,
-linkcolor=blue,
-anchorcolor=blue,
-citecolor=blue,
-urlcolor=blue,
-filecolor=blue,
+linkcolor=anoma,
+anchorcolor=anoma,
+citecolor=anoma,
+urlcolor=anoma,
+filecolor=anoma,
 bookmarksopenlevel=3,
 bookmarksopen=true,
 pdfborderstyle={/S/U/W 0},
@@ -3821,7 +3824,7 @@ breaklinks=true}
 \usepackage{etoolbox}
 \else
 \fi
-\def\linkref#1#2{\ifonline\textcolor{blue}{\hyperlink{#1}{#2}}\else#2\fi}
+\def\linkref#1#2{\ifonline\textcolor{anoma}{\hyperlink{#1}{#2}}\else#2\fi}
 \def\linktarget#1#2{\ifonline\hypertarget{#1}{#2}\else#2\fi}
 
 \def\acom#1{%
@@ -4031,6 +4034,7 @@ breaklinks=true}
 \newdimen\belowmidrulesep
 \newdimen\midlightrulewidth
 
+%dimmensions
 \heavyrulewidth=.5pt
 \lightrulewidth=.25pt
 \midlightrulewidth=.30pt
@@ -4065,7 +4069,7 @@ breaklinks=true}
    {\egroup}
 %%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand{\email}[1]{\href{mailto:#1}{\color{blue}#1}}
+\newcommand{\email}[1]{\href{mailto:#1}{\color{anoma}#1}}
 
 \def\ackheadfont{\fontfamily{\sfdefault}\fontsize{8}{10}\selectfont\bfseries}
 \def\ackfont{\fontsize{8}{10}\selectfont}
