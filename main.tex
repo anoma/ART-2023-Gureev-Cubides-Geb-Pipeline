@@ -57,13 +57,13 @@ Lambda calculus with optional typing) to \VampIR{}, an in-house language
 for arithmetic circuits. As part of the implementation, we also provide an
 interactive user environment equipped with extra features such as
 interpreters, program type-checkers, and a \Geb{} visualizer available at
-the following address:
+the following address, release v0.4.
 \begin{center}
     \url{https://github.com/anoma/geb}.
 \end{center}
 
 The general aim of the paper is to provide an overview of pipeline design
-that is accessible to people without delving into specific implementation.
+that is accessible to people without delving very deep in the Lisp implementation.
 Primarily, we aim to:
 
 \begin{enumerate}
@@ -420,7 +420,8 @@ data substmorph : substobj → substobj → Set where
                                G-> (prod (nat-width 1) (nat-width n)))
   -- decomposes an n+1 bit number into the top bit and the rest of the bits
   one-bit-to-bool : (nat-width 1) G-> (coprod so1 so1)
-  -- isomorphism sending bit 0 to the left copy of so1, and 1 to the right copy.
+  -- isomorphism sending bit 0 to the left copy of so1, and 
+  -- 1 to the right copy.
   nat-eq : (n : Nat) → ((prod (nat-width n) (nat-width n))
                         G-> (coprod so1 so1))
   --equality predicate
@@ -615,7 +616,7 @@ $(1, 0) \cong (1)$. For a more detailed discussion, see
 \cref{section:gtos}.
 \end{remark}
 
-\tcbox{parallel-seq} is actually the product of the corresponding
+The \tcbox{parallel-seq} function is actually the product of the corresponding
 morphisms, and therefore we use the notation \tcbox{parallel-seq f g} = $f
 \times g$.
 
@@ -839,19 +840,16 @@ precise typing being
 as a function taking in a lambda term and a list of \Geb{} objects serving
 as a context and spitting out a \Geb{} morphism with typing
  $$\textnormal{to-cat} (A_1,...,A_n) (\text{t} : B) : A_1 \times ...\times
- A_n \times 1 \to B $$
+ A_n \times 1 \to B .$$
 
 We proceed by induction on \tcbox{t}, assuming that we are always given
 context $A_1,...,A_n := \gamma$ and defining $A_1 \times ... \times A_n
 \times 1 := \Gamma$\footnote{That is, any context is interpreted in \Geb{}
 as an iterated product with \gebterm on the right.}.
 
-\begin{table}[!htb]
-\label{table:compilation-to-cat-part-1}
-\caption{Compilation to-cat from \LambdaIR{} to \Geb{}.}
-% \setlength{\tabcolsep}{3mm} % separator between columns
-% \def\arraystretch{1.25} % vertical stretch factor
-% \centering
+% \captionof{table}{Compilation
+% from \LambdaIR{} to \Geb{}.}
+% \label{table:compilation-lambda-to-geb}
 \begin{tabular}{lc}
 \toprule
 \LambdaIR{}  & \Geb{}  \\
@@ -864,6 +862,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{!}", from=1-3, to=2-5]
     \arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=2-1, to=2-5]
 \end{tikzcd}\\
+\midrule
 \small\tcbox{(unit : so1)} &
 % https://q.uiver.app/#q=WzAsMixbMCwwLCJcXEdhbW1hIl0sWzIsMCwiMSJdLFswLDEsIiEiXSxbMCwxLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dH0pIiwyLHsiY3VydmUiOjN9XV0=
 \begin{tikzcd}
@@ -881,6 +880,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{\iota_1}", hook, from=1-3, to=2-5]
     \arrow["{\text{to-cat}(\gamma)(\text {t})}"', from=2-1, to=2-5]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(right A (term : B)) : A + B} &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzIsMCwiQiJdLFs0LDEsIkEgKyBCIl0sWzAsMSwiXFxzY3JpcHRzaXple1xcdGV4dHt0by1jYXR9IChcXGdhbW1hKShcXHRleHR7dGVybX0pfSJdLFsxLDIsIlxcaW90YV8yIiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoiaG9vayIsInNpZGUiOiJ0b3AifX19XSxbMCwyLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHQgdCkiLDJdXQ==
 \begin{tikzcd}
@@ -891,6 +891,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{\text{to-cat}(\gamma)(\text t)}"', from=2-1, to=2-5]
 \end{tikzcd}
 \\
+\midrule
  \tcbox[tikznode]{%
  \small (case (on : A + B) \\ \;\;\; \small (ltm : C) \\ \small \;\;\;\;\;\;\;\;\;(rtm : C)) : C
 } &
@@ -912,8 +913,11 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{\text{to-cat}(\gamma)(\text{on})}", from=6-1, to=4-1]
     \arrow["{[ F, G ]}", from=4-5, to=6-5]
     \arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=6-1, to=6-5]
-\end{tikzcd}
-\\
+\end{tikzcd}\\
+\midrule
+\end{tabular}
+
+\begin{tabular}{lc}
 \small\tcbox{(pair (ltm : A) (rtm : B)) : A $\times$ B} &
 % https://q.uiver.app/#q=WzAsNCxbMCwzLCJBIl0sWzMsMiwiXFxHYW1tYSJdLFs2LDMsIkIiXSxbMywwLCJBIFxcdGltZXMgQiJdLFsxLDIsIkciLDAseyJjdXJ2ZSI6LTJ9XSxbMSwyLCJcXHNjcmlwdHNpemVcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7cnRtfSkiLDIseyJsYWJlbF9wb3NpdGlvbiI6NjAsImN1cnZlIjoyfV0sWzEsMCwiRiIsMix7ImN1cnZlIjoyfV0sWzEsMCwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHtsdG19KSIsMCx7ImxhYmVsX3Bvc2l0aW9uIjo2MCwiY3VydmUiOi0yfV0sWzMsMCwiXFxwaV8xIiwyLHsiY3VydmUiOjV9XSxbMywyLCJcXHBpXzIiLDAseyJjdXJ2ZSI6LTV9XSxbMSwzLCJcXHNtYWxsIFxcbGFuZ2xlIEYgLCBHIFxccmFuZ2xlIiwwLHsiY3VydmUiOi0yfV0sWzEsMywiXFxzbWFsbCBcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dH0pIiwyLHsiY3VydmUiOjJ9XSxbNiw3LCIiLDIseyJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6MjB9LCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzUsNCwiIiwxLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxMSwxMCwiIiwyLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dXQ==
 \begin{tikzcd}
@@ -932,7 +936,8 @@ as an iterated product with \gebterm on the right.}.
     \arrow[shorten <=3pt, shorten >=3pt, Rightarrow, no head, from=2, to=3]
     \arrow[shorten <=3pt, shorten >=3pt, Rightarrow, no head, from=1, to=0]
     \arrow[shorten <=5pt, shorten >=5pt, Rightarrow, no head, from=5, to=4]
-\end{tikzcd} \\
+\end{tikzcd}\\
+\midrule
 \small\tcbox{(fst (term : A $\times$ B)) : A}
 &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiQSBcXHRpbWVzIEIiXSxbMiwxLCJBIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChcXGdhbW1hKShcXHRleHR7dGVybX0pIl0sWzEsMiwiXFxwaV8xIl0sWzAsMiwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkoXFx0ZXh0e3R9KSIsMl1d
@@ -943,6 +948,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{\pi_1}", from=1-2, to=2-3]
     \arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=2-1, to=2-3]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(snd (term : A $\times$ B)) : B} &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiQSBcXHRpbWVzIEIiXSxbMiwxLCJCIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChcXGdhbW1hKShcXHRleHR7dGVybX0pIl0sWzEsMiwiXFxwaV8yIl0sWzAsMiwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkodCkiLDJdXQ==
 \begin{tikzcd}
@@ -952,6 +958,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{\pi_2}", from=1-2, to=2-3]
     \arrow["{\text{to-cat}(\gamma)(t)}"', from=2-1, to=2-3]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(lamb (tdom : A) (term : B)) : A $\to$ B} &
 % https://q.uiver.app/#q=WzAsNSxbMiwwLCJBIFxcdGltZXMgXFxHYW1tYSJdLFs0LDEsIkIiXSxbMCwxLCJcXEdhbW1hIFxcdGltZXMgQSJdLFswLDIsIlxcR2FtbWEiXSxbNCwyLCIoQSBcXHRvIEIpIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChBLFxcR2FtbWEpKHRlcm0pIl0sWzIsMCwiXFxjb25nIl0sWzIsMSwiRiIsMl0sWzMsNCwiXFx0ZXh0e2N1cnJ5fShGKSJdLFszLDQsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDIseyJjdXJ2ZSI6M31dXQ==
 \begin{tikzcd}
@@ -964,6 +971,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{\text{curry}(F)}", from=3-1, to=3-5]
     \arrow["{\text{to-cat}(\gamma)(\text{t})}"', curve={height=18pt}, from=3-1, to=3-5]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(app (fun : A $\to$ B) (term : A)) : B} &
 % https://q.uiver.app/#q=WzAsNixbMiwwLCJcXEdhbW1hIl0sWzAsMiwiKEEgXFx0byBCKSJdLFs0LDIsIkEiXSxbMCw0LCJcXEdhbW1hIl0sWzIsMywiKEEgXFx0byBCKSBcXHRpbWVzIEEiXSxbNCw0LCJCIl0sWzAsMSwiXFx0ZXh0e3RvLWNhdH0gKFxcZ2FtbWEpKFxcdGV4dHtmdW59KSIsMix7ImxhYmVsX3Bvc2l0aW9uIjo3MCwiY3VydmUiOjJ9XSxbMCwyLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dGVybX0pIiwwLHsibGFiZWxfcG9zaXRpb24iOjcwLCJjdXJ2ZSI6LTJ9XSxbMCwxLCJGIiwwLHsiY3VydmUiOi0yfV0sWzAsMiwiRyIsMix7ImN1cnZlIjoyfV0sWzMsNCwiXFxsYW5nbGUgRiwgRyBcXHJhbmdsZSJdLFs0LDUsIlxcdGV4dHtldmFsfSJdLFszLDUsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDJdLFs2LDgsIiIsMix7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjoyMH0sInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbNyw5LCIiLDAseyJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6MjB9LCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV1d
 \begin{tikzcd}[column sep=1em]
@@ -982,6 +990,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=0, to=2]
     \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=1, to=3]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(index i) : $A_i$} &
 % https://q.uiver.app/#q=WzAsMixbMCwwLCJBXzEgXFx0aW1lcyAuLi4gXFx0aW1lcyBBX24gXFx0aW1lcyBcXHRleHR7c28xfSJdLFsyLDAsIkFfaSJdLFswLDEsIlxccGlfbiJdLFswLDEsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKHQpIiwyLHsib2Zmc2V0IjoyLCJjdXJ2ZSI6M31dXQ==
 \begin{tikzcd}
@@ -989,6 +998,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{\pi_n}", from=1-1, to=1-3]
     \arrow["{\text{to-cat}(\gamma)(t)}"', shift right=2, curve={height=18pt}, from=1-1, to=1-3]
 \end{tikzcd} \\
+\midrule
 \small\tcbox{(bit-choice bitv) : nat-width n} &
 % https://q.uiver.app/#q=WzAsNCxbMCwyLCJcXEdhbW1hIl0sWzEsMSwiMSJdLFsyLDIsIlxcdGV4dHsobmF0LXdpZHRoIG4pfSJdLFsxLDAsIlxcdGV4dHttID0gYml0diBpbiBkZWNpbWFsIG5vdGF0aW9ufSJdLFswLDEsIiEiXSxbMSwyLCJcXHRleHR7bmF0LWNvbnN0IG4gbX0iXSxbMCwyLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dH0pIiwyXV0=
 \begin{tikzcd}[column sep=1em]
@@ -999,6 +1009,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{\text{nat-const n m}}", from=2-2, to=3-3]
     \arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=3-1, to=3-3]
 \end{tikzcd}\\
+\midrule
 \small\tcbox[tikznode]{%
   (plus (ltm : natwidth-n) \\\;\;\;\;\;\;\;\;\;\; (rtm : nat-width n)) \\
   \;\;\;\;\;: nat-width n
@@ -1020,6 +1031,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=2, to=1]
 \end{tikzcd}
 \\
+\midrule
 \small \tcbox[tikznode]{%
 (lamb-eq
 \hspace{4mm}(ltm : nat-width n) \\
@@ -1042,8 +1054,8 @@ as an iterated product with \gebterm on the right.}.
     \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=2, to=0]
     \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=3, to=1]
 \end{tikzcd}
+\bottomrule
 \end{tabular}
-\end{table}
 
 % \begin{itemize}
 
