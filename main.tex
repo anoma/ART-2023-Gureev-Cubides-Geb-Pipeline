@@ -915,29 +915,29 @@ as an iterated product with \gebterm on the right.}.
     \arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=6-1, to=6-5]
 \end{tikzcd}\\
 \midrule
+\small\tcbox{(pair (ltm : A) (rtm : B)) : A $\times$ B} &
+% https://q.uiver.app/#q=WzAsNCxbMCwyLCJBIl0sWzIsMiwiXFxHYW1tYSJdLFs0LDIsIkIiXSxbMiwwLCJBIFxcdGltZXMgQiJdLFsxLDIsIkciXSxbMSwyLCJcXHNjcmlwdHNpemVcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7cnRtfSkiLDIseyJsYWJlbF9wb3NpdGlvbiI6NjAsImN1cnZlIjoyfV0sWzEsMCwiRiIsMl0sWzEsMCwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHtsdG19KSIsMCx7ImxhYmVsX3Bvc2l0aW9uIjo2MCwiY3VydmUiOi0yfV0sWzMsMCwiXFxwaV8xIiwyLHsiY3VydmUiOjJ9XSxbMywyLCJcXHBpXzIiLDAseyJjdXJ2ZSI6LTJ9XSxbMSwzLCJcXHNtYWxsIFxcbGFuZ2xlIEYgLCBHIFxccmFuZ2xlIiwwLHsiY3VydmUiOi0yfV0sWzEsMywiXFxzbWFsbCBcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dH0pIiwyLHsiY3VydmUiOjJ9XSxbNiw3LCIiLDIseyJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6MjB9LCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzUsNCwiIiwxLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxMSwxMCwiIiwyLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dXQ==
+\begin{tikzcd}
+	&& {A \times B} \\
+	\\
+	A && \Gamma && B
+	\arrow[""{name=0, anchor=center, inner sep=0}, "G", from=3-3, to=3-5]
+	\arrow[""{name=1, anchor=center, inner sep=0}, "{\scriptsize\text{to-cat}(\gamma)(\text{rtm})}"'{pos=0.6}, curve={height=12pt}, from=3-3, to=3-5]
+	\arrow[""{name=2, anchor=center, inner sep=0}, "F"', from=3-3, to=3-1]
+	\arrow[""{name=3, anchor=center, inner sep=0}, "{\scriptsize \text{to-cat}(\gamma)(\text{ltm})}"{pos=0.6}, curve={height=-12pt}, from=3-3, to=3-1]
+	\arrow["{\pi_1}"', curve={height=12pt}, from=1-3, to=3-1]
+	\arrow["{\pi_2}", curve={height=-12pt}, from=1-3, to=3-5]
+	\arrow[""{name=4, anchor=center, inner sep=0}, "{\small \langle F , G \rangle}", curve={height=-12pt}, from=3-3, to=1-3]
+	\arrow[""{name=5, anchor=center, inner sep=0}, "{\small \text{to-cat}(\gamma)(\text{t})}"', curve={height=12pt}, from=3-3, to=1-3]
+	\arrow[shorten <=2pt, shorten >=2pt, Rightarrow, no head, from=2, to=3]
+	\arrow[shorten <=2pt, shorten >=2pt, Rightarrow, no head, from=1, to=0]
+	\arrow[shorten <=5pt, shorten >=5pt, Rightarrow, no head, from=5, to=4]
+\end{tikzcd}
 \end{tabular}
+\vfill
+\newpage
 
 \begin{tabular}{lc}
-\small\tcbox{(pair (ltm : A) (rtm : B)) : A $\times$ B} &
-% https://q.uiver.app/#q=WzAsNCxbMCwzLCJBIl0sWzMsMiwiXFxHYW1tYSJdLFs2LDMsIkIiXSxbMywwLCJBIFxcdGltZXMgQiJdLFsxLDIsIkciLDAseyJjdXJ2ZSI6LTJ9XSxbMSwyLCJcXHNjcmlwdHNpemVcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7cnRtfSkiLDIseyJsYWJlbF9wb3NpdGlvbiI6NjAsImN1cnZlIjoyfV0sWzEsMCwiRiIsMix7ImN1cnZlIjoyfV0sWzEsMCwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHtsdG19KSIsMCx7ImxhYmVsX3Bvc2l0aW9uIjo2MCwiY3VydmUiOi0yfV0sWzMsMCwiXFxwaV8xIiwyLHsiY3VydmUiOjV9XSxbMywyLCJcXHBpXzIiLDAseyJjdXJ2ZSI6LTV9XSxbMSwzLCJcXHNtYWxsIFxcbGFuZ2xlIEYgLCBHIFxccmFuZ2xlIiwwLHsiY3VydmUiOi0yfV0sWzEsMywiXFxzbWFsbCBcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dH0pIiwyLHsiY3VydmUiOjJ9XSxbNiw3LCIiLDIseyJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6MjB9LCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzUsNCwiIiwxLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxMSwxMCwiIiwyLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dXQ==
-\begin{tikzcd}
-    &&& {A \times B} \\
-    \\
-    &&& \Gamma \\
-    A &&&&&& B
-    \arrow[""{name=0, anchor=center, inner sep=0}, "G", curve={height=-12pt}, from=3-4, to=4-7]
-    \arrow[""{name=1, anchor=center, inner sep=0}, "{\scriptsize\text{to-cat}(\gamma)(\text{rtm})}"'{pos=0.6}, curve={height=12pt}, from=3-4, to=4-7]
-    \arrow[""{name=2, anchor=center, inner sep=0}, "F"', curve={height=12pt}, from=3-4, to=4-1]
-    \arrow[""{name=3, anchor=center, inner sep=0}, "{\scriptsize \text{to-cat}(\gamma)(\text{ltm})}"{pos=0.6}, curve={height=-12pt}, from=3-4, to=4-1]
-    \arrow["{\pi_1}"', curve={height=30pt}, from=1-4, to=4-1]
-    \arrow["{\pi_2}", curve={height=-30pt}, from=1-4, to=4-7]
-    \arrow[""{name=4, anchor=center, inner sep=0}, "{\small \langle F , G \rangle}", curve={height=-12pt}, from=3-4, to=1-4]
-    \arrow[""{name=5, anchor=center, inner sep=0}, "{\small \text{to-cat}(\gamma)(\text{t})}"', curve={height=12pt}, from=3-4, to=1-4]
-    \arrow[shorten <=3pt, shorten >=3pt, Rightarrow, no head, from=2, to=3]
-    \arrow[shorten <=3pt, shorten >=3pt, Rightarrow, no head, from=1, to=0]
-    \arrow[shorten <=5pt, shorten >=5pt, Rightarrow, no head, from=5, to=4]
-\end{tikzcd}\\
-\midrule
 \small\tcbox{(fst (term : A $\times$ B)) : A}
 &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiQSBcXHRpbWVzIEIiXSxbMiwxLCJBIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChcXGdhbW1hKShcXHRleHR7dGVybX0pIl0sWzEsMiwiXFxwaV8xIl0sWzAsMiwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkoXFx0ZXh0e3R9KSIsMl1d
@@ -960,35 +960,33 @@ as an iterated product with \gebterm on the right.}.
 \end{tikzcd} \\
 \midrule
 \small\tcbox{(lamb (tdom : A) (term : B)) : A $\to$ B} &
-% https://q.uiver.app/#q=WzAsNSxbMiwwLCJBIFxcdGltZXMgXFxHYW1tYSJdLFs0LDEsIkIiXSxbMCwxLCJcXEdhbW1hIFxcdGltZXMgQSJdLFswLDIsIlxcR2FtbWEiXSxbNCwyLCIoQSBcXHRvIEIpIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChBLFxcR2FtbWEpKHRlcm0pIl0sWzIsMCwiXFxjb25nIl0sWzIsMSwiRiIsMl0sWzMsNCwiXFx0ZXh0e2N1cnJ5fShGKSJdLFszLDQsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDIseyJjdXJ2ZSI6M31dXQ==
+% % https://q.uiver.app/#q=WzAsNSxbMSwwLCJBIFxcdGltZXMgXFxHYW1tYSJdLFsyLDEsIkIiXSxbMCwxLCJcXEdhbW1hIFxcdGltZXMgQSJdLFswLDIsIlxcR2FtbWEiXSxbMiwyLCIoQSBcXHRvIEIpIl0sWzAsMSwiXFxzY3JpcHRzaXplIFxcdGV4dHt0by1jYXR9IChBLFxcR2FtbWEpKHRlcm0pIl0sWzIsMCwiXFxjb25nIl0sWzIsMSwiRiIsMl0sWzMsNCwiXFx0ZXh0e2N1cnJ5fShGKSJdLFszLDQsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDIseyJjdXJ2ZSI6M31dXQ==
 \begin{tikzcd}
-    && {A \times \Gamma} \\
-    {\Gamma \times A} &&&& B \\
-    \Gamma &&&& {(A \to B)}
-    \arrow["{\scriptsize \text{to-cat} (A,\Gamma)(term)}", from=1-3, to=2-5]
-    \arrow["\cong", from=2-1, to=1-3]
-    \arrow["F"', from=2-1, to=2-5]
-    \arrow["{\text{curry}(F)}", from=3-1, to=3-5]
-    \arrow["{\text{to-cat}(\gamma)(\text{t})}"', curve={height=18pt}, from=3-1, to=3-5]
+	& {A \times \Gamma} \\
+	{\Gamma \times A} && B \\
+	\Gamma && {(A \to B)}
+	\arrow["{\scriptsize \text{to-cat} (A,\Gamma)(term)}", from=1-2, to=2-3]
+	\arrow["\cong", from=2-1, to=1-2]
+	\arrow["F"', from=2-1, to=2-3]
+	\arrow["{\text{curry}(F)}", from=3-1, to=3-3]
+	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', curve={height=18pt}, from=3-1, to=3-3]
 \end{tikzcd} \\
 \midrule
 \small\tcbox{(app (fun : A $\to$ B) (term : A)) : B} &
-% https://q.uiver.app/#q=WzAsNixbMiwwLCJcXEdhbW1hIl0sWzAsMiwiKEEgXFx0byBCKSJdLFs0LDIsIkEiXSxbMCw0LCJcXEdhbW1hIl0sWzIsMywiKEEgXFx0byBCKSBcXHRpbWVzIEEiXSxbNCw0LCJCIl0sWzAsMSwiXFx0ZXh0e3RvLWNhdH0gKFxcZ2FtbWEpKFxcdGV4dHtmdW59KSIsMix7ImxhYmVsX3Bvc2l0aW9uIjo3MCwiY3VydmUiOjJ9XSxbMCwyLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dGVybX0pIiwwLHsibGFiZWxfcG9zaXRpb24iOjcwLCJjdXJ2ZSI6LTJ9XSxbMCwxLCJGIiwwLHsiY3VydmUiOi0yfV0sWzAsMiwiRyIsMix7ImN1cnZlIjoyfV0sWzMsNCwiXFxsYW5nbGUgRiwgRyBcXHJhbmdsZSJdLFs0LDUsIlxcdGV4dHtldmFsfSJdLFszLDUsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDJdLFs2LDgsIiIsMix7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjoyMH0sInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbNyw5LCIiLDAseyJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6MjB9LCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV1d
-\begin{tikzcd}[column sep=1em]
-    && \Gamma \\
-    \\
-    {(A \to B)} &&&& A \\
-    && {(A \to B) \times A} \\
-    \Gamma &&&& B
-    \arrow[""{name=0, anchor=center, inner sep=0}, "{\text{to-cat} (\gamma)(\text{fun})}"'{pos=0.7}, curve={height=12pt}, from=1-3, to=3-1]
-    \arrow[""{name=1, anchor=center, inner sep=0}, "{\text{to-cat}(\gamma)(\text{term})}"{pos=0.7}, curve={height=-12pt}, from=1-3, to=3-5]
-    \arrow[""{name=2, anchor=center, inner sep=0}, "F", curve={height=-12pt}, from=1-3, to=3-1]
-    \arrow[""{name=3, anchor=center, inner sep=0}, "G"', curve={height=12pt}, from=1-3, to=3-5]
-    \arrow["{\langle F, G \rangle}", from=5-1, to=4-3]
-    \arrow["{\text{eval}}", from=4-3, to=5-5]
-    \arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=5-1, to=5-5]
-    \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=0, to=2]
-    \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=1, to=3]
+% % https://q.uiver.app/#q=WzAsNixbMiwwLCJcXEdhbW1hIl0sWzAsMCwiKEEgXFx0byBCKSJdLFs0LDAsIkEiXSxbMSwyLCJcXEdhbW1hIl0sWzIsMSwiKEEgXFx0byBCKSBcXHRpbWVzIEEiXSxbMywyLCJCIl0sWzAsMSwiXFx0ZXh0e3RvLWNhdH0gKFxcZ2FtbWEpKFxcdGV4dHtmdW59KSIsMix7ImxhYmVsX3Bvc2l0aW9uIjo3MCwiY3VydmUiOjJ9XSxbMCwyLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7dGVybX0pIiwwLHsibGFiZWxfcG9zaXRpb24iOjcwLCJjdXJ2ZSI6LTJ9XSxbMCwxLCJGIiwwLHsiY3VydmUiOi0yfV0sWzAsMiwiRyIsMix7ImN1cnZlIjoyfV0sWzMsNCwiXFxsYW5nbGUgRiwgRyBcXHJhbmdsZSJdLFs0LDUsIlxcdGV4dHtldmFsfSJdLFszLDUsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHt0fSkiLDJdLFs2LDgsIiIsMix7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjoyMH0sInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbNyw5LCIiLDAseyJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6MjB9LCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV1d
+\begin{tikzcd}
+	{(A \to B)} && \Gamma && A \\
+	&& {(A \to B) \times A} \\
+	& \Gamma && B
+	\arrow[""{name=0, anchor=center, inner sep=0}, "{\text{to-cat} (\gamma)(\text{fun})}"'{pos=0.7}, curve={height=12pt}, from=1-3, to=1-1]
+	\arrow[""{name=1, anchor=center, inner sep=0}, "{\text{to-cat}(\gamma)(\text{term})}"{pos=0.7}, curve={height=-12pt}, from=1-3, to=1-5]
+	\arrow[""{name=2, anchor=center, inner sep=0}, "F", curve={height=-12pt}, from=1-3, to=1-1]
+	\arrow[""{name=3, anchor=center, inner sep=0}, "G"', curve={height=12pt}, from=1-3, to=1-5]
+	\arrow["{\langle F, G \rangle}", from=3-2, to=2-3]
+	\arrow["{\text{eval}}", from=2-3, to=3-4]
+	\arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=3-2, to=3-4]
+	\arrow[shorten <=3pt, shorten >=3pt, Rightarrow, no head, from=0, to=2]
+	\arrow[shorten <=3pt, shorten >=3pt, Rightarrow, no head, from=1, to=3]
 \end{tikzcd} \\
 \midrule
 \small\tcbox{(index i) : $A_i$} &
@@ -1055,6 +1053,8 @@ as an iterated product with \gebterm on the right.}.
     \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=3, to=1]
 \end{tikzcd}
 \end{tabular}
+\vfill
+\newpage
 
 \begin{remark}
 Other arithmetic operations and \tcbox{lamb-lt} that get compiled
