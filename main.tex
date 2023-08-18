@@ -1054,32 +1054,7 @@ as an iterated product with \gebterm on the right.}.
     \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=2, to=0]
     \arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=3, to=1]
 \end{tikzcd}
-\bottomrule
 \end{tabular}
-
-% \begin{itemize}
-
-% In the following cases, let $\text{to-cat}(\gamma)(\text{ltm}) := F$ and $\text{to-cat}(\gamma)(\text{rtm}) := G$.
-
-% \item We compile \tcbox{(plus (ltm : nat-width n) (rtm : nat-width n)) : nat-width n} to
-% % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiKFxcdGV4dHtuYXQtd2lkdGggbn0pXFx0aW1lcyBcXHRleHR7KG5hdC13aWR0aCBuKX0iXSxbMiwxLCJcXHRleHR7KG5ldC13aWR0aCBuKX0iXSxbMCwxLCIgXFxsYW5nbGUgRiAsIEcgXFxyYW5nbGUiXSxbMSwyLCJcXHRleHR7bmF0LWFkZH0iXV0=
-% \[\begin{tikzcd}
-% 	& {(\text{nat-width n})\times \text{(nat-width n)}} \\
-% 	\Gamma && {\text{(nat-width n)}}
-% 	\arrow["{ \langle F , G \rangle}", from=2-1, to=1-2]
-% 	\arrow["{\text{nat-add}}", from=1-2, to=2-3]
-% \end{tikzcd}\]
-% and similarly with other arithmeic operations.
-% \item We compile the term \tcbox{(lamb-eq (ltm : nat-width n) (rtm : nat-width n)) : (coprod so1 so1)} to
-% % https://q.uiver.app/#q=WzAsMyxbMCwxLCJcXEdhbW1hIl0sWzEsMCwiKFxcdGV4dHtuYXQtd2lkdGggbn0pIFxcdGltZXMgKFxcdGV4dHtuYXQtd2lkdGggbn0pIl0sWzIsMSwiXFx0ZXh0eyhuZXQtd2lkdGggbil9Il0sWzEsMiwiXFx0ZXh0e25hdC1lcX0iXSxbMCwxLCJcXGxhbmdsZSBGLCBHXFxyYW5nbGUiXV0=
-% \[\begin{tikzcd}
-% 	& {(\text{nat-width n}) \times (\text{nat-width n})} \\
-% 	\Gamma && {\text{(nat-width n)}}
-% 	\arrow["{\text{nat-eq}}", from=1-2, to=2-3]
-% 	\arrow["{\langle F, G\rangle}", from=2-1, to=1-2]
-% \end{tikzcd}\]
-% and similarly with less-than.
-% \end{itemize}
 
 \begin{remark}
 Other arithmetic operations and \tcbox{lamb-lt} that get compiled
