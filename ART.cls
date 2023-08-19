@@ -110,8 +110,6 @@
   amssymb
 }
 
-
-
 % Additional maths packages
 \RequirePackage{
   textcomp,
@@ -127,7 +125,7 @@
 \declaretheoremstyle[
 	headfont=\normalfont\bfseries,
 	% notebraces={[}{]},
-	bodyfont=\normalfont,%\itshape,
+	bodyfont=\normalfont\itshape,
 	headpunct={},
 	% postheadspace=\newline,
 	% postheadhook={\textcolor{red}{\rule[.6ex]{\hfill}{0.4pt}}\\},
@@ -244,6 +242,10 @@
 \definecolor{color1}{RGB}{59,90,198}          % author email, doi
 \definecolor{anoma}{HTML}{AE3133}             % Anoma red
 \definecolor{absshadecolor}{cmyk}{0,0,0,.12}
+
+% \usepackage{parskip}
+\usepackage{stackengine}
+\usepackage[most]{tcolorbox}
 
 % Tables 
 \RequirePackage{
@@ -442,7 +444,8 @@
 x}
 
 %% Article meta data additional fields
-\newcommand{\pubdoi}[1]{\def\@pubdoi{#1}}                     % publication DOI
+\newcommand{\pubdoi}[1]{\def\@pubdoi{#1}}
+\newcommand{\history}[1]{\def\@history{#1}}                         % publication DOI
 \newcommand{\keywords}[1]{\def\@keywords{#1}}                 % keywords
 \newcommand{\sep}[0]{; }                                      % keyword separator
 \newcommand{\contact}[1]{\def\@contact{#1}}                   % contact author
@@ -671,23 +674,24 @@ x}
   \vskip3pt
 }
 
-\newcommand{\colorboxTikz}[2]{%
+\newcommand{\abstractBox}[2]{%
 \noindent%
-  \begin{center}%
-    \begin{tikzpicture}%
-        \node[rectangle
-              %  draw=#2
-             , top color=#2!30
-             , bottom color=#2!90
-             , rounded corners=2pt
-             , inner xsep=5pt
-             , inner ysep=6pt
-             , outer ysep=10pt]{
-        \begin{minipage}{\linewidth}%
-          {\absfont\bfseries\large Abstract}\\%
-          #1\end{minipage}};%
-    \end{tikzpicture}%
-  \end{center}%
+  \begin{center}
+    \begin{tcolorbox}[
+      colback=absshadecolor,
+      left=0mm,
+      right=0mm,%
+      top=1mm,%
+      bottom=1mm,%
+      boxsep=2mm,%
+      toptitle=0.5mm,
+      bottomtitle=0.5mm,%
+      %
+      ]
+      {\absfont\bfseries\large Abstract}\\%
+     #1
+    \end{tcolorbox}
+  \end{center}
 }
 
 %%%% Custom title page
@@ -735,13 +739,21 @@ x}
   % corresponding email
   \raggedright\contactswitch{}
   % abstract / TOC section 
-  % \raggedright{\abscontent{}}
-  \colorboxTikz{\abscontent{}}{absshadecolor}
+  \raggedright{
+  \abstractBox{\abscontent{}}{absshadecolor}}
   \noindent % This is to remove indentation of minipage
   %
   % \noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}%
   %
-  \vskip10pt%
+  \vskip5pt%
+}%
+\noindent
+\@ifundefined{@history}{}{%
+{%
+  \parbox{\linewidth}{%
+  {\footnotefont \@history}}%
+}%
+\vskip5pt%
 }%
 \@ifundefined{vert@adjust}{}{\vskip\vert@adjust}%
 }%
