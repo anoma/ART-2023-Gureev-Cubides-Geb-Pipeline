@@ -1,10 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Anoma Research Topics template v1.0
+% Modified by jonaprieto.
 % Template based on extarticle and pi-article.cls, v4.0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ART}[19/08/2023, v1.0]
+\ProvidesClass{art}[19/08/2023, v1.0]
 \RequirePackage{etoolbox}         % a necessity
 
 %%%%%%%%%%%%%%%%%%%%%% Class options and conditionals
@@ -109,6 +110,7 @@
   amsthm,
   amssymb
 }
+\allowdisplaybreaks
 
 % Additional maths packages
 \RequirePackage{
@@ -150,7 +152,7 @@
 \declaretheorem[sibling=theorem,style=p-thm]{axiom}
 \declaretheorem[sibling=theorem,style=p-thm]{construction}
 \declaretheorem[sibling=theorem,style=p-thm]{definition}
-\declaretheorem[sibling=theorem,style=p-thm]{remark}
+\declaretheorem[sibling=theorem,style=p-example]{remark}
 \declaretheorem[sibling=theorem,style=p-thm]{notation}
 \declaretheorem[sibling=theorem,style=p-example]{example}
 
@@ -266,7 +268,7 @@
 \setlength{\belowrulesep}{1.5pt}              % blank space below rules
 \setlength{\belowbottomsep}{5pt}              % blank space below whole table
 \newlength\q
-\setlength\q{\dimexpr .5\textwidth -2\tabcolsep} % all width of tabularx columns
+\setlength\q{\dimexpr .45\textwidth -2\tabcolsep} % all width of tabularx columns
 
 \newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
 
@@ -344,7 +346,7 @@
 \RequirePackage[
     % numbers,                % numbers as references
     merge,                  % merge multiple references in one
-    super,                  % superscript
+    % super,                  % superscript
     sort&compress
 ]{natbib}
 

@@ -34,14 +34,13 @@ The core of the approach taken here rests on the observation that
 compilation procedures, which preserve type structure, can be linked to
 functors that maintain corresponding structures between categories
 representing those programming languages.  One canonical example is
-specified in Lambek-Scott \cite{LS-catlog}, dealing with the fact that the
+specified in~\cite{LS-catlog}, dealing with the fact that the
 languages possessing simply-typed Lambda calculus (STLC) structure form a
 category which is equivalent to the category of Cartesian Closed Categories
 (CCC).
 
 Therefore, instead of operating with syntax, we can represent our languages
-as categories and construct functors between them as also described in
-Elliot \cite{elliot-categories}. This approach simplifies compiler
+as categories and construct functors between them as also described in~\cite{elliot-categories}. This approach simplifies compiler
 formalization due to the direct mathematical meaning of the constructions.
 Furthermore, functor properties inherently provide several beneficial
 features, including automatic type-checking for morphism composition.
@@ -54,7 +53,7 @@ Lambda calculus with optional typing) to \VampIR{}, an in-house language
 for arithmetic circuits. As part of the implementation, we also provide an
 interactive user environment equipped with extra features such as
 interpreters, program type-checkers, and a \Geb{} visualizer available at
-the following address, release v0.4.
+the following address, release v0.5.
 \begin{center}
     \url{https://github.com/anoma/geb}.
 \end{center}
@@ -196,37 +195,37 @@ data substobj : Set where
 variable
     x y z : substobj
 
-data _G->_ : substobj → substobj → Set where
-   comp : (y G-> z) → (x G-> y) → (x G-> z)
+data _G→_ : substobj → substobj → Set where
+   comp : (y G→ z) → (x G→ y) → (x G→ z)
    -- composition
-   id : (x : substobj) → (x G-> x)
+   id : (x : substobj) → (x G→ x)
    -- identity function
-   initial : (x : substobj) → (so0 G-> x)
+   initial : (x : substobj) → (so0 G→ x)
    -- absurd
-   terminal : (x : substobj) → (x G-> so1)
+   terminal : (x : substobj) → (x G→ so1)
    -- constant function
-   mcase : (x G-> z) → (y G-> z) → ((coprod x y) G-> z)
+   mcase : (x G→ z) → (y G→ z) → ((coprod x y) G→ z)
    -- casing
-   prod  : (z G-> x) → (z G-> y) → (z G-> (prod x y))
+   prod  : (z G→ x) → (z G→ y) → (z G→ (prod x y))
     -- product analysis
-   distribute : (prod x (coprod y z)) G-> (coprod (prod x y) (prod x z))
+   distribute : (prod x (coprod y z)) G→ (coprod (prod x y) (prod x z))
     -- distributivity
-   ->left : x G-> (coprod x y)
+   ->left : x G→ (coprod x y)
     -- left injection
-   ->right : y G-> (coprod x y)
+   ->right : y G→ (coprod x y)
     -- right injection
-   <-left : (prod x y) G-> x
+   <-left : (prod x y) G→ x
     -- left projection
-   <-right : (prod x y) G-> y
+   <-right : (prod x y) G→ y
     -- right projection
 
 subtmorph : substobj → substobj → Set
-substmorph a b = a G-> b
+substmorph a b = a G→ b
 \end{minted}
 
 \begin{remark}
 In the implementation, we use the name \tcbox{substmorph} for the type
-above but for readability we use \tcbox{G->} here.
+above but for readability we use \tcbox{G→} here.
 \end{remark}
 
 Here \gebobj is the collection of the types of our language and \tcbox{f :
@@ -248,7 +247,7 @@ distributivity law.
 \begin{remark}
     The discussion below uses a more advanced categorical vocabulary.
     Anyone satisfied by the previous two definitions can instead go
-    directly to \labelcref{cor:CCC}.
+    directly to \Cref{cor:CCC}.
 \end{remark}
 
 Recall that a category of models of a language is a category in which
@@ -316,9 +315,10 @@ isomorphism.
 First, we construct the functor.
 
 Recall that both \FinSet{} and \FinOrd{} constitute the weakly initial
-category of the theory of categories with finite coproduct on one object\footnote{\url{https://ncatlab.org/nlab/show/FinSet\#universal_properties}}.
-Given that $C$ has coproducts and $1_C$, we can hence construct the functor $F
-\colon \FinOrd{} \to C$, which preserves this structure along with the
+category of the theory of categories with finite coproduct on one
+object\footnote{\url{https://ncatlab.org/nlab/show/FinSet\#universal_properties}}.
+Given that $C$ has coproducts and $1_C$, we can hence construct the functor
+$F \colon \FinOrd{} \to C$, which preserves this structure along with the
 terminal object. We claim that $F$ is our needed functor. We claim that the
 product structure is also preserved. Given $n \times m$ proceed by
 induction on $n$:
@@ -329,8 +329,7 @@ induction on $n$:
          F(0) \times_C F(m).$$
     \item For the inductive step, we use the previous observation:
 
-\begin{equation*}
-    \begin{aligned}
+\begin{align*}
     F((1+n) \times m) &= F((n \times m) + m) \\
     &\cong (F(n) \times_C F(m)) +_C F(m) &\text{(By induction and $F$ preserves coproducts)} \\
     &\cong \left(\bigoplus_n 1_C \times_C \bigoplus_m 1_C\right) +_C \bigoplus_m 1_C &\text{(By definition of $F$)}\\
@@ -338,14 +337,13 @@ induction on $n$:
     &\cong \bigoplus_{(1+n) \times m} 1_C \\
     &\cong \bigoplus_{1+n} 1_C \times_C \bigoplus_m 1_C \\
     &\cong F(1+n) \times F(m).
-\end{aligned}
-\end{equation*}
+\end{align*}
 \end{itemize}
 
 Since everything the functor hits is a coproduct of the terminal object up
 to an isomorphism and $F$ preserves all coproduct structure, it preserves
 all other morphism structure, including product universal morphisms and
-distributivity, i.e. it is an actual functor of models.
+distributivity, that is, it is an actual functor of models.
 
 The only thing left to prove is the uniqueness property of $F$.
 
@@ -355,10 +353,10 @@ functor doing so up to natural iso, this also proves uniqueness up to
 iso.\qedhere
 \end{proof}
 
-Hence, Definition \ref{def:geb3} is fully valid and when one talks of
-\Geb{}, one can instead think about a nice presentation of \FinSet{}. Hence
-a term of $\gebobj$ is just a finite set and a term of \tcbox{\texttt{a G->
-b}} is just a function between corresponding finite sets. As expected, this
+Hence, \Cref{def:geb3} is fully valid and when one talks of \Geb{}, one can
+instead think about a nice presentation of \FinSet{}. Hence a term of
+$\gebobj$ is just a finite set and a term of \tcbox{\texttt{a G→ b}} is
+just a function between corresponding finite sets. As expected, this
 equivalence actually provides us with the existence of a lot of extra
 structure.
 
@@ -372,9 +370,9 @@ function type from type \tcbox{a} to type \tcbox{b}. It also comes equipped
 with the usual curry isomorphism and evaluation maps:
 
 \begin{minted}{agda}
-  curry : ((prod x y) G-> z) → (x G-> (sohomobj y z))
-  eval : ((sohomobj x y) G-> x) → y
-  uncurry : (x G-> (sohomobj y z)) → ((prod x y) G-> z)
+  curry : ((prod x y) G→ z) → (x G→ (sohomobj y z))
+  eval : ((sohomobj x y) G→ x) → y
+  uncurry : (x G→ (sohomobj y z)) → ((prod x y) G→ z)
 \end{minted}
 
 \begin{remark}
@@ -388,7 +386,7 @@ folder\footnote{\url{https://github.com/anoma/geb/blob/main/geb-agda/Geb_Hom.pdf
 Now we "extend" \Geb{} by adding natural numbers with the following trick:
 consider all $n$-bit wide numbers. Evidently there are $2^n$ of these,
 which means that their set is in bijection with the finite ordinal of
-cardinality $2^n$. In other words, we introduce objects $nat-width n$ for
+cardinality $2^n$. In other words, we introduce objects \tcbox{nat-width n} for
 every $n > 0$ which are really just isomorphic copies of $2^n$ coproducts
 of $\gebterm$. So \Geb{} already had the natural number functionality, it
 was just highly inefficient before introducing explicit constructors.
@@ -401,30 +399,30 @@ data substobj : Set where
 
 data substmorph : substobj → substobj → Set where
   ...
-  nat-add : (n : Nat) → ((nat-width n) G-> (nat-width n))
+  nat-add : (n : Nat) → ((nat-width n) G→ (nat-width n))
   --addition
-  nat-mult : (n : Nat) → ((nat-width n) G-> (nat-width n))
+  nat-mult : (n : Nat) → ((nat-width n) G→ (nat-width n))
   --multiplication
-  nat-sub : (n : Nat) → (nat-width n)  G->  (nat-width n)
+  nat-sub : (n : Nat) → (nat-width n)  G→  (nat-width n)
   --subtraction
-  nat-div : (n : Nat) → (nat-width n)  G-> (nat-width n)
+  nat-div : (n : Nat) → (nat-width n)  G→ (nat-width n)
   --division
   nat-concat : (n m : Nat) → ((prod (nat-width n) (nat-width m))
-                              G-> (nat-width (n+m)))
+                              G→ (nat-width (n+m)))
   -- concatenation of bits
-  nat-inj : (n : Nat) → ((nat-width n) G-> (nat-width (n + 1)))
+  nat-inj : (n : Nat) → ((nat-width n) G→ (nat-width (n + 1)))
   -- injects an $n$-bit numbers as an $n+1$ bit number
   nat-decompose : (n : Nat) → ((nat-width (n + 1))
-                               G-> (prod (nat-width 1) (nat-width n)))
+                               G→ (prod (nat-width 1) (nat-width n)))
   -- decomposes an n+1 bit number into the top bit and the rest of the bits
-  one-bit-to-bool : (nat-width 1) G-> (coprod so1 so1)
+  one-bit-to-bool : (nat-width 1) G→ (coprod so1 so1)
   -- isomorphism sending bit 0 to the left copy of so1, and 
   -- 1 to the right copy.
   nat-eq : (n : Nat) → ((prod (nat-width n) (nat-width n))
-                        G-> (coprod so1 so1))
+                        G→ (coprod so1 so1))
   --equality predicate
   nat-lt : (n : Nat) → ((prod (nat-width n) (nat-width n))
-                        G-> (coprod so1 so1))
+                        G→ (coprod so1 so1))
   --"less-than" predicate
 \end{minted}
 
@@ -438,10 +436,11 @@ Be careful when using the term "Geb" as it can point to many things. The
 subcomponent of what the final version of \Geb{} will look like. The
 intention is that \Geb{} will become a language that will be able to
 articulate the entirety of the pipeline currently presented in CL. The
-reason we call this category \Geb{} here is that this category will
-be a core component specifying the higher-order \Geb{} category, which
-itself will correspond to a larger programming language. However, in this
-report we always use "Geb" to describe \Geb{} as given in Definitions 1-3.
+reason we call this category \Geb{} here is that this category will be a
+core component specifying the higher-order \Geb{} category, which itself
+will correspond to a larger programming language. However, in this report
+we always use "Geb" to describe \Geb{} as given
+in~\Cref{def:geb1,def:geb2,def:geb3}.
 \end{remark}
 
 \begin{comment}
@@ -557,53 +556,53 @@ seqnobj = List Nat
 variable
   x y z w : seqnobj
 
-data _S->_ : seqnobj → seqnobj → Set where
-    composition : (y S-> z) →  (x S-> y) → (x S-> z)
+data _S→_ : seqnobj → seqnobj → Set where
+    composition : (y S→ z) →  (x S→ y) → (x S→ z)
     --composition
-    id : (x : seqnobj) → (x S-> x)
+    id : (x : seqnobj) → (x S→ x)
     --identity
-    fork-seq : (x : seqnobj)  → (x S-> (append x x))
+    fork-seq : (x : seqnobj)  → (x S→ (append x x))
     --morphism copying the entry twice
-    parallel-seq : (x S-> y) → (z S-> w) →
-                   ((append x z) S-> (append y w))
+    parallel-seq : (x S→ y) → (z S→ w) →
+                   ((append x z) S→ (append y w))
     -- given two functions, parallizes them
-    drop-nil : (x : seqnobj) → (x S-> (0 :: []))
+    drop-nil : (x : seqnobj) → (x S→ (0 :: []))
     -- given an object, just drops everything to a nil entry
-    remove-right : (x : seqnobj) → ((append x (0 :: [])) S-> x)
+    remove-right : (x : seqnobj) → ((append x (0 :: [])) S→ x)
     -- removes a right-positioned zero entry
-    remove-left : (x : seqnobj) → ((append (0 :: []) x) S-> x)
+    remove-left : (x : seqnobj) → ((append (0 :: []) x) S→ x)
     -- removes a left-positioned zero entry
-    drop-width : (x y : seqnobj) → (x S-> y)
+    drop-width : (x y : seqnobj) → (x S→ y)
     -- on entry, removes extra bits assuming x > y pointwise
-    inj-length-left : (x y : seqnobj) → (x S-> (append x y))
+    inj-length-left : (x y : seqnobj) → (x S→ (append x y))
     -- injects an entry producing nothing on the left side
-    inj-length-right : (x y : seqnobj) → (y S-> (append x y))
+    inj-length-right : (x y : seqnobj) → (y S→ (append x y))
     -- injects an entry producing nothing on the right side
-    inj-size : (x y : Nat) → ((x :: []) S-> (y :: []))
+    inj-size : (x y : Nat) → ((x :: []) S→ (y :: []))
     -- if x < y injects an x-bit number as y-bit
-    branch-seq : (x S-> y) →  (x S-> y) → ((1 :: x) S-> y)
-    zero-bit : (0 :: []) S-> (1 :: [])
+    branch-seq : (x S→ y) →  (x S→ y) → ((1 :: x) S→ y)
+    zero-bit : (0 :: []) S→ (1 :: [])
     -- produces 0
-    one-bit : (0 :: []) S-> (1 :: [])
+    one-bit : (0 :: []) S→ (1 :: [])
     -- produces 1
     shift-front : ((x_1 :: ... :: x_n) : seqnobj) →  (k : Nat) → 
-                  ((x_1 :: ... :: x_n) S-> 
+                  ((x_1 :: ... :: x_n) S→ 
                    (x_k :: x_1 ... x_k-1 :: x_k+1 :: ...))
     -- shifts the k-th entry in front
-    seqn-add : (n : Nat) → ((n :: n :: 0) S-> (n :: 0))
+    seqn-add : (n : Nat) → ((n :: n :: 0) S→ (n :: 0))
     -- basic arithmetic operations
-    seqn-subtract : (n : Nat) → ((n :: n :: 0) S-> (n :: 0))
-    seqn-multiply : (n : Nat) → ((n :: n :: 0) S-> (n :: 0))
-    seqn-divide : (n : Nat) → ((n :: n :: 0) S-> (n :: 0))
-    seqn-nat :: (n m : Nat) → ((0 :: []) S-> (n :: []))
+    seqn-subtract : (n : Nat) → ((n :: n :: 0) S→ (n :: 0))
+    seqn-multiply : (n : Nat) → ((n :: n :: 0) S→ (n :: 0))
+    seqn-divide : (n : Nat) → ((n :: n :: 0) S→ (n :: 0))
+    seqn-nat :: (n m : Nat) → ((0 :: []) S→ (n :: []))
     -- produces an n-wide natural number m
-    seqn-concat : (n m : Nat) → ((n :: m :: []) S-> ((n + m) :: []))
+    seqn-concat : (n m : Nat) → ((n :: m :: []) S→ ((n + m) :: []))
     -- concatenates two n and m wide bits
-    seqn-decompose : (n : Nat) → ((n :: []) S-> (1 :: (n - 1) :: []))
+    seqn-decompose : (n : Nat) → ((n :: []) S→ (1 :: (n - 1) :: []))
     -- takes the top bit off of the input and places it in separate slot
-    seqn-eq : (n : Nat) → ((n :: n :: []) S-> (1 :: 0 :: []))
+    seqn-eq : (n : Nat) → ((n :: n :: []) S→ (1 :: 0 :: []))
     -- equality predicate
-    seqn-lt : (n : Nat) → ((n :: n :: []) S-> (1 :: 0 :: []))
+    seqn-lt : (n : Nat) → ((n :: n :: []) S→ (1 :: 0 :: []))
     -- less-than predicate
 \end{minted}
 
@@ -771,9 +770,9 @@ various compilations. For example, \tcbox{to-seqn} is originally a
 compilation from \Geb{} to \SeqN{}, yet if we feed this function with
 \LambdaIR{} code, it actually compiles \footnote{With certain settings}
 that code to \SeqN{}: first, applying \tcbox{to-cat} and then the original
-\tcbox{to-seqn}. Similarly for \tcbox{to-circuit}.
+\tcbox{to-seqn}. The same applies to \tcbox{to-circuit}.
 
-
+\begin{figure}
 % https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXHRleHR7TGFtYmRhfSJdLFsyLDAsIlxcdGV4dHtHZWJ9Il0sWzQsMCwiXFx0ZXh0e1NlcSRcXE4kfSAiXSxbNiwwLCJcXHRleHR7VmFtcC1JUn0iXSxbMCwxLCJcXHRleHR7dG8tY2F0fSJdLFsxLDIsIlxcdGV4dHt0by1zZXFufSJdLFsyLDMsIlxcdGV4dHt0by1jaXJjdWl0fSJdLFswLDIsIlxcdGV4dHt0by1zZXFufSIsMSx7ImN1cnZlIjoyfV0sWzAsMywiXFx0ZXh0e3RvLWNpcmN1aXR9IiwyLHsiY3VydmUiOjV9XSxbMSwzLCJcXHRleHR7dG8tY2ljcnVpdH0iLDAseyJjdXJ2ZSI6LTV9XV0=
 \[\begin{tikzcd}
     {\LambdaIR{}} && {\Geb{}} && {\SeqN{}} && {\VampIR{}}
@@ -784,6 +783,8 @@ that code to \SeqN{}: first, applying \tcbox{to-cat} and then the original
     \arrow["{\text{to-circuit}}"', curve={height=30pt}, from=1-1, to=1-7]
     \arrow["{\text{to-cicruit}}", curve={height=-30pt}, from=1-3, to=1-7]
 \end{tikzcd}\]
+\caption{Compiler pipeline including generics.}
+\end{figure}
 
 \begin{remark}
     The interactive use of the pipeline is best done through the
@@ -847,10 +848,10 @@ context $A_1,...,A_n := \gamma$ and defining $A_1 \times ... \times A_n
 \times 1 := \Gamma$\footnote{That is, any context is interpreted in \Geb{}
 as an iterated product with \gebterm on the right.}.
 
-\captionof{table}{Compilation
-from \LambdaIR{} to \Geb{}.}
 \label{table:compilation-lambda-to-geb}
-\noindent\begin{longtable}{p{\q}P{\q}}
+\begin{longtable}{lc}
+    \caption{Compilation
+    from \LambdaIR{} to \Geb{}.}\\
 \toprule
 \LambdaIR{}  & \Geb{}  \\
 \midrule
@@ -892,8 +893,12 @@ from \LambdaIR{} to \Geb{}.}
 \end{tikzcd}
 \\
 \midrule
-\tcbox[tikznode]{%
-\small (case (on : A + B) \\ \;\;\; \small (ltm : C) \\ \small \;\;\;\;\;\;\;\;\;(rtm : C)) : C
+\tcbox{%
+\begin{tabular}{rl}%
+(case &(on : A + B) \\ 
+&(ltm : C) \\
+&(rtm : C)) : C
+\end{tabular}
 } &
 % https://q.uiver.app/#q=WzAsOSxbMCwwLCJBIFxcdGltZXMgXFxHYW1tYSJdLFsyLDIsIkMiXSxbNCwwLCJCIFxcdGltZXMgXFxHYW1tYSJdLFswLDIsIlxcR2FtbWEgXFx0aW1lcyBBIl0sWzQsMiwiXFxHYW1tYVxcdGltZXMgQiJdLFswLDMsIlxcR2FtbWEgXFx0aW1lcyAoQSArIEIpIl0sWzQsMywiKFxcR2FtbWEgXFx0aW1lcyBBKSArIChcXEdhbW1hIFxcdGltZXMgQikiXSxbMCw1LCJcXEdhbW1hIl0sWzQsNSwiQyJdLFswLDEsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHtsdG19KSIsMV0sWzMsMCwiXFxjb25nIl0sWzQsMiwiXFxjb25nIiwyXSxbMywxLCJGIiwyXSxbNCwxLCJHIl0sWzIsMSwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkoXFx0ZXh0e3J0bX0pIiwxXSxbNSw2LCJcXHRleHR7ZGlzdHJpYnV0ZX0iXSxbNyw1LCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKShcXHRleHR7b259KSJdLFs2LDgsIlsgRiwgRyBdIl0sWzcsOCwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkoXFx0ZXh0e3R9KSIsMl1d
 \begin{tikzcd}
@@ -1008,9 +1013,12 @@ from \LambdaIR{} to \Geb{}.}
     \arrow["{\text{to-cat}(\gamma)(\text{t})}"', from=3-1, to=3-3]
 \end{tikzcd}\\
 \midrule
-\small\tcbox[tikznode]{%
-  (plus (ltm : natwidth-n) \\\;\;\;\;\;\;\;\;\;\; (rtm : nat-width n)) \\
-  \;\;\;\;\;: nat-width n
+\small\tcbox{%
+\begin{tabular}{r}
+  (plus (ltm : natwidth-n) \\
+  (rtm : nat-width n)) \\
+  : nat-width n
+\end{tabular}
 }&
 %% https://q.uiver.app/#q=WzAsNixbMCw1LCJcXEdhbW1hIl0sWzEsMywiKFxcdGV4dHtuYXQtd2lkdGggbn0pXFx0aW1lcyBcXHRleHR7KG5hdC13aWR0aCBuKX0iXSxbMiw1LCJcXHRleHR7KG5ldC13aWR0aCBuKX0iXSxbMSwwLCJcXEdhbW1hIl0sWzAsMiwiKFxcdGV4dHtuYXQtd2lkdGggbn0pIl0sWzIsMiwiXFx0ZXh0eyhuYXQtd2lkdGggbil9Il0sWzAsMSwiIFxcbGFuZ2xlIEYgLCBHIFxccmFuZ2xlIl0sWzEsMiwiXFx0ZXh0e25hdC1hZGR9Il0sWzAsMiwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkoXFx0ZXh0e3R9KSIsMl0sWzMsNCwiRiIsMCx7ImN1cnZlIjotMn1dLFszLDUsIkciLDIseyJjdXJ2ZSI6Mn1dLFszLDUsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHtydG19KSIsMCx7ImN1cnZlIjotMn1dLFszLDQsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHtsdG19KSIsMix7ImN1cnZlIjoyfV0sWzEyLDksIiIsMix7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjoyMH0sInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMTEsMTAsIiIsMCx7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjoyMH0sInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XV0=
 \begin{tikzcd}[column sep=tiny]
@@ -1031,11 +1039,12 @@ from \LambdaIR{} to \Geb{}.}
 	\arrow[shorten <=4pt, shorten >=4pt, Rightarrow, no head, from=2, to=1]
 \end{tikzcd}\\
 \midrule
-\small \tcbox[tikznode]{%
-(lamb-eq
-\hspace{4mm}(ltm : nat-width n) \\
-\hspace{4mm}(rtm : nat-width n)) \\
-\hspace{4mm}: (coprod so1 so1)
+\small \tcbox{%
+\begin{tabular}{r}
+(lamb-eq (ltm : nat-width n) \\
+(rtm : nat-width n)) \\
+: (coprod so1 so1)
+\end{tabular}
  }&
 % https://q.uiver.app/#q=WzAsNixbMCw0LCJcXEdhbW1hIl0sWzEsMywiKFxcdGV4dHtuYXQtd2lkdGggbn0pIFxcdGltZXMgKFxcdGV4dHtuYXQtd2lkdGggbn0pIl0sWzIsNCwiMSArIDEiXSxbMSwwLCJcXEdhbW1hIl0sWzAsMiwiKFxcdGV4dHtuYXQtd2lkdGggbn0pIl0sWzIsMiwiKFxcdGV4dHtuYXQtd2lkdGggbn0pIl0sWzEsMiwiXFx0ZXh0e25hdC1lcX0iLDAseyJsYWJlbF9wb3NpdGlvbiI6NzB9XSxbMCwxLCJcXGxhbmdsZSBGLCBHXFxyYW5nbGUiLDAseyJsYWJlbF9wb3NpdGlvbiI6NDB9XSxbMCwyLCJcXHRleHR7dG8tY2F0fShcXGdhbW1hKSh0KSIsMl0sWzMsNCwiRiIsMCx7ImN1cnZlIjotMn1dLFszLDUsIkciLDIseyJjdXJ2ZSI6Mn1dLFszLDQsIlxcdGV4dHt0by1jYXR9KFxcZ2FtbWEpKFxcdGV4dHtsdG19KSIsMix7ImN1cnZlIjoyfV0sWzMsNSwiXFx0ZXh0e3RvLWNhdH0oXFxnYW1tYSkoXFx0ZXh0e3J0bX0pIiwwLHsiY3VydmUiOi0yfV0sWzExLDksIiIsMix7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjoyMH0sInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMTIsMTAsIiIsMix7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjoyMH0sInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XV0=
 \begin{tikzcd}[column sep=tiny]
@@ -1105,26 +1114,31 @@ $(1, n)$ so that at $0$ we consider the second input to be from the left
 copy of numbers, and on $1$ from the right.
 
 Yet what if the interpretations of $a$ and $b$ differ in bit-sizes? For
-example, when we consider \tcbox{coprod (nat-width 2) (nat-width 3)}? Then
+example, when we consider the object \tcbox{coprod (nat-width 2) (nat-width 3)}? Then
 we probably should just take the largest bit-width and interpret it as $(1,
 3)$. What if they differ in lengths as $\tcbox{coprod (nat-width 2) (prod
 (nat-width 2) (nat-width 2))}$? Take the longest sequence: $(1, 2 , 2)$.
 What if both occur? Then take the longest sequence, take their product
 pointwise and get the maximal bit-width of each entry. So $\tcbox{coprod
 (nat-width 2) (prod so1 (nat-width 3))}$ becomes $(1, (\text{max} (2, 0)),
-(\text{max} (0, 3)) = (1, 2, 3)$
+(\text{max} (0, 3)) = (1, 2, 3)$.
 
-So we define a function \tcbox{width: substobj $\to$ seqnobj} by induction
-using Agda-like notation:
+Thus, we define a function \tcbox{width: substobj $\to$ seqnobj} by
+induction using Agda-like notation\footnote{The function
+\texttt{zipWith} utilized in defining \texttt{width}, accepts a binary
+function and two lists as arguments. It combines the lists element-wise
+using the binary function. Processing halts when the end of the shorter
+list is reached.}:
 
 \begin{minted}{agda}
-    width : substobj  → seqnobj
+    width : substobj → seqnobj
     width so1 = (0 :: [])
     width so0 = (0 :: [])
     width (nat-width n) = (n :: [])
     width (prod x y) = (append (width x) (width y))
     width (coprod x y) = (1 :: (zipWith max (width x) (width y)))
 \end{minted}
+
 
  Now we are ready to define the compilation of morphisms via diagrams.
  Recall that \tcbox{seqn-parallel} is the product of morphisms in our
@@ -1133,7 +1147,7 @@ using Agda-like notation:
  We define \tcbox{to-seqn : Geb $\to$ SeqN} with formal typing
 
 \begin{minted}{agda}
-  to-seqn : {x y : substmorph} → (x G-> y) → ((width x) S-> (width y))
+  to-seqn : {x y : substmorph} → (x G→ y) → ((width x) S→ (width y))
 \end{minted}
 
  We denote the interpretation of the variables $a, b, c$ in \SeqN{} by
@@ -1141,12 +1155,9 @@ using Agda-like notation:
  
  Proceed by induction on \tcbox{t : substmorph}.
 
-% \label{table:compilation-to-cat-part-2}
-%\caption{Compilation to-cat from \Geb{} to \SeqN{}.}
-% % \setlength{\tabcolsep}{3mm} % separator between columns
-% % \def\arraystretch{1.25} % vertical stretch factor
-% % \centering
-\begin{longtable}{p{\q}P{\q}}
+ \label{table:compilation-to-cat-part-2}
+\begin{longtable}{p{4cm}c}
+\caption{Compilation to-cat from \Geb{} to \SeqN{}.}\\
 \toprule
 \Geb{} & \SeqN{} \\
 \midrule
@@ -1158,7 +1169,12 @@ using Agda-like notation:
     \arrow["{\text{to-seqn}(\text{f})}"', curve={height=18pt}, from=1-1, to=1-3]
 \end{tikzcd}\\
 \midrule
-\small\tcbox{comp (f : b G-> c) (g : a G-> b)} &
+\small\tcbox{%
+\begin{tabular}{l}
+comp \\
+\hspace*{2mm}(f : b G→ c)\\
+\hspace*{2mm}(g : a G→ b)\\
+\end{tabular}} &
 % https://q.uiver.app/#q=WzAsMyxbMCwwLCIoYV8xLC4uLixhX24pIl0sWzIsMCwiKGJfMSwuLi4sYl9tKSJdLFs0LDAsIihjXzEsLi4uLGNfaykiXSxbMCwxLCJcXHRleHR7dG8tc2VxbiBnfSJdLFsxLDIsIlxcdGV4dHt0by1zZXFuIGZ9Il0sWzAsMiwiXFx0ZXh0e3RvLXNlcW4oZil9IiwyLHsiY3VydmUiOjN9XV0=
 \begin{tikzcd}
     {(a_1,\dots,a_n)} && {(b_1,\dots,b_m)} && {(c_1,\cdots,c_k)}
@@ -1222,10 +1238,12 @@ using Agda-like notation:
     \arrow["{\text{to-seqn(f)}}"', from=3-1, to=3-2]
 \end{tikzcd}\\
 \midrule
-\small\tcbox[tikznode]{%
-mcase\hspace*{4mm}\\
-\hspace*{4mm}(f : a G-> c) \\
-\hspace*{4mm}(g : b G-> c) } &
+\small\tcbox{%
+\begin{tabular}{l}
+mcase\\
+\hspace*{2mm}(f : a G→ c)\\
+\hspace*{2mm}(g : b G→ c)
+\end{tabular}}
 % https://q.uiver.app/#q=WzAsMTcsWzEsNCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCw1LCIoYV8xLFxcZG90cyxhX24sMCkiXSxbMiw1LCIoYl8xLFxcZG90cyxiX20pIl0sWzAsNiwiKGFfMSxcXGRvdHMsYV9uKSJdLFswLDcsIihjXzEsXFxkb3RzLGNfaykiXSxbMiw3LCIoY18xLFxcZG90cyxjX2spIl0sWzAsNCwiXFxidWxsZXQgXFw7IG4gPCBtIl0sWzAsOCwiXFxzY3JpcHRzaXplKDEsIFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkpIl0sWzIsOCwiKGNfMSxcXGRvdHMsY19rKSJdLFswLDMsIlxcc2NyaXB0c2l6ZSgxLFxcbWF4KGFfMSxiXzEpLFxcZG90cyxcXG1heChhX24sYl9tKSkiXSxbMiwzLCIoY18xLFxcZG90cyxjX2spIl0sWzEsMCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCwxLCIoYV8xLFxcZG90cyxhX24pIl0sWzIsMSwiKGJfMSxcXGRvdHMsYl9tKSJdLFswLDIsIihjXzEsXFxkb3RzLGNfaykiXSxbMiwyLCIoY18xLFxcZG90cyxjX2spIl0sWzAsMCwiXFxidWxsZXQgXFw7IG4gPSBtIl0sWzAsMSwiXFx0ZXh0e2Ryb3Atd2lkdGh9IFxcdGltZXMgXFx0ZXh0e2Ryb3AtbmlsfSIsMV0sWzAsMiwiXFx0ZXh0e2Ryb3Atd2lkdGh9IiwxXSxbMSwzLCJcXHRleHR7cmVtb3ZlLXJpZ2h0fSIsMl0sWzIsNSwiXFx0ZXh0e3RvLXNlcW4gZ30iXSxbMyw0LCJcXHRleHR7dG8tc2VxbiBmfSIsMl0sWzAsNCwiRiIsMSx7ImN1cnZlIjotMn1dLFswLDUsIkciLDEseyJjdXJ2ZSI6Mn1dLFs3LDgsIlxcdGV4dHticmFuY2gtc2VxIEYgR30iXSxbNyw4LCJcXHRleHR7dG8tc2Vxbih0KX0iLDEseyJjdXJ2ZSI6M31dLFs5LDEwLCJcXHRleHR7YnJhbmNoLXNlcSBGIEd9Il0sWzksMTAsIlxcdGV4dHt0by1zZXFuKHQpfSIsMSx7ImN1cnZlIjozfV0sWzExLDEyLCJcXHRleHR7ZHJvcC0gbmlsfSIsMl0sWzExLDEzLCJcXHRleHR7ZHJvcC1uaWx9Il0sWzEzLDE1LCJcXHRleHR7dG8tc2VxbihnKX0iXSxbMTIsMTQsIlxcdGV4dHt0by1zZXFuKGYpfSIsMl0sWzExLDE0LCJGIl0sWzExLDE1LCJHIiwyXV0=
 \small\begin{tikzcd}[cramped,sep=scriptsize]
     {\bullet \; n = m} & {\scriptsize(\max (a_1, b_1),\dots,\max (a_n, b_n),...,b_m)} \\
@@ -1279,7 +1297,12 @@ mcase\hspace*{4mm}\\
 \end{tikzcd}
 \\
 \midrule
-\small\tcbox{pair (f : a G-> b) (g : a G-> C)} &
+\small\tcbox{%
+\begin{tabular}{l}
+pair\\
+\hspace*{1mm}(f : a G→ b)\\
+\hspace*{1mm}(g : a G→ c)
+\end{tabular}} &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCIoYV8xLFxcZG90cyxhX24pIl0sWzIsMCwiKGFfMSxcXGRvdHMsYV9uLGFfMSxcXGRvdHMsYV9uKSJdLFs0LDEsIihiXzEsXFxkb3RzLGJfbSxjXzEsXFxkb3RzLGNrKSJdLFswLDEsIlxcdGV4dHtmb3JrLXNlcX0iXSxbMSwyLCIoXFx0ZXh0e3RvLXNlcSBmfSkgXFx0aW1lcyAoXFx0ZXh0e3RvLXNlcSBnfSkiXSxbMCwyLCJcXHRleHR7dG8tc2VxbiAoZil9IiwyXV0=
 \begin{tikzcd}[cramped,sep=scriptsize]
     && {(a_1,\dots,a_n,a_1,\dots,a_n)} \\
@@ -1290,10 +1313,19 @@ mcase\hspace*{4mm}\\
 \end{tikzcd}
 \\
 \midrule
-\small\tcbox[tikznode]{%
- distribute : \\
-    (prod (a (coprod b c))) G->\\
-     (coprod (prod a b) (prod a c))}
+\tcbox{%
+\begin{tabular}{l}
+distribute : \\
+\hspace*{1mm}((prod a (coprod b c)) G→ \\
+\hspace*{2mm}(coprod \\
+\hspace*{2.5mm}(prod a b) \\
+\hspace*{2.5mm}(prod a c)))
+\end{tabular}
+}\hfill
+% \small\tcbox[tikznode]{%
+%  distribute : \\
+%     (prod (a (coprod b c))) G→\\
+%      (coprod (prod a b) (prod a c))}
 &% ttps://q.uiver.app/#q=WzAsMixbMCwwLCIoYV8xLFxcZG90cyxhX24sIDEsIFxcbWF4KGJfMSwgY18xKSxcXGRvdHMpIl0sWzIsMCwiKDEsIGFfMSxcXGRvdHMsYV9uLCBcXG1heCAoYl8xLCBjXzEpLCBcXGRvdHMpIl0sWzAsMSwiXFx0ZXh0e3NoaWZ0LWZyb250fSJdLFswLDEsIlxcdGV4dHt0by1zZXFuKHQpfSIsMix7ImN1cnZlIjoyfV1d
 \begin{tikzcd}
     {(a_1,\dots,a_n, 1, \max(b_1, c_1),\dots)} && {(1, a_1,\dots,a_n, \max (b_1, c_1), \dots)}
@@ -1369,75 +1401,87 @@ We define \tcbox{to-vampir} taking in a \SeqN{} morphism $t : (a_1,\dots,a_n) \t
 
 We proceed by induction on a \SeqN{} morphism $t$.
 
-\begin{longtable}{p{4cm}p{4cm}p{4cm}p{6cm}}
-\toprule \SeqN{}                  & Inputs      & Inductive Hypotheses          & Output                \\
-\midrule \tcbox{id (a1,...,an)}   & \texttt{(x1,...,xn)}  & None &\texttt{(x1,...,xn)}  \\
-\midrule \small\tcbox[tikznode]{
-composition \\
-(f : (b1,...,bm) S-> (c1,...,ck))\\
-(g : (a1,...,an) S-> (b1,...,bm))}  & \texttt{(x1,...,xn)}  
-& \small\tcbox[tikznode]{to-vampir (g) (x1,...,xn)\\ \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\; = (g1,..,gm)}
-& \small\tcbox[tikznode]{%
-to-vampir (f)  (g1,...,gm)} \\
-\midrule \small\tcbox[tikznode]{%
-parallel-seq \\ (f : (a1,...,an) S-> (b1,...,bm)) \\ (g : (c1,...,ck) S-> (d1,...,di))} &      \texttt{x1,...,x(n+m)}  
-& \stackanchor{\small\tcbox[tikznode]{to-vampir (f) (x1,...,xn)\\\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;  = (f1,....,fn) }}{\small\tcbox[tikznode]{to-vampir (g) (x(n+1),...,x(n+m))\\ \;\;\;\;\;\;  = (g1,....,gm)}}  
-& 
-\texttt{(f1,...,fn,g1,...,gm)}
-\\
-\midrule
-\small\tcbox[tikznode]{%
-branch-seq \\
-(f : (a1,...,an) S-> (b1,...,bm))\\
-(g : (a1,...,an) S-> (b1,...,bm))} & \texttt{(x0,...,xn)} 
-& \stackanchor{\small\tcbox[tikznode]{to-vampir (f) (x1,...,xn)\\\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\; = (f1,...,fm)}}{\small\tcbox[tikznode]{to-vampir(g)(x1,...,xn)\\ \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;= (g1,...,gm)}}
-&
-\texttt{(((1-x0) * f1) + (x0 * g1), ...,((1-x0) * fm) + (x0 * gm) )}
-\\
-\midrule \small\tcbox{fork-seq (a1,...,an)}                     & \texttt{(x1,...,xn)}  & None      & \texttt{(x1,...,xn,x1,...,xn)}
-\\
-\midrule \small\tcbox{drop-nil (a1,...,an)}                     & 
-\texttt{(x1,...,xn)}  & None      & \texttt{(0)}\\
-\midrule \small\tcbox{remove-right (a1,...,an)}                 & \texttt{(x1,...,xn,x(n+1))} & None & \texttt{(x1,...,xn)}\\
-\midrule \small\tcbox{remove-left (a1,...,an)}                  & 
-\texttt{(x1,...,xn,x(n+1))} & None & \texttt{(x2,...,x(n+1))}
-\\
-\midrule \small\tcbox{inj-length-left (a1,...,an) (b1,...,bm)}  & \texttt{(x1,...,xn)}  & None & \texttt{(x1,...,xn,0,...,0)} \\
-\midrule \small\tcbox{inj-length-right (a1,...,an) (b1,...,bm)} &
-\texttt{(x1,...,xm)}   & None    & \texttt{(0,...,0,x1,...,xm)}
-\\
-\midrule \small\tcbox{inj-size n m}                             & \texttt{(x1)}   & None             & \texttt{(x1)}\\
-\midrule \small\tcbox{zero-bit}                                       & Any            & None             & \texttt{(0)}
-\\
-\midrule \small\tcbox{one-bit}                                        & Any        &None                 & \texttt{(1)}\\
-\midrule
-\small\tcbox{shift-front (a1,...,an) k} & \texttt{(x1,...,xn)} &  None &\texttt{(xk,x1,...,x(k-1),x(k+1),...,xn)}
-\\
-\midrule \small\tcbox{seqn-add n}        & \texttt{(x1,x2)} & None   & \texttt{(plus\_range n x1 x2)}\\
-\midrule \small\tcbox{seqn-substract n}  & \texttt{(x1,x2)}    & None &\texttt{(minus-range n x1 x2)}\\
-\midrule \small\tcbox{seqn-multiply n}   & \texttt{(x1,x2)} & None    & \texttt{(mult\_range n x1 x2)}\\
-\midrule \small\tcbox{seqn-divide n}     & \texttt{(x1,x2)} & None    & \texttt{(x1 / x2)}\\
-\midrule \small\tcbox{seqn-nat n m}      & Any              & None   & \texttt{(m)}\\
-\midrule \small\tcbox{seqn-concat n m}   & \texttt{(x1,x2)} & None   & \texttt{((x1 * (2 \^ m)) + x2)}\\
-\midrule \small\tcbox{seqn-decompose n}  & \texttt{(x1)}    & None   & \texttt{(n\_th (n - 1) (range\_n n x1), combine (drop\_ith (range n n x1)))}\\
-\midrule \small\tcbox{seqn-eq n}         & \texttt{(x1,x2)} & None   & \texttt{(iszero (x1 - x2), 0)}\\
-\midrule \small\tcbox{seqn-lt n}         & \texttt{(x1,x2)}  & None  & \texttt{(negative n (x1 - x2), 0)}
+\label{table:to-vampir}
+\begin{longtable}{llp{\q}}
+    \caption{Compilation from \SeqN{} to \VampIR{}. Each case carries an induction hypothesis, assumed none unless introduced as a footnote. }\\
+	\toprule \SeqN{}                   & Inputs & Output                                                                       \\
+	\midrule \tcbox{id (a1,...,an)}    & \texttt{(x1,...,xn)}     & \texttt{(x1,...,xn)}                                                         \\
+	\midrule \small\tcbox{%
+    \begin{tabular}{l}
+	composition \\
+	\quad(f : (b1,...,bm) S→ (c1,...,ck))\\
+	\quad(g : (a1,...,an) S→ (b1,...,bm))
+    \end{tabular}}  & \texttt{(x1,...,xn)}  
+	& \small\tcbox[tikznode]{to-vampir (f)  (g1,...,gm)} \footnote{Inductive hypothesis:\tcbox[tikznode]{to-vampir (g) (x1,...,xn)= (g1,....,gm)}.}
+    \\
+	\midrule \small\tcbox{%
+    \begin{tabular}{l}
+	parallel-seq \\
+    \quad(f : (a1,...,an) S→ (b1,...,bm)) \\ 
+    \quad(g : (c1,...,ck) S→ (d1,...,di))
+    \end{tabular}} &      \texttt{x1,...,x(n+m)}  
+	& 
+	\texttt{(f1,...,fn,g1,...,gm)}\footnote{Inductive hypotheses: {\tcbox[tikznode]{to-vampir (f) (x1,...,xn) = (f1,....,fn)}} and {\tcbox[tikznode]{to-vampir (g) (x(n+1),...,x(n+m))= (g1,....,gm)}}.}
+	\\
+	\midrule
+	\small\tcbox{%
+    \begin{tabular}{l}
+	branch-seq \\
+	\quad(f : (a1,...,an) S→ (b1,...,bm))\\
+	\quad(g : (a1,...,an) S→ (b1,...,bm))
+    \end{tabular}} & \texttt{(x0,...,xn)} 
+	&
+    {\begin{tabular}{l}
+    \texttt{(((1-x0) * f1) + (x0 * g1),} \\
+    \quad\texttt{...,}\\
+    \quad\texttt{,((1-x0) * fm) + (x0 * gm))}\footnote{Inductive hypotheses: {\tcbox[tikznode]{to-vampir (f) (x1,...,xn)= (f1,...,fm)}} and {\tcbox[tikznode]{to-vampir(g)(x1,...,xn)= (g1,...,gm)}}.}
+	\end{tabular}}
+        \\
+	\midrule \small\tcbox{fork-seq (a1,...,an)}                    & \texttt{(x1,...,xn)}                         & \texttt{(x1,...,xn,x1,...,xn)}                                               
+	\\
+	\midrule \small\tcbox{drop-nil (a1,...,an)}                     & 
+	\texttt{(x1,...,xn)}        & \texttt{(0)}\\
+	\midrule \small\tcbox{remove-right (a1,...,an)}                & \texttt{(x1,...,xn,x(n+1))}                  & \texttt{(x1,...,xn)}                                                         \\
+	\midrule \small\tcbox{remove-left (a1,...,an)}                  & 
+	\texttt{(x1,...,xn,x(n+1))}  & \texttt{(x2,...,x(n+1))}
+	\\
+	\midrule \small\tcbox{inj-length-left (a1,...,an) (b1,...,bm)} & \texttt{(x1,...,xn)}                         & \texttt{(x1,...,xn,0,...,0)}                                                 \\
+	\midrule \small\tcbox{inj-length-right (a1,...,an) (b1,...,bm)} &
+	\texttt{(x1,...,xm)}       & \texttt{(0,...,0,x1,...,xm)}
+	\\
+	\midrule \small\tcbox{inj-size n m}                            & \texttt{(x1)}                                & \texttt{(x1)}                                                                \\
+	\midrule \small\tcbox{zero-bit}                                & Any                                          & \texttt{(0)}                                                                 
+	\\
+	\midrule \small\tcbox{one-bit}                                 & Any                                          & \texttt{(1)}                                                                 \\
+	\midrule
+	\small\tcbox{shift-front (a1,...,an) k}                        & \texttt{(x1,...,xn)}                         & \texttt{(xk,x1,...,x(k-1),x(k+1),...,xn)}                                    
+	\\
+	\midrule \small\tcbox{seqn-add n}                              & \texttt{(x1,x2)}                             & \texttt{(plus\_range n x1 x2)}                                               \\
+	\midrule \small\tcbox{seqn-substract n}                        & \texttt{(x1,x2)}                             & \texttt{(minus-range n x1 x2)}                                               \\
+	\midrule \small\tcbox{seqn-multiply n}                         & \texttt{(x1,x2)}                             & \texttt{(mult\_range n x1 x2)}                                               \\
+	\midrule \small\tcbox{seqn-divide n}                           & \texttt{(x1,x2)}                             & \texttt{(x1 / x2)}                                                           \\
+	\midrule \small\tcbox{seqn-nat n m}                            & Any                                          & \texttt{(m)}                                                                 \\
+	\midrule \small\tcbox{seqn-concat n m}                         & \texttt{(x1,x2)}                             & \texttt{((x1 * (2 \^{} m)) + x2)}                                              \\
+	\midrule \small\tcbox{seqn-decompose n}                        & \texttt{(x1)}                                &%
+    {\tt
+    (n\_th (n - 1) (range\_n n x1), combine (drop\_ith (range n n x1)))
+     } \\[3mm]
+	\midrule \small\tcbox{seqn-eq n}                               & \texttt{(x1,x2)}                             & \texttt{(iszero (x1 - x2), 0)}                                               \\
+	\midrule \small\tcbox{seqn-lt n}                               & \texttt{(x1,x2)}                             & \texttt{(negative n (x1 - x2), 0)}                                           
 \end{longtable}
-% }
-% \end{center}
+
 We define \tcbox{to-circuit} as a function that takes a term \tcbox{t :
-(a1,...,an) S-> (b1,...,bm)}, along with a name \tcbox{name}, and produces
+(a1,...,an) S→ (b1,...,bm)}, along with a name \tcbox{name}, and produces
 a \VampIR{} circuit as follows.
 
-\begin{listing}
 \begin{minted}[style=borland]{python}
 def name x1 ... xn = { 
     range a1 x1;
     ... 
     range an xn;
-    X }
+    X
+}
 \end{minted}
-\end{listing}
 
 The expression \tcbox{X} above is an abbreviation for the function
 \tcbox{to-vampir f (x1,...,xn)} with any output of $0$-bit length removed.
