@@ -153,7 +153,7 @@ Errors &  Yes   &  Yes   &  Yes  &   No \\
 \end{minipage}
 
 
-\subsection{\large{\Geb{}}}
+\subsection{Geb}
 
 The finite version of \Geb{} implemented here answers two questions:
 \begin{itemize}
@@ -822,7 +822,7 @@ possible without losing information. Similarly, \tcbox{sohomobj} will now
 be denoted by explicit arrows.
 \end{remark}
 
-\subsection{\large{\LambdaIR{} $\to$ \Geb{}}}
+\subsection{From Lambda to Geb}
 
 The core part of the compilation from \LambdaIR{} to \Geb{} is a canonical
 one: the initial morphism from the term model of the \LambdaIR{} language
@@ -1076,7 +1076,7 @@ Other arithmetic operations and \tcbox{lamb-lt} that get compiled
  Maybe monad.
 \end{remark}
 
-\subsection{\large \Geb{} $\to$ \SeqN{}}\label{section:gtos}
+\subsection{From Geb to \SeqN{}}\label{section:gtos}
 
 The compilation of \Geb{} to \SeqN{} is more complex as we now explicitly
 deal with establishing a functor. We need two functions: one presenting
@@ -1241,8 +1241,8 @@ comp \\
 \small\tcbox{%
 \begin{tabular}{l}
 mcase\\
-\hspace*{2mm}(f : a G→ c)\\
-\hspace*{2mm}(g : b G→ c)
+\quad(f : a G→ c)\\
+\quad(g : b G→ c)
 \end{tabular}}
 % https://q.uiver.app/#q=WzAsMTcsWzEsNCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCw1LCIoYV8xLFxcZG90cyxhX24sMCkiXSxbMiw1LCIoYl8xLFxcZG90cyxiX20pIl0sWzAsNiwiKGFfMSxcXGRvdHMsYV9uKSJdLFswLDcsIihjXzEsXFxkb3RzLGNfaykiXSxbMiw3LCIoY18xLFxcZG90cyxjX2spIl0sWzAsNCwiXFxidWxsZXQgXFw7IG4gPCBtIl0sWzAsOCwiXFxzY3JpcHRzaXplKDEsIFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkpIl0sWzIsOCwiKGNfMSxcXGRvdHMsY19rKSJdLFswLDMsIlxcc2NyaXB0c2l6ZSgxLFxcbWF4KGFfMSxiXzEpLFxcZG90cyxcXG1heChhX24sYl9tKSkiXSxbMiwzLCIoY18xLFxcZG90cyxjX2spIl0sWzEsMCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCwxLCIoYV8xLFxcZG90cyxhX24pIl0sWzIsMSwiKGJfMSxcXGRvdHMsYl9tKSJdLFswLDIsIihjXzEsXFxkb3RzLGNfaykiXSxbMiwyLCIoY18xLFxcZG90cyxjX2spIl0sWzAsMCwiXFxidWxsZXQgXFw7IG4gPSBtIl0sWzAsMSwiXFx0ZXh0e2Ryb3Atd2lkdGh9IFxcdGltZXMgXFx0ZXh0e2Ryb3AtbmlsfSIsMV0sWzAsMiwiXFx0ZXh0e2Ryb3Atd2lkdGh9IiwxXSxbMSwzLCJcXHRleHR7cmVtb3ZlLXJpZ2h0fSIsMl0sWzIsNSwiXFx0ZXh0e3RvLXNlcW4gZ30iXSxbMyw0LCJcXHRleHR7dG8tc2VxbiBmfSIsMl0sWzAsNCwiRiIsMSx7ImN1cnZlIjotMn1dLFswLDUsIkciLDEseyJjdXJ2ZSI6Mn1dLFs3LDgsIlxcdGV4dHticmFuY2gtc2VxIEYgR30iXSxbNyw4LCJcXHRleHR7dG8tc2Vxbih0KX0iLDEseyJjdXJ2ZSI6M31dLFs5LDEwLCJcXHRleHR7YnJhbmNoLXNlcSBGIEd9Il0sWzksMTAsIlxcdGV4dHt0by1zZXFuKHQpfSIsMSx7ImN1cnZlIjozfV0sWzExLDEyLCJcXHRleHR7ZHJvcC0gbmlsfSIsMl0sWzExLDEzLCJcXHRleHR7ZHJvcC1uaWx9Il0sWzEzLDE1LCJcXHRleHR7dG8tc2VxbihnKX0iXSxbMTIsMTQsIlxcdGV4dHt0by1zZXFuKGYpfSIsMl0sWzExLDE0LCJGIl0sWzExLDE1LCJHIiwyXV0=
 \small\begin{tikzcd}[cramped,sep=scriptsize]
@@ -1389,7 +1389,7 @@ distribute : \\
 \end{tikzcd}
 \end{longtable}
 
-\subsection{\large\SeqN{} $\to$ \VampIR{}}
+\subsection{From \SeqN{} to \VampIR{}}
 
 Finally, we need to showcase how a \SeqN{} morphism is interpreted in \VampIR{} by producing actual code. We break this up into several parts: first, we showcase what sort of tuples get computed in \VampIR{} backend on valid inputs using the \tcbox{to-vampir} function and then use those tuples to formulate an actual  \VampIR{} function with constraints whose inputs will be variables we feed into our function.
 
@@ -1463,7 +1463,7 @@ We proceed by induction on a \SeqN{} morphism $t$.
 	\midrule \small\tcbox{seqn-nat n m}                            & Any                                          & \texttt{(m)}                                                                 \\
 	\midrule \small\tcbox{seqn-concat n m}                         & \texttt{(x1,x2)}                             & \texttt{((x1 * (2 \^{} m)) + x2)}                                              \\
 	\midrule \small\tcbox{seqn-decompose n}                        & \texttt{(x1)}                                &%
-    {\tt
+    \texttt{
     (n\_th (n - 1) (range\_n n x1), combine (drop\_ith (range n n x1)))
      } \\[3mm]
 	\midrule \small\tcbox{seqn-eq n}                               & \texttt{(x1,x2)}                             & \texttt{(iszero (x1 - x2), 0)}                                               \\
