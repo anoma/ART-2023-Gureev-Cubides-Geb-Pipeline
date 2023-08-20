@@ -399,6 +399,9 @@
   allcolors=anoma,
   pagebackref=false
 ]{hyperref}
+
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{naturalnames}{hyperref}
 %% Set URL link color & font
 \renewcommand\UrlFont{\color{anoma}\sffamily}
 
@@ -407,6 +410,11 @@
   capitalise,
   nameinlink,
 ]{cleveref}
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+}
 
 % Equation reference label has no brackets
 \creflabelformat{equation}{#2\textup{#1}#3}
