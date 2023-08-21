@@ -788,7 +788,7 @@ that code to \SeqN{}: first, applying \tcbox{to-cat} and then the original
 CL-USER> (in-package geb.lambda.trans)
 
 TRANS> (to-cat nil (lamb (list (coprod so1 so1)) (index 0)))
-(←left (+ s-1 s-1) s-1)
+(<-left (+ s-1 s-1) s-1)
 
 TRANS> (to-seqn (lamb (list (coprod so1 so1)) (index 0)))
 (COMPOSITION (REMOVE-RIGHT (1 0)) (PARALLEL-SEQ (ID (1 0)) (DROP-NIL (0))))
@@ -1243,7 +1243,7 @@ mcase\\
 \end{tabular}}\footnote{The case for $n>m$ follows similarly.}
 
 &% https://q.uiver.app/#q=WzAsMTcsWzEsNCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCw1LCIoYV8xLFxcZG90cyxhX24sMCkiXSxbMiw1LCIoYl8xLFxcZG90cyxiX20pIl0sWzAsNiwiKGFfMSxcXGRvdHMsYV9uKSJdLFswLDcsIihjXzEsXFxkb3RzLGNfaykiXSxbMiw3LCIoY18xLFxcZG90cyxjX2spIl0sWzAsNCwiXFxidWxsZXQgXFw7IG4gPCBtIl0sWzAsOCwiXFxzY3JpcHRzaXplKDEsIFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkpIl0sWzIsOCwiKGNfMSxcXGRvdHMsY19rKSJdLFswLDMsIlxcc2NyaXB0c2l6ZSgxLFxcbWF4KGFfMSxiXzEpLFxcZG90cyxcXG1heChhX24sYl9tKSkiXSxbMiwzLCIoY18xLFxcZG90cyxjX2spIl0sWzEsMCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCwxLCIoYV8xLFxcZG90cyxhX24pIl0sWzIsMSwiKGJfMSxcXGRvdHMsYl9tKSJdLFswLDIsIihjXzEsXFxkb3RzLGNfaykiXSxbMiwyLCIoY18xLFxcZG90cyxjX2spIl0sWzAsMCwiXFxidWxsZXQgXFw7IG4gPSBtIl0sWzAsMSwiXFx0ZXh0e2Ryb3Atd2lkdGh9IFxcdGltZXMgXFx0ZXh0e2Ryb3AtbmlsfSIsMV0sWzAsMiwiXFx0ZXh0e2Ryb3Atd2lkdGh9IiwxXSxbMSwzLCJcXHRleHR7cmVtb3ZlLXJpZ2h0fSIsMl0sWzIsNSwiXFx0ZXh0e3RvLXNlcW4gZ30iXSxbMyw0LCJcXHRleHR7dG8tc2VxbiBmfSIsMl0sWzAsNCwiRiIsMSx7ImN1cnZlIjotMn1dLFswLDUsIkciLDEseyJjdXJ2ZSI6Mn1dLFs3LDgsIlxcdGV4dHticmFuY2gtc2VxIEYgR30iXSxbNyw4LCJcXHRleHR7dG8tc2Vxbih0KX0iLDEseyJjdXJ2ZSI6M31dLFs5LDEwLCJcXHRleHR7YnJhbmNoLXNlcSBGIEd9Il0sWzksMTAsIlxcdGV4dHt0by1zZXFuKHQpfSIsMSx7ImN1cnZlIjozfV0sWzExLDEyLCJcXHRleHR7ZHJvcC0gbmlsfSIsMl0sWzExLDEzLCJcXHRleHR7ZHJvcC1uaWx9Il0sWzEzLDE1LCJcXHRleHR7dG8tc2VxbihnKX0iXSxbMTIsMTQsIlxcdGV4dHt0by1zZXFuKGYpfSIsMl0sWzExLDE0LCJGIl0sWzExLDE1LCJHIiwyXV0=
-\begin{tikzcd}[cramped,sep=tiny]
+\begin{tikzcd}[cramped,sep=scriptsize]
     {\bullet \; n = m} & {\scriptsize(\max (a_1, b_1),\dots,\max (a_n, b_n),...,b_m)} \\
     {(a_1,\dots,a_n)} && {(b_1,\dots,b_m)} \\
     {(c_1,\dots,c_k)} && {(c_1,\dots,c_k)} \\
