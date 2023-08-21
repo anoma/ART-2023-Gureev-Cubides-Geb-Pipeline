@@ -402,7 +402,7 @@
 \RequirePackage[
   colorlinks=true,
   allcolors=anoma,
-  pagebackref=false,
+  pagebackref=true,
 ]{hyperref}
 
 \PassOptionsToPackage{unicode}{hyperref}
