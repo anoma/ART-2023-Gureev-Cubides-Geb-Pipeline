@@ -1,14 +1,14 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%--------------------------------------------------------------------------
 % Anoma Research Topics template v1.0
-% Modified by jonaprieto.
-% Template based on extarticle and pi-article.cls, v4.0
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% By Jonathan Prieto-Cubides and GitHub contributors
+% Template based on pi-article.cls v4.0, extarticle, and CPU-msc template.
+%--------------------------------------------------------------------------
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{art}[19/08/2023, v1.0]
 \RequirePackage{etoolbox}         % a necessity
 
-%%%%%%%%%%%%%%%%%%%%%% Class options and conditionals
+% Class options and conditionals
 
 %% Toggles for various conditions and options
 \newtoggle{SI}                    % switching to SI format
@@ -61,7 +61,7 @@
 \ProcessOptions*\relax                                            % finish options
 \LoadClass{extarticle}
 
-%%%%%%%%%%%%%%%%%%%%%% Global settings for SI format
+% Global settings for SI format
 
 \iftoggle{SI}{
   \togglefalse{toprule}                               % no top rule
@@ -77,7 +77,7 @@
   }
 }{}
 
-%%%%%%%%%%%%%%%%%%%%%% Fonts and language
+% Fonts and language
 
 % Fonts
 \RequirePackage{lmodern} % TODO check for Libertinus
@@ -121,19 +121,14 @@
   thm-restate
 }
 
-% QED symbol
+% QED symbol for proofs
+% Recall to use \qedhere where the proof ends.
 \renewcommand{\qedsymbol}{{ \(\square\)}}
 
 \declaretheoremstyle[
 	headfont=\normalfont\bfseries,
-	% notebraces={[}{]},
 	bodyfont=\normalfont\itshape,
 	headpunct={},
-	% postheadspace=\newline,
-	% postheadhook={\textcolor{red}{\rule[.6ex]{\hfill}{0.4pt}}\\},
-	% spacebelow=\topsep,
-	% spaceabove=\topsep,
-	% postfoothook={\vskip 0.35cm},
 ]{p-thm}
 
 \declaretheoremstyle[
@@ -191,7 +186,7 @@
   \setmainlanguage[]{english}
 \fi
 
-%%%%%%%%%%%%%%%%%%%%%% General pagination setup and tools
+% General pagination setup and tools
 
 \RequirePackage[
   a4paper,includeheadfoot,                    % paper size, head/foot included in geometry
@@ -227,7 +222,7 @@
 \RequirePackage{afterpage}                    % execute a command on next page (useful for \clearpage flush)
 \RequirePackage{enumitem}                     % For reducing bullet list item separation
 
-%%%%%%%%%%%%%%%%%%%%%% Figures, tables, equations and listings
+% Figures, tables, equations and listings
 
 % Figures
 \RequirePackage{graphicx}                     % include pictures
@@ -284,7 +279,7 @@
 % For numbering just one line of an equation
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
-%%%%%%%%%%%%%%%%%%%%%% Floats, subfloats and their captions
+% Floats, subfloats and their captions
 
 \RequirePackage{float}                        % improved interface for floating objects
 \RequirePackage{dblfloatfix}                  % fixes for twocolumn floats
@@ -314,7 +309,7 @@
 % Sidecaptions
 \RequirePackage[rightcaption]{sidecap}
 
-%%%%%%%%%%%%%%%%%%%%%% Utilities
+% Utilities
 
 % Filler text
 \RequirePackage{lipsum}
@@ -322,7 +317,7 @@
 % Todo notes
 \RequirePackage{todonotes}
 
-%%%%%%%%%%%%%%%%%%%%%% Science-related packages
+% Science-related packages
 
 % In-line fractions
 \RequirePackage{xfrac}
@@ -340,7 +335,7 @@
 % The mchem package for formula subscripts using \ce{}
 \RequirePackage[version=4]{mhchem}
 
-%%%%%%%%%%%%%%%%%%%%%% Bibliography, footnotes and their settings
+% Bibliography, footnotes and their settings
 
 % Natbib package for text references
 \RequirePackage[
@@ -387,7 +382,7 @@
   \kern 2.5pt
 }
 
-%%%%%%%%%%%%%%%%%%%%%% References and bookmarks
+% References and bookmarks
 
 % Xr:
 % To reference another document, in this case the SI
@@ -422,10 +417,10 @@
 \RequirePackage{doi} % DOIs
 \RequirePackage[nottoc]{tocbibind} % References section in TOC (for SI)
 
-%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%% Other Setup
+%
+% Other Setup
 
-%%%%%%%%%%%%%%%%%%%%%% Author and affiliation
+% Author and affiliation
 
 % Keeps footnotes where they should be
 \RequirePackage{titling}
@@ -440,7 +435,7 @@
 \renewcommand\AB@affilsepx{\newline\protect\Affilfont}
 \renewcommand\Authands{, and }
 
-%%%%%%%%%%%%%%%%%%%%%% Author and paper metadata
+% Author and paper metadata
 
 %% ORCID logo
 \definecolor{orcidlogocol}{HTML}{A6CE39}
@@ -472,7 +467,7 @@ x}
     \end{tikzpicture}
     }{}}}
 
-%%%%%%%%%%%%%%%%%%%%%% Headers and footers
+% Headers and footers
 
 %% Fancyhdr styling
 \RequirePackage{fancyhdr}  % custom headers/footers
@@ -538,7 +533,7 @@ x}
       \href{https://dx.doi.org/\@pubdoi}{DOI: \@pubdoi}}}               % add DOI + hyperlink
 }
 
-%%%%%%%%%%%%%%%%%%%%%% Line numbers
+% Line numbers
 
 % Check switch for line numbers
 \iftoggle{linenumbers}{
@@ -552,7 +547,7 @@ x}
   \linenumbers
 }{}
 
-%%%%%%%%%%%%%%%%%%%%%% Typesetting
+% Typesetting
 
 %% Section/subsection/paragraph set-up
 \RequirePackage[explicit]{titlesec}
@@ -696,6 +691,7 @@ x}
       boxsep=2mm,%
       toptitle=0.5mm,
       bottomtitle=0.5mm,%
+      boxrule=0pt%
       %
       ]
       {\absfont\bfseries\large Abstract}\\%
@@ -752,9 +748,6 @@ x}
   \raggedright{
   \abstractBox{\abscontent{}}{absshadecolor}}
   \noindent % This is to remove indentation of minipage
-  %
-  % \noindent\makebox[\linewidth]{\rule{\linewidth}{0.4pt}}%
-  %
   \vskip5pt%
 }%
 \noindent

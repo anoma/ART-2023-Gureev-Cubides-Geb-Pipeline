@@ -620,13 +620,13 @@ morphisms, and therefore we use the notation \tcbox{parallel-seq f g} = $f
 \subsection{\large{\VampIR{}}}
 
 \VampIR{} is an intermediary language for arithmetic circuits. As the final
-point of the compilation, it does not need to be fully specified by the
-pipeline \footnote{Even if we do have the specification in the code
-covering some principal aspects \newline
-\url{https://github.com/anoma/geb/blob/main/src/vampir/spec.lisp}.}. The
-only thing we practically need is a collection of functions we will be
-using in the compilation procedure which we provide\footnote{The functions
-are written in \VampIR{} syntax v0.1.3.}.
+point of compilation, it does not need to be fully specified by the
+pipeline\footnote{In the Lisp-based implementation we have a specification of the principal aspects of VampIR\newline
+\url{https://github.com/anoma/geb/blob/main/src/vampir/spec.lisp}.} described here. The
+only thing we need is the following collection of \VampIR{} functions used in
+the compilation procedure\footnote{The functions
+are written in \VampIR{} syntax v0.1.3.}.To gain a better understanding of
+the details of the \VampIR{} language, consult~\cite{anthony-vampir}.
 
 \begin{itemize}
 \item Check that x is a boolean, then print it
