@@ -32,10 +32,10 @@ categorical structures.
 
 The core of the approach taken here rests on the observation that
 compilation procedures\footnote{Those that preserve specified type structures.} can be linked to
-functors that maintain corresponding structures between categories
+functors that maintain the corresponding structures between categories
 representing appropriate programming languages.  One canonical example is
-specified in~\cite{LS-catlog}, dealing with the fact that the
-languages possessing simply-typed Lambda calculus (STLC) structure form a
+specified in~\cite{LS-catlog}, dealing with the fact that 
+languages possessing the simply typed Lambda calculus (STLC) structure form a
 category which is equivalent to the category of Cartesian Closed Categories
 (CCC).
 
@@ -152,7 +152,7 @@ Errors &  Yes   &  Yes   &  Yes  &   No \\
 % \caption{Language features}
 \end{minipage}
 
-\newpage
+
 \subsection{Geb}
 
 The finite version of \Geb{} implemented here answers two questions:
@@ -252,7 +252,8 @@ distributivity law.
 Recall that a category of models of a language is a category in which
 objects are models of said language and morphisms are mappings that
 maintain the language structure\footnote{For example, the category of
-models of groups is the category of groups and group morphisms.}. \cref{def:geb2} is equivalent to considering the term model of a language, which
+models of groups is the category of groups and group morphisms.}.
+\cref{def:geb2} is equivalent to considering the term model of a language, which
 is the initial category of its corresponding category of
 models\footnote{For more abstract nonsense on the topic one can consult
 \cite{K-L-hottt} and \cite{adamek_rosicky_1994}.}.
@@ -374,15 +375,15 @@ with the usual curry isomorphism and evaluation maps:
 \end{minted}
 
 \begin{remark}
-The actual implementation of said types and terms is not of importance for
-the report but we need these functions in order to compile \JuvixCore{}
+The actual implementation of the said types and terms is not important for the report,
+but we need these functions in order to compile \JuvixCore{}
 code to \Geb{}, which is why these are mentioned. For explicit
 constructions, one can consult the Agda
 folder\footnote{\url{https://github.com/anoma/geb/blob/main/geb-agda/Geb_Hom.pdf}}.
 \end{remark}
 
 Now we "extend" \Geb{} by adding natural numbers with the following trick:
-consider all $n$-bit wide numbers. Evidently there are $2^n$ of these,
+consider all $n$-bit-wide numbers. Evidently, there are $2^n$ of these,
 which means that their set is in bijection with the finite ordinal of
 cardinality $2^n$. In other words, we introduce objects \tcbox{nat-width n} for
 every $n > 0$ which are really just isomorphic copies of $2^n$ coproducts
@@ -414,8 +415,7 @@ data substmorph : substobj → substobj → Set where
                                G→ (prod (nat-width 1) (nat-width n)))
   -- decomposes an n+1 bit number into the top bit and the rest of the bits
   one-bit-to-bool : (nat-width 1) G→ (coprod so1 so1)
-  -- isomorphism sending bit 0 to the left copy of so1, and 
-  -- 1 to the right copy.
+  -- isomorphism between a set containing 0,1 bits and bool
   nat-eq : (n : Nat) → ((prod (nat-width n) (nat-width n))
                         G→ (coprod so1 so1))
   --equality predicate
@@ -425,12 +425,9 @@ data substmorph : substobj → substobj → Set where
 \end{minted}
 
 
-With this, we have described all the specification of Geb relevant for the
-current report.
-
 \begin{remark}
 Be careful when using the term "Geb" as it can point to many things. The
-\Geb{} language as it is currently implemented in the pipeline is just a
+\Geb{} language, as it is currently implemented in the pipeline, is just a
 subcomponent of what the final version of \Geb{} will look like. The
 intention is that \Geb{} will become a language that will be able to
 articulate the entirety of the pipeline currently presented in CL. The
@@ -453,7 +450,7 @@ implementation, instead we use just the names of the objects.
 \subsection{\large\LambdaIR{}}
 
 The \LambdaIR{} language is an extended version of STLC with types taken
-from \Geb{} \footnote{The latter part is the reason why we described \Geb{}
+from \Geb{}\footnote{The latter part is the reason why we described \Geb{}
 before talking about \LambdaIR{}, even if the compilation order is
 different.}. However, the terms are introduced untyped first and become
 typed once the context is introduced via specific functions such as
@@ -531,16 +528,15 @@ model for that.
 
 \begin{definition}
     \SeqN{} is the category whose objects are finite sequences of natural
-    numbers $(x_1,\cdots,x_n)$ and $f : (x_1,\cdots,x_n) \to (y_1,\cdots,y_m)$ is a
+    numbers $(x_1,\cdots,x_n)$ and a morphism $f : (x_1,\cdots,x_n) \to (y_1,\cdots,y_m)$ is a
     \VampIR{} function that takes in $n$ inputs with the $i$-th entry being
     of bit-size $x_i$ and outputs an $m$-tuple with $i$-th entry being of
     bit-size $y_i$. Hence, it makes sense to also call \SeqN{} a category
-    of Vamp-IR programs.
+    of \VampIR{} programs.
 \end{definition}
 
-However, we do not yet have a precise specification of \VampIR{} as it is
-still in active development, what we are aiming for is simply to specify
-some subcategory of the one described above which will be sufficient for
+However, we do not need a precise specification of \VampIR{} as is, what we are aiming for is simply to specify
+some subcategory of the one described above, which will be sufficient for
 interpreting faithfully all the \Geb{} programs we have.
 
 We now present an explicit definition of \SeqN{} in terms of a free
@@ -556,11 +552,11 @@ variable
 
 data _S→_ : seqnobj → seqnobj → Set where
     composition : (y S→ z) →  (x S→ y) → (x S→ z)
-    --composition
+    -- composition
     id : (x : seqnobj) → (x S→ x)
     --identity
     fork-seq : (x : seqnobj)  → (x S→ (append x x))
-    --morphism copying the entry twice
+    -- morphism copying the entry twice
     parallel-seq : (x S→ y) → (z S→ w) →
                    ((append x z) S→ (append y w))
     -- given two functions, parallizes them
@@ -619,7 +615,7 @@ morphisms, and therefore we use the notation \tcbox{parallel-seq f g} = $f
 
 \VampIR{} is an intermediary language for arithmetic circuits. As the final
 point of compilation, it does not need to be fully specified by the
-pipeline\footnote{In the Lisp-based implementation we have a specification of the principal aspects of VampIR\newline
+pipeline\footnote{In the Lisp-based implementation we have a specification of the principal aspects of \VampIR{}\newline
 \url{https://github.com/anoma/geb/blob/main/src/vampir/spec.lisp}.} described here. The
 only thing we need is the following collection of \VampIR{} functions used in
 the compilation procedure\footnote{The functions
@@ -742,7 +738,7 @@ def take n = { iter n take_ind take_base };
 def drop_ith_rec take (h:t) = { h:(take t) };
 \end{minted}
 
-\item  Drop n-th element of a list.
+\item Drop n-th element of a list.
 \begin{minted}[style=borland]{python}
 def drop_ith n = { iter n drop_ith_rec (fun (h:1) {1}) };
 \end{minted}
@@ -766,9 +762,9 @@ and \tcbox{to-circuit} after their codomains. Actually, \tcbox{to-seqn} and
 \tcbox{to-circuit} are generics, in the sense that their names stand for
 various compilations. For example, \tcbox{to-seqn} is originally a
 compilation from \Geb{} to \SeqN{}, yet if we feed this function with
-\LambdaIR{} code, it actually compiles \footnote{With certain settings}
+\LambdaIR{} code, it actually compiles \footnote{With certain settings.}
 that code to \SeqN{}: first, applying \tcbox{to-cat} and then the original
-\tcbox{to-seqn}. The same applies to \tcbox{to-circuit}.
+\tcbox{to-seqn}. The same goes for \tcbox{to-circuit}.
 
 \begin{figure}
 % https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXHRleHR7TGFtYmRhfSJdLFsyLDAsIlxcdGV4dHtHZWJ9Il0sWzQsMCwiXFx0ZXh0e1NlcSRcXE4kfSAiXSxbNiwwLCJcXHRleHR7VmFtcC1JUn0iXSxbMCwxLCJcXHRleHR7dG8tY2F0fSJdLFsxLDIsIlxcdGV4dHt0by1zZXFufSJdLFsyLDMsIlxcdGV4dHt0by1jaXJjdWl0fSJdLFswLDIsIlxcdGV4dHt0by1zZXFufSIsMSx7ImN1cnZlIjoyfV0sWzAsMywiXFx0ZXh0e3RvLWNpcmN1aXR9IiwyLHsiY3VydmUiOjV9XSxbMSwzLCJcXHRleHR7dG8tY2ljcnVpdH0iLDAseyJjdXJ2ZSI6LTV9XV0=
@@ -806,7 +802,7 @@ TRANS> (to-circuit (lamb (list (coprod so1 so1)) (index 0)) :identity_fun)
 )
 \end{minted}
 
-Here, \tcbox{nil} stands for the empty context we feed the compiler when we
+Here, \tcbox{nil} stands for the empty context that we feed the compiler when we
 move from \LambdaIR{} to \Geb{}. All other compilations are assumed to
 occur in the empty context. To compile to \VampIR{} we also need to specify
 the name of our function as above.
@@ -822,8 +818,8 @@ be denoted by explicit arrows.
 
 \subsection{From Lambda to Geb}
 
-The core part of the compilation from \LambdaIR{} to \Geb{} is a canonical
-one: the initial morphism from the term model of the \LambdaIR{} language
+The core part of the compilation from \LambdaIR{} to \Geb{} is canonical:
+the initial morphism from the term model of the \LambdaIR{} language
 to \Geb{} in the category of STLC models.
 
 The description of the compilation will be made less formal to facilitate
@@ -1119,7 +1115,9 @@ we probably should just take the largest bit-width and interpret it as $(1,
 What if both occur? Then take the longest sequence, take their product
 pointwise and get the maximal bit-width of each entry. So $\tcbox{coprod
 (nat-width 2) (prod so1 (nat-width 3))}$ becomes $(1, (\text{max} (2, 0)),
-(\text{max} (0, 3)) = (1, 2, 3)$.
+(\text{max} (0, 3)) = (1, 2, 3)$\footnote{Note that under this interpretation,
+width of a \Geb{} boolean is actually $(1,0)$, which is, however, isomorphic
+to $(1)$ via left injection}.
 
 Thus, we define a function \tcbox{width: substobj $\to$ seqnobj} by
 induction using Agda-like notation\footnote{The function
@@ -1140,7 +1138,7 @@ list is reached.}:
 
  Now we are ready to define the compilation of morphisms via diagrams.
  Recall that \tcbox{seqn-parallel} is the product of morphisms in our
- category. Hence we write $f \times g$ instead of \tcbox{parallel f g} for appropriate morphisms.
+ category. Hence, we write $f \times g$ instead of \tcbox{parallel f g} for appropriate morphisms.
 
  We define \tcbox{to-seqn : Geb $\to$ SeqN} with formal typing
 
@@ -1170,8 +1168,8 @@ list is reached.}:
 \small\tcbox{%
 \begin{tabular}{l}
 comp \\
-\hspace*{2mm}(f : b G→ c)\\
-\hspace*{2mm}(g : a G→ b)\\
+\quad(f : b G→ c)\\
+\quad((g : a G→ b)\\
 \end{tabular}} &
 % https://q.uiver.app/#q=WzAsMyxbMCwwLCIoYV8xLC4uLixhX24pIl0sWzIsMCwiKGJfMSwuLi4sYl9tKSJdLFs0LDAsIihjXzEsLi4uLGNfaykiXSxbMCwxLCJcXHRleHR7dG8tc2VxbiBnfSJdLFsxLDIsIlxcdGV4dHt0by1zZXFuIGZ9Il0sWzAsMiwiXFx0ZXh0e3RvLXNlcW4oZil9IiwyLHsiY3VydmUiOjN9XV0=
 \begin{tikzcd}
@@ -1234,7 +1232,7 @@ comp \\
     \arrow["{\text{one-bit} \times (\bigotimes_n \text{inj-size})}", from=2-2, to=3-2]
     \arrow["{\text{to-seqn(f)}}"', from=7-1, to=7-2]
     \arrow["{\text{to-seqn(f)}}"', from=3-1, to=3-2]
-\end{tikzcd}\\
+\end{tikzcd}\\[2mm]
 \midrule
 \small\tcbox{%
 \begin{tabular}{l}
@@ -1242,8 +1240,9 @@ mcase\\
 \quad(f : a G→ c)\\
 \quad(g : b G→ c)
 \end{tabular}}
-% https://q.uiver.app/#q=WzAsMTcsWzEsNCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCw1LCIoYV8xLFxcZG90cyxhX24sMCkiXSxbMiw1LCIoYl8xLFxcZG90cyxiX20pIl0sWzAsNiwiKGFfMSxcXGRvdHMsYV9uKSJdLFswLDcsIihjXzEsXFxkb3RzLGNfaykiXSxbMiw3LCIoY18xLFxcZG90cyxjX2spIl0sWzAsNCwiXFxidWxsZXQgXFw7IG4gPCBtIl0sWzAsOCwiXFxzY3JpcHRzaXplKDEsIFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkpIl0sWzIsOCwiKGNfMSxcXGRvdHMsY19rKSJdLFswLDMsIlxcc2NyaXB0c2l6ZSgxLFxcbWF4KGFfMSxiXzEpLFxcZG90cyxcXG1heChhX24sYl9tKSkiXSxbMiwzLCIoY18xLFxcZG90cyxjX2spIl0sWzEsMCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCwxLCIoYV8xLFxcZG90cyxhX24pIl0sWzIsMSwiKGJfMSxcXGRvdHMsYl9tKSJdLFswLDIsIihjXzEsXFxkb3RzLGNfaykiXSxbMiwyLCIoY18xLFxcZG90cyxjX2spIl0sWzAsMCwiXFxidWxsZXQgXFw7IG4gPSBtIl0sWzAsMSwiXFx0ZXh0e2Ryb3Atd2lkdGh9IFxcdGltZXMgXFx0ZXh0e2Ryb3AtbmlsfSIsMV0sWzAsMiwiXFx0ZXh0e2Ryb3Atd2lkdGh9IiwxXSxbMSwzLCJcXHRleHR7cmVtb3ZlLXJpZ2h0fSIsMl0sWzIsNSwiXFx0ZXh0e3RvLXNlcW4gZ30iXSxbMyw0LCJcXHRleHR7dG8tc2VxbiBmfSIsMl0sWzAsNCwiRiIsMSx7ImN1cnZlIjotMn1dLFswLDUsIkciLDEseyJjdXJ2ZSI6Mn1dLFs3LDgsIlxcdGV4dHticmFuY2gtc2VxIEYgR30iXSxbNyw4LCJcXHRleHR7dG8tc2Vxbih0KX0iLDEseyJjdXJ2ZSI6M31dLFs5LDEwLCJcXHRleHR7YnJhbmNoLXNlcSBGIEd9Il0sWzksMTAsIlxcdGV4dHt0by1zZXFuKHQpfSIsMSx7ImN1cnZlIjozfV0sWzExLDEyLCJcXHRleHR7ZHJvcC0gbmlsfSIsMl0sWzExLDEzLCJcXHRleHR7ZHJvcC1uaWx9Il0sWzEzLDE1LCJcXHRleHR7dG8tc2VxbihnKX0iXSxbMTIsMTQsIlxcdGV4dHt0by1zZXFuKGYpfSIsMl0sWzExLDE0LCJGIl0sWzExLDE1LCJHIiwyXV0=
-\small\begin{tikzcd}[cramped,sep=scriptsize]
+
+&% https://q.uiver.app/#q=WzAsMTcsWzEsNCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCw1LCIoYV8xLFxcZG90cyxhX24sMCkiXSxbMiw1LCIoYl8xLFxcZG90cyxiX20pIl0sWzAsNiwiKGFfMSxcXGRvdHMsYV9uKSJdLFswLDcsIihjXzEsXFxkb3RzLGNfaykiXSxbMiw3LCIoY18xLFxcZG90cyxjX2spIl0sWzAsNCwiXFxidWxsZXQgXFw7IG4gPCBtIl0sWzAsOCwiXFxzY3JpcHRzaXplKDEsIFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkpIl0sWzIsOCwiKGNfMSxcXGRvdHMsY19rKSJdLFswLDMsIlxcc2NyaXB0c2l6ZSgxLFxcbWF4KGFfMSxiXzEpLFxcZG90cyxcXG1heChhX24sYl9tKSkiXSxbMiwzLCIoY18xLFxcZG90cyxjX2spIl0sWzEsMCwiXFxzY3JpcHRzaXplKFxcbWF4IChhXzEsIGJfMSksXFxkb3RzLFxcbWF4IChhX24sIGJfbiksLi4uLGJfbSkiXSxbMCwxLCIoYV8xLFxcZG90cyxhX24pIl0sWzIsMSwiKGJfMSxcXGRvdHMsYl9tKSJdLFswLDIsIihjXzEsXFxkb3RzLGNfaykiXSxbMiwyLCIoY18xLFxcZG90cyxjX2spIl0sWzAsMCwiXFxidWxsZXQgXFw7IG4gPSBtIl0sWzAsMSwiXFx0ZXh0e2Ryb3Atd2lkdGh9IFxcdGltZXMgXFx0ZXh0e2Ryb3AtbmlsfSIsMV0sWzAsMiwiXFx0ZXh0e2Ryb3Atd2lkdGh9IiwxXSxbMSwzLCJcXHRleHR7cmVtb3ZlLXJpZ2h0fSIsMl0sWzIsNSwiXFx0ZXh0e3RvLXNlcW4gZ30iXSxbMyw0LCJcXHRleHR7dG8tc2VxbiBmfSIsMl0sWzAsNCwiRiIsMSx7ImN1cnZlIjotMn1dLFswLDUsIkciLDEseyJjdXJ2ZSI6Mn1dLFs3LDgsIlxcdGV4dHticmFuY2gtc2VxIEYgR30iXSxbNyw4LCJcXHRleHR7dG8tc2Vxbih0KX0iLDEseyJjdXJ2ZSI6M31dLFs5LDEwLCJcXHRleHR7YnJhbmNoLXNlcSBGIEd9Il0sWzksMTAsIlxcdGV4dHt0by1zZXFuKHQpfSIsMSx7ImN1cnZlIjozfV0sWzExLDEyLCJcXHRleHR7ZHJvcC0gbmlsfSIsMl0sWzExLDEzLCJcXHRleHR7ZHJvcC1uaWx9Il0sWzEzLDE1LCJcXHRleHR7dG8tc2VxbihnKX0iXSxbMTIsMTQsIlxcdGV4dHt0by1zZXFuKGYpfSIsMl0sWzExLDE0LCJGIl0sWzExLDE1LCJHIiwyXV0=
+\begin{tikzcd}[cramped,sep=tiny]
     {\bullet \; n = m} & {\scriptsize(\max (a_1, b_1),\dots,\max (a_n, b_n),...,b_m)} \\
     {(a_1,\dots,a_n)} && {(b_1,\dots,b_m)} \\
     {(c_1,\dots,c_k)} && {(c_1,\dots,c_k)} \\
@@ -1316,8 +1315,8 @@ pair\\
 distribute : \\
 \hspace*{1mm}((prod a (coprod b c)) G→ \\
 \hspace*{2mm}(coprod \\
-\hspace*{2.5mm}(prod a b) \\
-\hspace*{2.5mm}(prod a c)))
+\hspace*{3mm}(prod a b) \\
+\hspace*{3mm}(prod a c)))
 \end{tabular}
 }\hfill
 % \small\tcbox[tikznode]{%
@@ -1389,7 +1388,7 @@ distribute : \\
 
 \subsection{From \SeqN{} to \VampIR{}}
 
-Finally, we need to showcase how a \SeqN{} morphism is interpreted in \VampIR{} by producing actual code. We break this up into several parts: first, we showcase what sort of tuples get computed in \VampIR{} backend on valid inputs using the \tcbox{to-vampir} function and then use those tuples to formulate an actual  \VampIR{} function with constraints whose inputs will be variables we feed into our function.
+Finally, we need to showcase how a \SeqN{} morphism is interpreted in \VampIR{} by producing actual code. We break this up into several parts: first, we showcase what sort of tuples get computed in \VampIR{} backend on valid inputs using the \tcbox{to-vampir} function and then use those tuples to formulate a \VampIR{} function with constraints whose inputs will be variables we feed into our function.
 
 \begin{remark}
 We do not remove the inputs which are $0$-bit long and instead produce $0$-es whenever we land there. These entries will be later removed.
@@ -1419,7 +1418,7 @@ We proceed by induction on a \SeqN{} morphism $t$.
     \quad(g : (c1,...,ck) S→ (d1,...,di))
     \end{tabular}} &      \texttt{x1,...,x(n+m)}  
 	& 
-	\texttt{(f1,...,fn,g1,...,gm)}\footnote{Inductive hypotheses: {\tcbox[tikznode]{to-vampir (f) (x1,...,xn) = (f1,....,fn)}} and {\tcbox[tikznode]{to-vampir (g) (x(n+1),...,x(n+m))= (g1,....,gm)}}.}
+	\texttt{(f1,...,fm,g1,...,gi)}\footnote{Inductive hypotheses: {\tcbox[tikznode]{to-vampir (f) (x1,...,xn) = (f1,....,fm)}} and {\tcbox[tikznode]{to-vampir (g) (x(n+1),...,x(n+m))= (g1,....,gi)}}.}
 	\\
 	\midrule
 	\small\tcbox{%
@@ -1683,8 +1682,8 @@ TRANS> (geb-gui::visualize (to-cat nil (pair (left so1 (unit))
 
 \begin{figure}[H]
     \centering
-\includegraphics[scale=0.45]{figs/VIZVIZ.png}
-\caption{Visualizer output for the term \tcbox{pair (left so1 (unit))}}
+\includegraphics[scale=0.50]{images/SCRN.png}
+\caption{Visualizer output for the compiled term \tcbox{pair (left so1 (unit))}}
 \end{figure}
 
 \end{document}
