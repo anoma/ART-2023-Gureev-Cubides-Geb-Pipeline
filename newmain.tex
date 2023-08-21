@@ -154,6 +154,7 @@ Errors &  Yes   &  Yes   &  Yes  &   No \\
 
 \newpage
 \subsection{Geb}
+
 The finite version of \Geb{} implemented here answers two questions:
 \begin{itemize}
     \item What are the minimal/optimal operations needed to present
@@ -165,18 +166,18 @@ The answer seems to be that we need some sort of addition, multiplication,
 $0$, and $1$ as structures to be used. For the usual arithmetic to hold, we
 also need some sort of distributivity law. Exponentiation should follow in
 a similar fashion to how we define arithmetic exponentiation from
-multiplication in $\N$. \footnote{Of course multiplication can be defined
+multiplication in $\N$\footnote{Of course multiplication can be defined
 similarly by addition, but it is not optimal to do so due to exponentiation
-of terms. Moreover, it seems that having explicit exponentiation in a
+of terms. Moreover, it seems that having primitive exponentiation in a
 language through which we compile is inefficient, as it would need to
-compile to some separate \VampIR{} function.} Finally, we need some notion
+compile to some separate \VampIR{} function.}. Finally, we need some notion
 of a "context" or a "domain" - as is usual in the syntax/semantics duality
 - in order to be able to produce variables.
 
 Hence, this brings us to the first definition of \Geb{}.
 
 \begin{definition}\label{def:geb1} \Geb{} is the language spanned by the
-empty type \tcbox{\normalfont{\texttt{so0}}}, unit type \gebterm \, and
+empty type \tcbox{\normalfont{so0}}, unit type \gebterm \, and
 sum/product types appropriately named \gebcoprod \,  and \gebprod.
 \end{definition}
 
