@@ -229,8 +229,7 @@ above but for readability we use \tcbox{G→} here.
 \end{remark}
 
 Here \gebobj is the collection of the types of our language and \tcbox{f :
-substmorph a b} stands for a term of \tcbox{b} in the context of \tcbox{a}
-\footnote{There are of course extra equalities to subject the terms to,
+substmorph a b} stands for a term of \tcbox{b} in the context of \tcbox{a}\footnote{There are extra equalities to subject the terms to,
 e.g. making terminal terms unique or composition associative on the nose,
 yet for the sake of the current project, we do not implement these, and if
 needed, reductions are done by hand. There is also an explicit reducer in
@@ -253,8 +252,7 @@ distributivity law.
 Recall that a category of models of a language is a category in which
 objects are models of said language and morphisms are mappings that
 maintain the language structure\footnote{For example, the category of
-models of groups is the category of groups and group morphisms.}. This
-definition is equivalent to considering the term model of a language, which
+models of groups is the category of groups and group morphisms.}. \cref{def:geb2} is equivalent to considering the term model of a language, which
 is the initial category of its corresponding category of
 models\footnote{For more abstract nonsense on the topic one can consult
 \cite{K-L-hottt} and \cite{adamek_rosicky_1994}.}.
@@ -324,7 +322,7 @@ product structure is also preserved. Given $n \times m$ proceed by
 induction on $n$:
 
 \begin{itemize}
-    \item If $n= 0$, then we have,
+    \item If $n= 0$, then we have
          $$F(0 \times m) = F(0) \cong 0_C \cong 0_C \times_C F(m) \cong
          F(0) \times_C F(m).$$
     \item For the inductive step, we use the previous observation:
@@ -371,7 +369,7 @@ with the usual curry isomorphism and evaluation maps:
 
 \begin{minted}{agda}
   curry : ((prod x y) G→ z) → (x G→ (sohomobj y z))
-  eval : ((sohomobj x y) G→ x) → y
+  eval : (prod (sohomobj x y) x) → y
   uncurry : (x G→ (sohomobj y z)) → ((prod x y) G→ z)
 \end{minted}
 
@@ -389,7 +387,7 @@ which means that their set is in bijection with the finite ordinal of
 cardinality $2^n$. In other words, we introduce objects \tcbox{nat-width n} for
 every $n > 0$ which are really just isomorphic copies of $2^n$ coproducts
 of $\gebterm$. So \Geb{} already had the natural number functionality, it
-was just highly inefficient before introducing explicit constructors.
+was just highly inefficient before introducing primitive constructors.
 
 \begin{minted}{agda}
 data substobj : Set where
@@ -400,18 +398,18 @@ data substobj : Set where
 data substmorph : substobj → substobj → Set where
   ...
   nat-add : (n : Nat) → ((nat-width n) G→ (nat-width n))
-  --addition
+  -- addition
   nat-mult : (n : Nat) → ((nat-width n) G→ (nat-width n))
-  --multiplication
+  -- multiplication
   nat-sub : (n : Nat) → (nat-width n)  G→  (nat-width n)
-  --subtraction
+  -- subtraction
   nat-div : (n : Nat) → (nat-width n)  G→ (nat-width n)
-  --division
+  -- division
   nat-concat : (n m : Nat) → ((prod (nat-width n) (nat-width m))
                               G→ (nat-width (n+m)))
   -- concatenation of bits
   nat-inj : (n : Nat) → ((nat-width n) G→ (nat-width (n + 1)))
-  -- injects an $n$-bit numbers as an $n+1$ bit number
+  -- injects an n-bit numbers as an n+1 bit number
   nat-decompose : (n : Nat) → ((nat-width (n + 1))
                                G→ (prod (nat-width 1) (nat-width n)))
   -- decomposes an n+1 bit number into the top bit and the rest of the bits
@@ -490,7 +488,7 @@ data lambda : Set where
     -- takes in a list of types for iterated function type use
     app : lambda → List lambda → lambda
     -- function type elimination
-    --takes in a list of terms for iterated elimination
+    -- takes in a list of terms for iterated elimination
     index : Nat → lambda
     -- variable via de Bruijn indices
     err : substobj → lambda
