@@ -1172,12 +1172,13 @@ comp \\
 \quad(f : b G→ c)\\
 \quad((g : a G→ b)\\
 \end{tabular}} &
-% https://q.uiver.app/#q=WzAsMyxbMCwwLCIoYV8xLC4uLixhX24pIl0sWzIsMCwiKGJfMSwuLi4sYl9tKSJdLFs0LDAsIihjXzEsLi4uLGNfaykiXSxbMCwxLCJcXHRleHR7dG8tc2VxbiBnfSJdLFsxLDIsIlxcdGV4dHt0by1zZXFuIGZ9Il0sWzAsMiwiXFx0ZXh0e3RvLXNlcW4oZil9IiwyLHsiY3VydmUiOjN9XV0=
-\begin{tikzcd}
-    {(a_1,\dots,a_n)} && {(b_1,\dots,b_m)} && {(c_1,\cdots,c_k)}
-    \arrow["{\text{to-seqn g}}", from=1-1, to=1-3]
-    \arrow["{\text{to-seqn f}}", from=1-3, to=1-5]
-    \arrow["{\text{to-seqn(f)}}"', curve={height=18pt}, from=1-1, to=1-5]
+% https://q.uiver.app/#q=WzAsMyxbMCwxLCIoYV8xLC4uLixhX24pIl0sWzIsMCwiKGJfMSwuLi4sYl9tKSJdLFs0LDEsIihjXzEsLi4uLGNfaykiXSxbMCwxLCJcXHRleHR7dG8tc2VxbiAoZyl9Il0sWzEsMiwiXFx0ZXh0e3RvLXNlcW4gKGYpfSJdLFswLDIsIlxcdGV4dHt0by1zZXFuKGYpfSIsMl1d
+\begin{tikzcd}[cramped]
+	&& {(b_1,...,b_m)} \\
+	{(a_1,...,a_n)} &&&& {(c_1,...,c_k)}
+	\arrow["{\text{to-seqn (g)}}", from=2-1, to=1-3]
+	\arrow["{\text{to-seqn (f)}}", from=1-3, to=2-5]
+	\arrow["{\text{to-seqn(f)}}"', from=2-1, to=2-5]
 \end{tikzcd} \\
 \midrule
 \small \tcbox{init a} &
@@ -1256,8 +1257,8 @@ mcase\\
     \arrow["{\text{drop-width} \times \text{drop-nil}}"{description}, from=5-2, to=6-1]
     \arrow["{\text{drop-width}}"{description}, from=5-2, to=6-3]
     \arrow["{\text{remove-right}}"', from=6-1, to=7-1]
-    \arrow["{\text{to-seqn g}}", from=6-3, to=8-3]
-    \arrow["{\text{to-seqn f}}"', from=7-1, to=8-1]
+    \arrow["{\text{to-seqn (g)}}", from=6-3, to=8-3]
+    \arrow["{\text{to-seqn (f)}}"', from=7-1, to=8-1]
     \arrow["F"{description}, curve={height=-12pt}, from=5-2, to=8-1]
     \arrow["G"{description}, curve={height=12pt}, from=5-2, to=8-3]
     \arrow["{\text{branch-seq F G}}", from=9-1, to=9-3]
