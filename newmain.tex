@@ -210,13 +210,13 @@ data _G→_ : substobj → substobj → Set where
     -- product analysis
    distribute : (prod x (coprod y z)) G→ (coprod (prod x y) (prod x z))
     -- distributivity
-   ->left : x G→ (coprod x y)
+   →left : x G→ (coprod x y)
     -- left injection
-   ->right : y G→ (coprod x y)
+   →right : y G→ (coprod x y)
     -- right injection
-   <-left : (prod x y) G→ x
+   ←left : (prod x y) G→ x
     -- left projection
-   <-right : (prod x y) G→ y
+   ←right : (prod x y) G→ y
     -- right projection
 
 subtmorph : substobj → substobj → Set
@@ -788,7 +788,7 @@ that code to \SeqN{}: first, applying \tcbox{to-cat} and then the original
 CL-USER> (in-package geb.lambda.trans)
 
 TRANS> (to-cat nil (lamb (list (coprod so1 so1)) (index 0)))
-(<-left (+ s-1 s-1) s-1)
+(←left (+ s-1 s-1) s-1)
 
 TRANS> (to-seqn (lamb (list (coprod so1 so1)) (index 0)))
 (COMPOSITION (REMOVE-RIGHT (1 0)) (PARALLEL-SEQ (ID (1 0)) (DROP-NIL (0))))
@@ -1197,7 +1197,7 @@ comp \\
 \end{tikzcd}
 \\
 \midrule
-\small\tcbox{->left a b} &
+\small\tcbox{→left a b} &
 % https://q.uiver.app/#q=WzAsOSxbMCw2LCIoYV8xLFxcZG90cyxhX24pIl0sWzAsNCwiKDAsYV8xLFxcZG90cyxhX24pIl0sWzEsNCwiKDAsIGFfMSxcXGRvdHMsYV9uLDAsXFxkb3RzLDApIl0sWzEsNiwiKDAsIFxcbWF4KGFfMSxiXzEpLFxcZG90cyxcXG1heChhX24sYl9uKSxcXGRvdHMsYl9tKSJdLFswLDMsIlxcYnVsbGV0XFw7IG4gPCBtIl0sWzAsMiwiKGFfMSxcXGRvdHMsYV9uKSJdLFsxLDEsIigwLCBhXzEsXFxkb3RzLGFfbikiXSxbMSwyLCIoMCwgXFxtYXgoYV8xLGJfMSksXFxkb3RzLFxcbWF4KGFfbixiX20pKSJdLFswLDAsIlxcYnVsbGV0XFw7IG4gPSBtIl0sWzAsMSwiXFx0ZXh0e2luai1sZW5ndGgtcmlnaHR9Il0sWzEsMiwiXFx0ZXh0e2luai1sZW5ndGgtbGVmdH0iXSxbMiwzLCJcXHRleHR7emVyby1iaXR9XFx0aW1lcyAoXFxiaWdvdGltZXNfbSBcXHRleHR7aW5qLXNpemV9KSJdLFs1LDYsIlxcdGV4dHtpbmotbGVuZ3RoLXJpZ2h0fSJdLFs2LDcsIlxcdGV4dHt6ZXJvLWJpdH0gXFx0aW1lcyAoXFxiaWdvdGltZXNfbiBcXHRleHR7aW5qLXNpemV9KSJdLFswLDMsIlxcdGV4dHt0by1zZXFuKGYpfSIsMl0sWzUsNywiXFx0ZXh0e3RvLXNlcW4oZil9IiwyXV0=
 \begin{tikzcd}
     {\bullet\; n = m} \\
@@ -1216,7 +1216,7 @@ comp \\
     \arrow["{\text{to-seqn(f)}}"', from=3-1, to=3-2]
 \end{tikzcd}\\
 \midrule
-\small\tcbox{->right a b} &
+\small\tcbox{→right a b} &
 % https://q.uiver.app/#q=WzAsOSxbMCw2LCIoYV8xLFxcZG90cyxhX24pIl0sWzAsNCwiKDAsYV8xLFxcZG90cyxhX24pIl0sWzEsNCwiKDAsIGFfMSxcXGRvdHMsYV9uLDAsXFxkb3RzLDApIl0sWzEsNiwiKDAsIFxcbWF4KGFfMSxiXzEpLFxcZG90cyxcXG1heChhX24sYl9uKSxcXGRvdHMsYl9tKSJdLFswLDMsIlxcYnVsbGV0XFw7IG4gPCBtIl0sWzAsMiwiKGFfMSxcXGRvdHMsYV9uKSJdLFsxLDEsIigwLCBhXzEsXFxkb3RzLGFfbikiXSxbMSwyLCIoMCwgXFxtYXgoYV8xLGJfMSksXFxkb3RzLFxcbWF4KGFfbixiX20pKSJdLFswLDAsIlxcYnVsbGV0XFw7IG4gPSBtIl0sWzAsMSwiXFx0ZXh0e2luai1sZW5ndGgtcmlnaHR9Il0sWzEsMiwiXFx0ZXh0e2luai1sZW5ndGgtbGVmdH0iXSxbMiwzLCJcXHRleHR7b25lLWJpdH1cXHRpbWVzIChcXGJpZ290aW1lc19tIFxcdGV4dHtpbmotc2l6ZX0pIl0sWzUsNiwiXFx0ZXh0e2luai1sZW5ndGgtcmlnaHR9Il0sWzYsNywiXFx0ZXh0e29uZS1iaXR9IFxcdGltZXMgKFxcYmlnb3RpbWVzX24gXFx0ZXh0e2luai1zaXplfSkiXSxbMCwzLCJcXHRleHR7dG8tc2VxbihmKX0iLDJdLFs1LDcsIlxcdGV4dHt0by1zZXFuKGYpfSIsMl1d
 \begin{tikzcd}
     {\bullet\; n = m} \\
@@ -1273,7 +1273,7 @@ mcase\\
 \end{tikzcd}
 \\
 \midrule
-\small\tcbox{<-left a b} &
+\small\tcbox{←left a b} &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCIoYV8xLFxcZG90cyxhX24sYl8xLFxcZG90cyxiX20pIl0sWzEsMCwiKGFfMSxcXGRvdHMsYV9uLDApIl0sWzIsMSwiKGFfMSwuLi4sYV9uKSJdLFswLDEsIlxcdGV4dHtpZH0gXFx0aW1lcyBcXHRleHR7ZHJvcC1uaWx9Il0sWzEsMiwiXFx0ZXh0e3JlbW92ZS1yaWdodH0iXSxbMCwyLCJcXHRleHR7dG8tc2Vxbih0KX0iLDJdXQ==
 \begin{tikzcd}[cramped]
     & {(a_1,\dots,a_n,0)} \\
@@ -1284,7 +1284,7 @@ mcase\\
 \end{tikzcd}
 \\
 \midrule
-\small\tcbox{<-right a b} &
+\small\tcbox{←right a b} &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCIoYV8xLFxcZG90cyxhX24sYl8xLFxcZG90cyxiX20pIl0sWzEsMCwiKDAsYl8xLFxcZG90cyxiX20pIl0sWzIsMSwiKGJfMSwuLi4sYl9tKSJdLFswLDEsIlxcdGV4dHtkcm9wLW5pbH0gXFx0aW1lcyBcXHRleHR7aWR9Il0sWzEsMiwiXFx0ZXh0e3JlbW92ZS1sZWZ0fSJdLFswLDIsIlxcdGV4dHt0by1zZXFuKHQpfSIsMl1d
 \begin{tikzcd}[cramped,sep=scriptsize]
     & {(0,b_1,\dots,b_m)} \\
