@@ -1134,7 +1134,16 @@ list is reached.}:
     width (prod x y) = (append (width x) (width y))
     width (coprod x y) = (1 :: (zipWith max (width x) (width y)))
 \end{minted}
-
+\begin{remark}
+    Note that \tcbox{width (coprod so1 so1)} is $(1, 0)$ and not $(1)$ as we originally intended. However, both objects are isomorphic in our category as
+    \begin{minted}{agda}
+  composition (inj-length-left (1 :: []) (0 :: [])) (remove-right (1 :: [])) 
+                                                                  = id (1 :: 0 :: [])
+  composition (remove-right (1 :: [])) (inj-length-left (1 :: []) (0 :: [])) 
+                                                                  = id (1 :: [])
+    \end{minted} 
+    One can check that these establish relevant isomorphism info as function equality is established pointwise in our category and refer to \cref{table:to-vampir}.
+\end{remark}
 
  Now we are ready to define the compilation of morphisms via diagrams.
  Recall that \tcbox{seqn-parallel} is the product of morphisms in our
@@ -1163,7 +1172,7 @@ list is reached.}:
 \begin{tikzcd}
     {(a_1,\dots,a_n)} && {(a_1,\dots,a_n)}
     \arrow["{\text{id}}", from=1-1, to=1-3]
-    \arrow["{\text{to-seqn}(\text{f})}"', curve={height=18pt}, from=1-1, to=1-3]
+    \arrow["{\text{to-seqn}(\text{t})}"', curve={height=18pt}, from=1-1, to=1-3]
 \end{tikzcd}\\
 \midrule
 \small\tcbox{%
@@ -1173,12 +1182,12 @@ comp \\
 \quad((g : a G→ b)\\
 \end{tabular}} &
 % https://q.uiver.app/#q=WzAsMyxbMCwxLCIoYV8xLC4uLixhX24pIl0sWzIsMCwiKGJfMSwuLi4sYl9tKSJdLFs0LDEsIihjXzEsLi4uLGNfaykiXSxbMCwxLCJcXHRleHR7dG8tc2VxbiAoZyl9Il0sWzEsMiwiXFx0ZXh0e3RvLXNlcW4gKGYpfSJdLFswLDIsIlxcdGV4dHt0by1zZXFuKGYpfSIsMl1d
-\begin{tikzcd}[cramped]
+\begin{tikzcd}
 	&& {(b_1,...,b_m)} \\
 	{(a_1,...,a_n)} &&&& {(c_1,...,c_k)}
 	\arrow["{\text{to-seqn (g)}}", from=2-1, to=1-3]
 	\arrow["{\text{to-seqn (f)}}", from=1-3, to=2-5]
-	\arrow["{\text{to-seqn(f)}}"', from=2-1, to=2-5]
+	\arrow["{\text{to-seqn(t)}}"', from=2-1, to=2-5]
 \end{tikzcd} \\
 \midrule
 \small \tcbox{init a} &
@@ -1186,7 +1195,7 @@ comp \\
 \begin{tikzcd}
     {(0)} && {(a_1,\dots,a_n)}
     \arrow["{\text{drop-width}}", from=1-1, to=1-3]
-    \arrow["{\text{to-seq (f)}}"', curve={height=18pt}, from=1-1, to=1-3]
+    \arrow["{\text{to-seq (t)}}"', curve={height=18pt}, from=1-1, to=1-3]
 \end{tikzcd}\\
 \midrule
 \small\tcbox{terminal a} &
@@ -1194,7 +1203,7 @@ comp \\
 \begin{tikzcd}
     {(a_1,\dots,a_n)} && {(0)}
     \arrow["{\text{drop-nil}}", from=1-1, to=1-3]
-    \arrow["{\text{to-seqn}(f)}"', curve={height=18pt}, from=1-1, to=1-3]
+    \arrow["{\text{to-seqn}(t)}"', curve={height=18pt}, from=1-1, to=1-3]
 \end{tikzcd}
 \\
 \midrule
@@ -1213,8 +1222,8 @@ comp \\
     \arrow["{\text{zero-bit}\times (\bigotimes_m \text{inj-size})}", from=5-2, to=7-2]
     \arrow["{\text{inj-length-right}}", from=3-1, to=2-2]
     \arrow["{\text{zero-bit} \times (\bigotimes_n \text{inj-size})}", from=2-2, to=3-2]
-    \arrow["{\text{to-seqn(f)}}"', from=7-1, to=7-2]
-    \arrow["{\text{to-seqn(f)}}"', from=3-1, to=3-2]
+    \arrow["{\text{to-seqn(t)}}"', from=7-1, to=7-2]
+    \arrow["{\text{to-seqn(t)}}"', from=3-1, to=3-2]
 \end{tikzcd}\\
 \midrule
 \small\tcbox{→right a b}\footnote{The case for $n>m$ follows similarly.} &
@@ -1232,8 +1241,8 @@ comp \\
     \arrow["{\text{one-bit}\times (\bigotimes_m \text{inj-size})}", from=5-2, to=7-2]
     \arrow["{\text{inj-length-right}}", from=3-1, to=2-2]
     \arrow["{\text{one-bit} \times (\bigotimes_n \text{inj-size})}", from=2-2, to=3-2]
-    \arrow["{\text{to-seqn(f)}}"', from=7-1, to=7-2]
-    \arrow["{\text{to-seqn(f)}}"', from=3-1, to=3-2]
+    \arrow["{\text{to-seqn(t)}}"', from=7-1, to=7-2]
+    \arrow["{\text{to-seqn(t)}}"', from=3-1, to=3-2]
 \end{tikzcd}\\[2mm]
 \midrule
 \small\tcbox{%
@@ -1307,8 +1316,8 @@ pair\\
     && {(a_1,\dots,a_n,a_1,\dots,a_n)} \\
     {(a_1,\dots,a_n)} &&&& {(b_1,\dots,b_m,c_1,\dots,ck)}
     \arrow["{\text{fork-seq}}", from=2-1, to=1-3]
-    \arrow["{(\text{to-seq f}) \times (\text{to-seq g})}", from=1-3, to=2-5]
-    \arrow["{\text{to-seqn (f)}}"', from=2-1, to=2-5]
+    \arrow["{(\text{to-seq (f)}) \times (\text{to-seq g})}", from=1-3, to=2-5]
+    \arrow["{\text{to-seqn (t)}}"', from=2-1, to=2-5]
 \end{tikzcd}
 \\
 \midrule
