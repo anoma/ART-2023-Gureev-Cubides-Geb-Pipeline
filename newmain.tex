@@ -31,9 +31,9 @@ internal language theorems, thus shifting focus from syntax to suitable
 categorical structures.
 
 The core of the approach taken here rests on the observation that
-compilation procedures, which preserve type structure, can be linked to
+compilation procedures\footnote{Those that preserve specified type structures.} can be linked to
 functors that maintain corresponding structures between categories
-representing those programming languages.  One canonical example is
+representing appropriate programming languages.  One canonical example is
 specified in~\cite{LS-catlog}, dealing with the fact that the
 languages possessing simply-typed Lambda calculus (STLC) structure form a
 category which is equivalent to the category of Cartesian Closed Categories
@@ -59,7 +59,7 @@ the following address, release v0.5.
 \end{center}
 
 The general aim of the paper is to provide an overview of pipeline design
-that is accessible to people without delving very deep in the Lisp implementation.
+that is accessible to people without delving deep in the Lisp implementation.
 Primarily, we aim to:
 
 \begin{enumerate}
@@ -116,7 +116,7 @@ and \SeqN{}.
 Here we are concerned only with the steps starting from \LambdaIR{}. The
 \Juvix{} compiler already supports compiling \JuvixCore{} to a suitable
 representation in \LambdaIR{}. Hence, the pipeline we will be interested in
-and the one written in Lisp is presented in the bottom diagram.
+and the one written in Lisp is presented in the diagram below.
 
 % https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXHRleHR7TGFtYmRhfSJdLFsyLDAsIlxcdGV4dHtHZWJ9Il0sWzQsMCwiXFx0ZXh0e1NlcSRcXE4kfSAiXSxbNiwwLCJcXHRleHR7VmFtcC1JUn0iXSxbMCwxXSxbMSwyXSxbMiwzXV0=
 \[\begin{tikzcd}
@@ -127,7 +127,7 @@ and the one written in Lisp is presented in the bottom diagram.
 \end{tikzcd}\]
 
 The current section is devoted to the specifications of the languages used
-in the compilation with the \VampIR{} section devoted not to the
+in the compilation with the \VampIR{} section concerned not with the
 description of \VampIR{} itself, but of the library of functions needed for
 any compiled code to compile on valid inputs.
 
@@ -142,19 +142,18 @@ compiler stack, as originally presented in \cite{lukascz-vampir}.
 General recursion (functions)   &  Yes   &  Yes   &  No  &   No  \\
 First-class functions   &  Yes   &  Yes   &  Yes  &   No\footnote{\VampIR{} higher-order and anonymous functions are not fully ``first-class'' because they cannot nontrivially interact with the field elements - they are essentially compilation-time-only.}  \\
 Inductive data types  &  Yes   &  Yes   &  No  &   No  \\
-Finite data structures  &  Yes   &  Yes   &  Yes\footnote{Encodable via products and coproducts.} & No\footnote{Pairs and lists in \VampIR{} cannot nontrivially interact with the field elements. In general, finite \JuvixCore{} data structures cannot be translated into them.}  \\
+Finite data structures  &  Yes   &  Yes   &  Yes & No\footnote{Pairs and lists in \VampIR{} cannot nontrivially interact with the field elements. In general, finite \JuvixCore{} data structures cannot be translated into them.}  \\
 Prenex polymorphism  &  Yes   &  Yes   &  No  &  No\footnote{Polymorphic functions are supported, but not polymorphic data types which can interact non-trivially with field elements. Hence, monomorphisation is still necessary to translate from \JuvixCore{}.} \\
 Higher-rank polymorphism  &  Some   &  Yes   &  No  &   No  \\
-Primitive integer type  &  Yes   &  Yes   &  Yes\footnote{\Geb{} has a separate type for $n$-bit strings for any $n \in \N_{>0}$}  &   Yes\footnote{\VampIR{} ``integers'' are the field elements, not integers strictly speaking.} \\
+Primitive integer type  &  Yes   &  Yes   &  Yes  &   Yes\footnote{\VampIR{} ``integers'' are the field elements, not integers strictly speaking.} \\
 Errors &  Yes   &  Yes   &  Yes  &   No \\
 \hline
 \end{tabular}
 % \caption{Language features}
 \end{minipage}
 
-
+\newpage
 \subsection{Geb}
-
 The finite version of \Geb{} implemented here answers two questions:
 \begin{itemize}
     \item What are the minimal/optimal operations needed to present
